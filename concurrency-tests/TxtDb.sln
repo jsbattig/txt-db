@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Storage", "TxtDb.Storage\TxtDb.Storage.csproj", "{2820D291-84F4-48EE-8789-21591A6F3C57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Storage.Tests", "TxtDb.Storage.Tests\TxtDb.Storage.Tests.csproj", "{681937B1-F3BE-4763-AC29-7FEEF117D4B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2820D291-84F4-48EE-8789-21591A6F3C57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2820D291-84F4-48EE-8789-21591A6F3C57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2820D291-84F4-48EE-8789-21591A6F3C57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2820D291-84F4-48EE-8789-21591A6F3C57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

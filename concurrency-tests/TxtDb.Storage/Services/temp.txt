@@ -1,0 +1,37 @@
+    private void MarkMetadataDirty()
+    {
+        lock (_dirtyFlagLock)
+        {
+            _metadataDirty = true;
+        }
+    }
+
+    private void PersistMetadataIfDirty(object? state)
+    {
+        bool shouldPersist = false;
+        lock (_dirtyFlagLock)
+        {
+            if (_metadataDirty)
+            {
+                _metadataDirty = false;
+                shouldPersist = true;
+            }
+        }
+        
+        if (shouldPersist)
+        {
+            PersistMetadata();
+        }
+    }
+    
+    // IDisposable implementation  
+    public void Dispose()
+    {
+        _cleanupTimer?.Dispose();
+        _metadataPersistTimer?.Dispose();
+        
+        // Final metadata persistence
+        PersistMetadataIfDirty(null);
+    }
+}
+EOF < /dev/null

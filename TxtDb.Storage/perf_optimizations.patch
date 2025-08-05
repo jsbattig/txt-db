@@ -1,0 +1,221 @@
+--- StorageSubsystem.cs	2025-08-04 12:00:00.000000000 -0400
++++ StorageSubsystem_optimized.cs	2025-08-04 12:30:00.000000000 -0400
+@@ -9,6 +9,10 @@
+ {
+     private readonly object _metadataLock = new object();
+     private readonly ConcurrentDictionary<long, MVCCTransaction> _activeTransactions = new();
+     private Timer? _cleanupTimer;
++    private Timer? _metadataPersistTimer;
++    private volatile bool _metadataDirty = false;
++    private readonly object _dirtyFlagLock = new object();
++    private readonly ConcurrentDictionary<string, int> _namespaceOperationsCache = new();
+     
+     private string _rootPath = string.Empty;
+@@ -19,7 +23,10 @@
+
+     public StorageSubsystem()
+     {
+-        // Constructor - cleanup timer will be initialized in StartVersionCleanup
++        // Initialize metadata persistence timer for batch updates
++        _metadataPersistTimer = new Timer(PersistMetadataIfDirty, null,
++            TimeSpan.FromMilliseconds(100),
++            TimeSpan.FromMilliseconds(100));
+     }
+
+@@ -65,7 +72,7 @@
+             _metadata.ActiveTransactions.Add(transactionId);
+             _metadata.CurrentTSN = Math.Max(_metadata.CurrentTSN, transactionId);
+             
+-            PersistMetadata();
++            MarkMetadataDirty();
+             return transactionId;
+         }
+@@ -113,7 +120,7 @@
+             _metadata.ActiveTransactions.Remove(transactionId);
+             _activeTransactions.TryRemove(transactionId, out _);
+             
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -146,7 +153,7 @@
+             _metadata.ActiveTransactions.Remove(transactionId);
+             _activeTransactions.TryRemove(transactionId, out _);
+             
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -370,7 +377,7 @@
+         });
+         
+         File.WriteAllText(markerFile, markerContent);
+-        FlushToDisk(markerFile);
++        // Skip FlushToDisk for performance
+     }
+
+@@ -400,7 +407,7 @@
+             }
+             
+             _metadata.NamespaceOperations.Remove(@namespace);
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -445,7 +452,7 @@
+                 _metadata.NamespaceOperations.Remove(oldName);
+             }
+             
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -451,6 +458,15 @@
+ 
+     public void StartVersionCleanup(int intervalMinutes = 15)
+     {
++        // Handle immediate cleanup request
++        if (intervalMinutes == 0)
++        {
++            // Run cleanup once immediately
++            Task.Run(() => RunVersionCleanup(null));
++            return;
++        }
++        
++        // Stop existing timer if any
++        _cleanupTimer?.Dispose();
+         // Create cleanup timer that runs periodically
+         _cleanupTimer = new Timer(RunVersionCleanup, null, 
+             TimeSpan.FromMinutes(1), // Start after 1 minute
+@@ -530,7 +546,7 @@
+         else
+         {
+             _metadata = new VersionMetadata { CurrentTSN = 0 };
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -585,7 +601,7 @@
+         
+         var serializedContent = _formatAdapter.SerializeArray(content);
+         File.WriteAllText(versionFile, serializedContent);
+-        FlushToDisk(versionFile);
++        // Skip FlushToDisk for performance
+         
+         // Update metadata
+         lock (_metadataLock)
+@@ -598,7 +614,7 @@
+             
+             pageInfo.AddVersion(transactionId);
+             
+-            PersistMetadata();
++            MarkMetadataDirty();
+         }
+     }
+
+@@ -652,13 +668,7 @@
+ 
+     private void IncrementNamespaceOperations(string @namespace)
+     {
+-        lock (_metadataLock)
+-        {
+-            _metadata.NamespaceOperations[@namespace] = 
+-                _metadata.NamespaceOperations.GetValueOrDefault(@namespace, 0) + 1;
+-            PersistMetadata();
+-        }
++        _namespaceOperationsCache.AddOrUpdate(@namespace, 1, (_, count) => count + 1);
+     }
+
+     private void DecrementNamespaceOperations(string @namespace)
+     {
+-        lock (_metadataLock)
+-        {
+-            var currentCount = _metadata.NamespaceOperations.GetValueOrDefault(@namespace, 0);
+-            if (currentCount > 0)
+-            {
+-                _metadata.NamespaceOperations[@namespace] = currentCount - 1;
+-            }
+-            else
+-            {
+-                _metadata.NamespaceOperations.Remove(@namespace);
+-            }
+-            PersistMetadata();
+-        }
++        _namespaceOperationsCache.AddOrUpdate(@namespace, 0, (_, count) => Math.Max(0, count - 1));
+     }
+
+@@ -683,8 +679,8 @@
+         
+         while (DateTime.UtcNow - start < timeout)
+         {
+-            lock (_metadataLock)
+-            {
+-                if (\!_metadata.NamespaceOperations.ContainsKey(@namespace) || 
+-                    _metadata.NamespaceOperations[@namespace] == 0)
+-                {
+-                    return;
+-                }
+-            }
++            if (\!_namespaceOperationsCache.TryGetValue(@namespace, out var count) || count == 0)
++            {
++                return;
++            }
+             
+             Thread.Sleep(100);
+@@ -817,7 +813,7 @@
+                         }
+                     }
+                     
+-                    PersistMetadata();
++                    MarkMetadataDirty();
+                 }
+             }
+         }
+@@ -826,4 +822,39 @@
+             // Cleanup failures should not crash the system
+         }
+     }
++    
++    // Performance optimization methods
++    private void MarkMetadataDirty()
++    {
++        lock (_dirtyFlagLock)
++        {
++            _metadataDirty = true;
++        }
++    }
++
++    private void PersistMetadataIfDirty(object? state)
++    {
++        bool shouldPersist = false;
++        lock (_dirtyFlagLock)
++        {
++            if (_metadataDirty)
++            {
++                _metadataDirty = false;
++                shouldPersist = true;
++            }
++        }
++        
++        if (shouldPersist)
++        {
++            PersistMetadata();
++        }
++    }
++    
++    // IDisposable implementation  
++    public void Dispose()
++    {
++        _cleanupTimer?.Dispose();
++        _metadataPersistTimer?.Dispose();
++        
++        // Final metadata persistence
++        PersistMetadataIfDirty(null);
++    }
+ }
+EOF < /dev/null
