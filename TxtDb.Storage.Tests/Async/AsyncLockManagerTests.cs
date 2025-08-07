@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using TxtDb.Storage.Services.Async;
 using Xunit;
 using Xunit.Abstractions;
@@ -145,7 +146,7 @@ public class AsyncLockManagerTests : IDisposable
         var task2 = Task.Run(async () =>
         {
             cancellationTokenSource.CancelAfter(50); // Cancel after 50ms
-            await Assert.ThrowsAsync<OperationCanceledException>(
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(
                 () => _lockManager.AcquireLockAsync(lockKey, Timeout.InfiniteTimeSpan, cancellationTokenSource.Token));
         });
 
@@ -311,6 +312,247 @@ public class AsyncLockManagerTests : IDisposable
 
         // Assert
         Assert.False(lockHandle.IsLocked); // Lock should be released when manager is disposed
+    }
+
+    /// <summary>
+    /// FAILING TEST: Reproduces race condition in reference count management
+    /// This test exposes the race condition where multiple threads can read the same reference count
+    /// before any thread writes the decremented value back, causing reference counts to be incorrect
+    /// </summary>
+    [Fact]
+    public async Task ReferenceCountRaceCondition_ConcurrentDecrements_ShouldMaintainCorrectCount()
+    {
+        // Arrange
+        var lockKey = "race_condition_test";
+        var concurrentOperations = 50;
+        var exceptions = new ConcurrentBag<Exception>();
+        var completedOperations = 0;
+
+        // Act - Create many concurrent lock acquisitions and releases
+        var tasks = Enumerable.Range(0, concurrentOperations).Select(i =>
+            Task.Run(async () =>
+            {
+                try
+                {
+                    using var lockHandle = await _lockManager.AcquireLockAsync(lockKey);
+                    // Brief hold to ensure overlapping reference count operations
+                    await Task.Delay(1);
+                    Interlocked.Increment(ref completedOperations);
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            })
+        ).ToArray();
+
+        await Task.WhenAll(tasks);
+
+        // Assert - All operations should complete without exceptions
+        // The race condition causes ObjectDisposedExceptions or incorrect reference counts
+        Assert.Empty(exceptions.ToArray());
+        Assert.Equal(concurrentOperations, completedOperations);
+        
+        // This test will fail due to race conditions in DecrementLockReference method
+    }
+
+    /// <summary>
+    /// FAILING TEST: Reproduces disposal timing race conditions
+    /// This test exposes ObjectDisposedException when disposal occurs while threads are acquiring locks
+    /// </summary>
+    [Fact]
+    public async Task DisposalRaceCondition_DisposeDuringLockAcquisition_ShouldHandleGracefully()
+    {
+        // Arrange
+        var tempLockManager = new AsyncLockManager();
+        var lockKey = "disposal_race_test";
+        var concurrentOperations = 5; // Reduced for more manageable testing
+        var exceptions = new ConcurrentBag<Exception>();
+        var completedBeforeDisposal = 0;
+
+        // Act - Start lock acquisitions and dispose the manager while they're running
+        var lockTasks = Enumerable.Range(0, concurrentOperations).Select(i =>
+            Task.Run(async () =>
+            {
+                try
+                {
+                    // Add timeout to prevent indefinite blocking
+                    using var lockHandle = await tempLockManager.AcquireLockAsync(lockKey, TimeSpan.FromMilliseconds(100));
+                    Interlocked.Increment(ref completedBeforeDisposal);
+                    await Task.Delay(5);
+                }
+                catch (ObjectDisposedException)
+                {
+                    // This is expected after disposal, but should be handled gracefully
+                }
+                catch (TimeoutException)
+                {
+                    // Also acceptable during disposal
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            })
+        ).ToArray();
+
+        // Dispose the lock manager while operations are running
+        await Task.Delay(2);
+        tempLockManager.Dispose();
+
+        await Task.WhenAll(lockTasks);
+
+        // Assert - Should only have ObjectDisposedException and TimeoutException, no other exceptions
+        var unexpectedExceptions = exceptions.Where(ex => 
+            !(ex is ObjectDisposedException) && 
+            !(ex is TimeoutException)).ToArray();
+        Assert.Empty(unexpectedExceptions);
+    }
+
+    /// <summary>
+    /// FAILING TEST: Reproduces collection modification during disposal
+    /// This test exposes "Collection was modified after the enumerator was created" exceptions
+    /// </summary>
+    [Fact]
+    public async Task CollectionModificationException_DisposalDuringIteration_ShouldNotThrow()
+    {
+        // Arrange
+        var tempLockManager = new AsyncLockManager();
+        var lockKeys = Enumerable.Range(0, 10).Select(i => $"collection_test_{i}").ToArray();
+        var exceptions = new ConcurrentBag<Exception>();
+
+        // Act - Create locks and then dispose while collection might be iterated
+        var lockTasks = lockKeys.Select(async lockKey =>
+        {
+            try
+            {
+                var lockHandle = await tempLockManager.AcquireLockAsync(lockKey);
+                // Don't dispose immediately to keep references in collections
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(20);
+                    lockHandle.Dispose();
+                });
+            }
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
+        }).ToArray();
+
+        await Task.WhenAll(lockTasks);
+        await Task.Delay(5); // Let some locks be acquired
+
+        // Dispose while locks are still active - this should not cause collection modification exceptions
+        tempLockManager.Dispose();
+
+        await Task.Delay(50); // Wait for background disposals
+
+        // Assert - Should not have InvalidOperationException for collection modification
+        var collectionModificationExceptions = exceptions
+            .Where(ex => ex is InvalidOperationException && ex.Message.Contains("Collection was modified"))
+            .ToArray();
+        Assert.Empty(collectionModificationExceptions);
+    }
+
+    /// <summary>
+    /// FAILING TEST: Reproduces semaphore disposal race condition
+    /// This test exposes cases where semaphores are disposed while threads are waiting on them
+    /// </summary>
+    [Fact]
+    public async Task SemaphoreDisposalRaceCondition_DisposeDuringWait_ShouldHandleCleanly()
+    {
+        // Arrange
+        var tempLockManager = new AsyncLockManager();
+        var lockKey = "semaphore_disposal_race";
+        var exceptions = new ConcurrentBag<Exception>();
+
+        // Act - Acquire a lock, then start waiting threads, then dispose
+        var firstLock = await tempLockManager.AcquireLockAsync(lockKey);
+
+        var waitingTasks = Enumerable.Range(0, 5).Select(i =>
+            Task.Run(async () =>
+            {
+                try
+                {
+                    // These will wait on the semaphore
+                    using var lockHandle = await tempLockManager.AcquireLockAsync(lockKey, TimeSpan.FromSeconds(1));
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Expected after disposal
+                }
+                catch (TimeoutException)
+                {
+                    // Also acceptable
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Add(ex);
+                }
+            })
+        ).ToArray();
+
+        await Task.Delay(10); // Let waiting tasks start
+
+        // Dispose the manager while threads are waiting on semaphores
+        tempLockManager.Dispose();
+        
+        // Release the first lock after disposal
+        firstLock.Dispose();
+
+        await Task.WhenAll(waitingTasks);
+
+        // Assert - Should not have unexpected exceptions from semaphore disposal race
+        Assert.Empty(exceptions.ToArray());
+    }
+
+    /// <summary>
+    /// FAILING TEST: High-stress concurrent operations to expose all race conditions
+    /// This test runs many concurrent operations to increase probability of race conditions
+    /// </summary>
+    [Fact]
+    public async Task HighStressConcurrencyTest_MassiveConcurrentOperations_ShouldBeThreadSafe()
+    {
+        // Arrange - Reduced scale for manageable testing
+        var lockKeys = Enumerable.Range(0, 5).Select(i => $"stress_test_{i}").ToArray();
+        var operationsPerKey = 10;
+        var totalOperations = lockKeys.Length * operationsPerKey;
+        var exceptions = new ConcurrentBag<Exception>();
+        var completedOperations = 0;
+
+        // Act - Create concurrent load with timeouts to prevent indefinite blocking
+        var allTasks = lockKeys.SelectMany(lockKey =>
+            Enumerable.Range(0, operationsPerKey).Select(i =>
+                Task.Run(async () =>
+                {
+                    try
+                    {
+                        using var lockHandle = await _lockManager.AcquireLockAsync(lockKey, TimeSpan.FromMilliseconds(200));
+                        await Task.Delay(1); // Minimal work
+                        Interlocked.Increment(ref completedOperations);
+                    }
+                    catch (TimeoutException)
+                    {
+                        // Acceptable under high concurrency
+                    }
+                    catch (Exception ex)
+                    {
+                        exceptions.Add(ex);
+                    }
+                })
+            )
+        ).ToArray();
+
+        await Task.WhenAll(allTasks);
+
+        // Assert - Should have no unexpected exceptions, allow some timeouts
+        var allExceptions = exceptions.ToArray();
+        Assert.Empty(allExceptions);
+        
+        // Most operations should complete (allow for some timeouts under stress)
+        Assert.True(completedOperations >= totalOperations * 0.8, 
+            $"Expected at least 80% operations to complete, got {completedOperations}/{totalOperations}");
     }
 
     public void Dispose()

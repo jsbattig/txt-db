@@ -3,6 +3,20 @@ using System.Collections.Concurrent;
 namespace TxtDb.Storage.Services.Async;
 
 /// <summary>
+/// Thread-safe reference counting structure for lock management
+/// CRITICAL FIX: Supports atomic operations to prevent race conditions
+/// </summary>
+internal class LockReferenceInfo
+{
+    public int Count;
+
+    public LockReferenceInfo(int initialCount)
+    {
+        Count = initialCount;
+    }
+}
+
+/// <summary>
 /// Async Lock Manager for Performance Optimization
 /// Phase 1: Foundation - Replaces object locks with SemaphoreSlim for async-friendly locking
 /// CRITICAL: Prevents deadlocks while supporting async/await patterns
@@ -10,10 +24,12 @@ namespace TxtDb.Storage.Services.Async;
 public class AsyncLockManager : IDisposable
 {
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
-    private readonly ConcurrentDictionary<string, int> _lockReferenceCounts = new();
+    private readonly ConcurrentDictionary<string, LockReferenceInfo> _lockReferenceCounts = new();
     private readonly object _lockCreationLock = new object();
     private readonly ConcurrentBag<AsyncLockHandle> _activeLockHandles = new();
-    private bool _disposed = false;
+    private readonly TaskCompletionSource<bool> _disposalCompletionSource = new();
+    private volatile bool _disposed = false;
+    private volatile bool _disposing = false;
 
     /// <summary>
     /// Acquires an async lock for the specified key
@@ -26,7 +42,7 @@ public class AsyncLockManager : IDisposable
     /// <exception cref="OperationCanceledException">Thrown when operation is cancelled</exception>
     public async Task<AsyncLockHandle> AcquireLockAsync(string lockKey, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
     {
-        if (_disposed)
+        if (_disposed || _disposing)
             throw new ObjectDisposedException(nameof(AsyncLockManager));
 
         var actualTimeout = timeout ?? Timeout.InfiniteTimeSpan;
@@ -67,7 +83,7 @@ public class AsyncLockManager : IDisposable
             }
 
             // Double-check we weren't disposed while acquiring the lock
-            if (_disposed)
+            if (_disposed || _disposing)
             {
                 // Clean up - release the lock we just acquired
                 try { semaphore.Release(); } catch { }
@@ -94,14 +110,14 @@ public class AsyncLockManager : IDisposable
     /// </summary>
     private SemaphoreSlim GetOrCreateSemaphore(string lockKey)
     {
-        if (_disposed)
+        if (_disposed || _disposing)
             throw new ObjectDisposedException(nameof(AsyncLockManager));
 
         // Double-checked locking pattern for thread-safe semaphore creation
         if (_locks.TryGetValue(lockKey, out var existingSemaphore))
         {
             // CRITICAL FIX: Check if the semaphore was disposed during concurrent disposal
-            if (_disposed)
+            if (_disposed || _disposing)
                 throw new ObjectDisposedException(nameof(AsyncLockManager));
                 
             IncrementLockReference(lockKey);
@@ -111,7 +127,7 @@ public class AsyncLockManager : IDisposable
         lock (_lockCreationLock)
         {
             // Double-check disposal status inside the lock
-            if (_disposed)
+            if (_disposed || _disposing)
                 throw new ObjectDisposedException(nameof(AsyncLockManager));
                 
             if (_locks.TryGetValue(lockKey, out existingSemaphore))
@@ -122,40 +138,53 @@ public class AsyncLockManager : IDisposable
 
             var newSemaphore = new SemaphoreSlim(1, 1); // Binary semaphore (mutex)
             _locks[lockKey] = newSemaphore;
-            _lockReferenceCounts[lockKey] = 1;
+            _lockReferenceCounts[lockKey] = new LockReferenceInfo(1);
             return newSemaphore;
         }
     }
 
     /// <summary>
-    /// Increments the reference count for a lock
+    /// Increments the reference count for a lock using atomic operations
     /// </summary>
     private void IncrementLockReference(string lockKey)
     {
-        _lockReferenceCounts.AddOrUpdate(lockKey, 1, (key, count) => count + 1);
+        _lockReferenceCounts.AddOrUpdate(
+            lockKey, 
+            new LockReferenceInfo(1), 
+            (key, info) => 
+            {
+                Interlocked.Increment(ref info.Count);
+                return info;
+            }
+        );
     }
 
     /// <summary>
     /// Decrements the reference count for a lock and removes it if no longer referenced
+    /// Uses atomic operations to prevent race conditions
     /// </summary>
     private void DecrementLockReference(string lockKey)
     {
-        if (_lockReferenceCounts.TryGetValue(lockKey, out var count))
+        if (_lockReferenceCounts.TryGetValue(lockKey, out var info))
         {
-            var newCount = count - 1;
+            var newCount = Interlocked.Decrement(ref info.Count);
             
             if (newCount <= 0)
             {
-                // Remove the lock if no longer referenced
-                if (_locks.TryRemove(lockKey, out var semaphore))
+                // Only one thread will successfully remove the lock
+                if (_lockReferenceCounts.TryRemove(lockKey, out _) && 
+                    _locks.TryRemove(lockKey, out var semaphore))
                 {
-                    semaphore.Dispose();
+                    // CRITICAL FIX: Dispose semaphore safely, handling concurrent access
+                    try
+                    {
+                        semaphore.Dispose();
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // Expected during shutdown - semaphore already disposed
+                    }
                 }
-                _lockReferenceCounts.TryRemove(lockKey, out _);
-            }
-            else
-            {
-                _lockReferenceCounts[lockKey] = newCount;
             }
         }
     }
@@ -182,35 +211,83 @@ public class AsyncLockManager : IDisposable
     }
 
     /// <summary>
-    /// Disposes the lock manager and releases all locks
+    /// Disposes the lock manager and releases all locks with proper synchronization
+    /// CRITICAL FIX: Uses proper disposal coordination to prevent race conditions
     /// </summary>
     public void Dispose()
     {
         if (!_disposed)
         {
-            _disposed = true;
-
-            // Mark all active lock handles as disposed
-            foreach (var lockHandle in _activeLockHandles)
+            // Set disposal flags atomically
+            lock (_lockCreationLock)
             {
-                lockHandle.MarkAsDisposed();
+                if (_disposed) return;
+                _disposing = true;
+                _disposed = true;
+            }
+            
+            // Mark all active lock handles as disposed (snapshot to avoid collection modification)
+            try
+            {
+                var handleArray = _activeLockHandles.ToArray();
+                foreach (var lockHandle in handleArray)
+                {
+                    try
+                    {
+                        lockHandle.MarkAsDisposed();
+                    }
+                    catch
+                    {
+                        // Ignore disposal errors for handles
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore enumeration errors during disposal
             }
 
-            // Dispose all semaphores
-            foreach (var semaphore in _locks.Values)
+            // Dispose all semaphores (snapshot to avoid collection modification)
+            try
             {
-                try
+                var lockArray = _locks.ToArray();
+                foreach (var kvp in lockArray)
                 {
-                    semaphore.Dispose();
-                }
-                catch
-                {
-                    // Ignore disposal errors
+                    try
+                    {
+                        kvp.Value.Dispose();
+                    }
+                    catch
+                    {
+                        // Ignore disposal errors
+                    }
                 }
             }
+            catch
+            {
+                // Ignore enumeration errors during disposal
+            }
 
-            _locks.Clear();
-            _lockReferenceCounts.Clear();
+            // Clear collections
+            try
+            {
+                _locks.Clear();
+                _lockReferenceCounts.Clear();
+            }
+            catch
+            {
+                // Ignore clearing errors
+            }
+            
+            // Signal completion of disposal
+            try
+            {
+                _disposalCompletionSource.TrySetResult(true);
+            }
+            catch
+            {
+                // Ignore completion source errors
+            }
         }
     }
 }

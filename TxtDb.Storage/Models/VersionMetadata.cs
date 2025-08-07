@@ -2,13 +2,82 @@ using System.Collections.Concurrent;
 
 namespace TxtDb.Storage.Models;
 
+/// <summary>
+/// Version metadata with thread-safe collections to prevent concurrent modification exceptions during serialization.
+/// CRITICAL FIX: All collections must be thread-safe to prevent "Collection was modified; enumeration operation may not execute"
+/// exceptions when serializing metadata while other threads are modifying the collections.
+/// </summary>
 public class VersionMetadata
 {
     public long CurrentTSN { get; set; }
-    public HashSet<long> ActiveTransactions { get; set; } = new();
-    public Dictionary<string, PageVersionInfo> PageVersions { get; set; } = new();
-    public Dictionary<string, int> NamespaceOperations { get; set; } = new();
+    
+    // Thread-safe collections to prevent concurrent modification exceptions during JSON serialization
+    public ConcurrentDictionary<long, byte> ActiveTransactions { get; set; } = new();
+    public ConcurrentDictionary<string, PageVersionInfo> PageVersions { get; set; } = new();
+    public ConcurrentDictionary<string, int> NamespaceOperations { get; set; } = new();
+    
+    /// <summary>
+    /// Track deleted namespaces to prevent operations on them
+    /// CRITICAL: Operations on deleted namespaces must throw ArgumentException
+    /// </summary>
+    public ConcurrentDictionary<string, DateTime> DeletedNamespaces { get; set; } = new();
+    
     public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+    
+    /// <summary>
+    /// Creates a serialization-safe snapshot of this metadata.
+    /// Used to prevent concurrent modification exceptions during JSON serialization.
+    /// </summary>
+    public VersionMetadataSnapshot CreateSnapshot()
+    {
+        return new VersionMetadataSnapshot
+        {
+            CurrentTSN = this.CurrentTSN,
+            ActiveTransactions = new HashSet<long>(this.ActiveTransactions.Keys),
+            PageVersions = new Dictionary<string, PageVersionInfo>(this.PageVersions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Clone())),
+            NamespaceOperations = new Dictionary<string, int>(this.NamespaceOperations),
+            DeletedNamespaces = new Dictionary<string, DateTime>(this.DeletedNamespaces),
+            LastUpdated = this.LastUpdated
+        };
+    }
+    
+    /// <summary>
+    /// Helper methods for HashSet-like operations on ActiveTransactions
+    /// </summary>
+    public bool AddActiveTransaction(long transactionId) => ActiveTransactions.TryAdd(transactionId, 0);
+    public bool RemoveActiveTransaction(long transactionId) => ActiveTransactions.TryRemove(transactionId, out _);
+    public bool ContainsActiveTransaction(long transactionId) => ActiveTransactions.ContainsKey(transactionId);
+    public void ClearActiveTransactions() => ActiveTransactions.Clear();
+    
+    /// <summary>
+    /// Restores metadata from a snapshot (used during loading from disk)
+    /// </summary>
+    public static VersionMetadata FromSnapshot(VersionMetadataSnapshot snapshot)
+    {
+        var metadata = new VersionMetadata
+        {
+            CurrentTSN = snapshot.CurrentTSN,
+            LastUpdated = snapshot.LastUpdated
+        };
+        
+        // Convert snapshot collections back to thread-safe collections
+        foreach (var transactionId in snapshot.ActiveTransactions)
+        {
+            metadata.AddActiveTransaction(transactionId);
+        }
+        
+        foreach (var kvp in snapshot.PageVersions)
+        {
+            metadata.PageVersions[kvp.Key] = kvp.Value;
+        }
+        
+        foreach (var kvp in snapshot.NamespaceOperations)
+        {
+            metadata.NamespaceOperations[kvp.Key] = kvp.Value;
+        }
+        
+        return metadata;
+    }
 }
 
 public class PageVersionInfo
@@ -87,6 +156,29 @@ public class MVCCTransaction
     public DateTime StartTime { get; set; }
     public Dictionary<string, long> ReadVersions { get; set; } = new();
     public Dictionary<string, long> WrittenPages { get; set; } = new();
+    
+    /// <summary>
+    /// CRITICAL SECURITY FIX: Track actual file paths written by this transaction
+    /// for transaction-specific flushing during critical operations.
+    /// This prevents critical operations from flushing other transactions' data,
+    /// maintaining MVCC isolation and ACID properties.
+    /// </summary>
+    public HashSet<string> WrittenFilePaths { get; set; } = new();
+    
     public bool IsCommitted { get; set; }
     public bool IsRolledBack { get; set; }
+}
+
+/// <summary>
+/// Immutable snapshot of VersionMetadata used for safe serialization.
+/// This prevents concurrent modification exceptions during JSON serialization.
+/// </summary>
+public class VersionMetadataSnapshot
+{
+    public long CurrentTSN { get; set; }
+    public HashSet<long> ActiveTransactions { get; set; } = new();
+    public Dictionary<string, PageVersionInfo> PageVersions { get; set; } = new();
+    public Dictionary<string, int> NamespaceOperations { get; set; } = new();
+    public Dictionary<string, DateTime> DeletedNamespaces { get; set; } = new();
+    public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 }

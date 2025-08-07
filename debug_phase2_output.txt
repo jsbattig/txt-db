@@ -1,0 +1,83 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  TxtDb.Storage -> /home/jsbattig/Dev/txt-db/TxtDb.Storage/bin/Debug/net8.0/TxtDb.Storage.dll
+  TxtDb.Database -> /home/jsbattig/Dev/txt-db/TxtDb.Database/bin/Debug/net8.0/TxtDb.Database.dll
+  TxtDb.Database.Tests -> /home/jsbattig/Dev/txt-db/TxtDb.Database.Tests/bin/Debug/net8.0/TxtDb.Database.Tests.dll
+Test run for /home/jsbattig/Dev/txt-db/TxtDb.Database.Tests/bin/Debug/net8.0/TxtDb.Database.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.01]     TxtDb.Database.Tests.Debug.SimpleIndexRebuildDebugTest.TraceIndexRebuildProcess_StepByStep [FAIL]
+  Failed TxtDb.Database.Tests.Debug.SimpleIndexRebuildDebugTest.TraceIndexRebuildProcess_StepByStep [734 ms]
+  Error Message:
+   System.InvalidOperationException : Failed to get table 'trace_table' from fresh Database instance
+  Stack Trace:
+     at TxtDb.Database.Tests.Debug.SimpleIndexRebuildDebugTest.TraceIndexRebuildProcess_StepByStep() in /home/jsbattig/Dev/txt-db/TxtDb.Database.Tests/Debug/SimpleIndexRebuildDebugTest.cs:line 87
+--- End of stack trace from previous location ---
+  Standard Output Messages:
+ === STEP 1: Create initial data ===
+ ✓ Inserted record with ID: TRACE-001
+ ✓ Found with original instance: True
+   Data: test data
+ 
+ === STEP 2: Examine storage files ===
+ 📁 storage/
+   📁 _system/
+     📁 databases/
+     📄 .namespace.json (112 bytes)
+         {
+         "Namespace": "_system.databases",
+         "Created": "2025-08-06T22:14:48.6642265Z",
+         "CreatedByTransaction": 2
+         }
+     📄 page001.json.v2 (255 bytes)
+   📁 trace_debug_db/
+     📁 trace_table/
+       📁 _indexes/
+         📁 _primary/
+         📄 .namespace.json (139 bytes)
+             {
+             "Namespace": "trace_debug_db.trace_table._indexes._primary",
+             "Created": "2025-08-06T22:14:48.8086973Z",
+             "CreatedByTransaction": 4
+             }
+       📁 _metadata/
+       📄 .namespace.json (131 bytes)
+           {
+           "Namespace": "trace_debug_db.trace_table._metadata",
+           "Created": "2025-08-06T22:14:48.7757343Z",
+           "CreatedByTransaction": 4
+           }
+       📄 page001.json.v4 (290 bytes)
+     📄 .namespace.json (120 bytes)
+         {
+         "Namespace": "trace_debug_db.trace_table",
+         "Created": "2025-08-06T22:14:48.762712Z",
+         "CreatedByTransaction": 4
+         }
+     📄 page001.json.v5 (58 bytes)
+ 📄 .versions.json (1118 bytes)
+     {
+     "CurrentTSN": 6,
+     "ActiveTransactions": [],
+     "PageVersions": {
+     "_system.databases:page001": {
+     ... (38 more lines)
+ 📄 storage.json (201 bytes)
+     {
+     "Format": 0,
+     "MaxPageSizeKB": 8,
+     "NamespaceDelimiter": ".",
+     "VersionCleanupIntervalMinutes": 15,
+     ... (4 more lines)
+ 
+ === STEP 3: Create fresh instance and trace initialization ===
+ ✓ Created DatabaseLayer2
+ ✓ GetDatabaseAsync result: True
+ ✓ GetTableAsync result: False
+ ❌ ERROR: table2 is null - cannot proceed
+
+
+
+Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: < 1 ms - TxtDb.Database.Tests.dll (net8.0)

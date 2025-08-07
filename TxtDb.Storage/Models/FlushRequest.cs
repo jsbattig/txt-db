@@ -34,6 +34,24 @@ public class BatchFlushConfig
     /// Default: 2 to balance I/O throughput and resource usage
     /// </summary>
     public int MaxConcurrentFlushes { get; set; } = 2;
+
+    /// <summary>
+    /// Timeout in milliseconds for individual flush operations
+    /// Default: 5000ms (5 seconds) to prevent hanging operations
+    /// </summary>
+    public int FlushTimeoutMs { get; set; } = 5000;
+
+    /// <summary>
+    /// Maximum number of retry attempts for failed flush operations
+    /// Default: 2 retries for transient failures
+    /// </summary>
+    public int MaxRetryAttempts { get; set; } = 2;
+
+    /// <summary>
+    /// Delay in milliseconds between retry attempts
+    /// Default: 100ms exponential backoff base
+    /// </summary>
+    public int RetryDelayMs { get; set; } = 100;
 }
 
 /// <summary>

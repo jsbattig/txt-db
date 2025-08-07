@@ -1,0 +1,6 @@
+MSBUILD : error MSB1008: Only one project can be specified.
+    Full command line: '/home/jsbattig/.dotnet/sdk/8.0.412/MSBuild.dll -maxcpucount -verbosity:m -nologo -target:VSTest -nodereuse:false -nologo -property:VSTestTestCaseFilter="IntegratedWorkflow_WithProperErrorHandling_ShouldWork" -property:VSTestNoBuild=true -verbosity:normal TxtDb.Database.Tests/TxtDb.Database.Tests.csproj 2 -property:VSTestVerbosity=normal -property:VSTestArtifactsProcessingMode=collect -property:VSTestSessionCorrelationId=3156700_e5cbd8c9-a0e9-43da-af88-11eb6281cdc6 -distributedlogger:Microsoft.DotNet.Tools.MSBuild.MSBuildLogger,/home/jsbattig/.dotnet/sdk/8.0.412/dotnet.dll*Microsoft.DotNet.Tools.MSBuild.MSBuildForwardingLogger,/home/jsbattig/.dotnet/sdk/8.0.412/dotnet.dll'
+  Switches appended by response files:
+Switch: 2
+
+For switch syntax, type "MSBuild -help"

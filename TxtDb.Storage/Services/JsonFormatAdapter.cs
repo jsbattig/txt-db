@@ -1,4 +1,6 @@
+using System.Dynamic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TxtDb.Storage.Interfaces;
 
 namespace TxtDb.Storage.Services;
@@ -17,7 +19,8 @@ public class JsonFormatAdapter : IFormatAdapter
             NullValueHandling = NullValueHandling.Include,
             DateFormatHandling = DateFormatHandling.IsoDateFormat,
             DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-            ReferenceLoopHandling = ReferenceLoopHandling.Error // Detect circular references
+            ReferenceLoopHandling = ReferenceLoopHandling.Error, // Detect circular references
+            TypeNameHandling = TypeNameHandling.Auto // Preserve type information for complex objects
         };
     }
 
@@ -54,12 +57,24 @@ public class JsonFormatAdapter : IFormatAdapter
             var result = JsonConvert.DeserializeObject(content, arrayType, _settings);
             
             if (result is object[] array)
+            {
+                // Unwrap JValue/JObject types to proper primitives
+                for (int i = 0; i < array.Length; i++)
+                {
+                    array[i] = UnwrapJTokens(array[i]);
+                }
                 return array;
+            }
                 
             if (result is Array genericArray)
             {
                 var objects = new object[genericArray.Length];
                 Array.Copy(genericArray, objects, genericArray.Length);
+                // Unwrap JValue/JObject types to proper primitives
+                for (int i = 0; i < objects.Length; i++)
+                {
+                    objects[i] = UnwrapJTokens(objects[i]);
+                }
                 return objects;
             }
             
@@ -81,5 +96,43 @@ public class JsonFormatAdapter : IFormatAdapter
         {
             throw new InvalidOperationException($"Failed to serialize object array: {ex.Message}", ex);
         }
+    }
+
+    /// <summary>
+    /// Unwraps JValue, JObject, and JArray tokens to their underlying .NET primitive types.
+    /// When TypeNameHandling is enabled, JObject instances with type information are preserved
+    /// as-is to maintain proper deserialization. Otherwise, they are converted to ExpandoObject.
+    /// </summary>
+    /// <param name="obj">The object to unwrap</param>
+    /// <returns>The unwrapped object with proper .NET types</returns>
+    private static object UnwrapJTokens(object obj)
+    {
+        if (obj is JObject jObject)
+        {
+            // If the JObject has type information ($type property), leave it as JObject
+            // so the calling code can deserialize it properly to the original type
+            if (jObject.Property("$type") != null)
+            {
+                return jObject;
+            }
+            
+            // Otherwise, convert to ExpandoObject for dynamic access
+            var expando = new ExpandoObject();
+            var dict = (IDictionary<string, object?>)expando;
+            foreach (var property in jObject.Properties())
+            {
+                dict[property.Name] = UnwrapJTokens(property.Value);
+            }
+            return expando;
+        }
+        if (obj is JValue jValue)
+        {
+            return jValue.Value ?? obj;
+        }
+        if (obj is JArray jArray)
+        {
+            return jArray.Select(UnwrapJTokens).ToArray();
+        }
+        return obj;
     }
 }

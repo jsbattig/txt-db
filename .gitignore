@@ -320,3 +320,4 @@ TestResults/
 /.swarm
 /concurrency-tests/TxtDb.Storage.Tests/coverage
 /TxtDb.Storage.Tests/coverage
+debug/

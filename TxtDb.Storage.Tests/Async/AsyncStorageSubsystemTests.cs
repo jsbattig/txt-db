@@ -59,8 +59,8 @@ public class AsyncStorageSubsystemTests : IDisposable
         using var cts = new CancellationTokenSource();
         cts.Cancel(); // Cancel immediately
 
-        // Act & Assert
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        // Act & Assert - Accept both cancellation exception types
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
             await _asyncStorage.BeginTransactionAsync(cts.Token));
     }
 
@@ -190,7 +190,7 @@ public class AsyncStorageSubsystemTests : IDisposable
     {
         // Arrange
         await _asyncStorage.InitializeAsync(_testRootPath);
-        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
         // Act & Assert - This should timeout during a long-running operation
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>

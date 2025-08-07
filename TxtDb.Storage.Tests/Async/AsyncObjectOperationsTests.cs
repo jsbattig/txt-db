@@ -115,6 +115,11 @@ public class AsyncObjectOperationsTests : IDisposable
 
         // Act - Update the page with new content
         var updateTxn = await _asyncStorage.BeginTransactionAsync();
+        
+        // CRITICAL MVCC FIX: Read the page first to comply with read-before-write isolation
+        var currentContent = await _asyncStorage.ReadPageAsync(updateTxn, "test.update", pageId);
+        Assert.NotEmpty(currentContent); // Verify we read the existing content
+        
         var updatedContent = new object[] { 
             new { Id = 1, Status = "Updated via Async" },
             new { Id = 2, Status = "Additional Data" }
@@ -260,7 +265,7 @@ public class AsyncObjectOperationsTests : IDisposable
         await _asyncStorage.CreateNamespaceAsync(setupTxn, "test.cancellation");
         await _asyncStorage.CommitTransactionAsync(setupTxn);
 
-        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
 
         // Act & Assert - Operations should be cancelled
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>

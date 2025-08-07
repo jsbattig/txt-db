@@ -1,0 +1,585 @@
+using TxtDb.Database.Interfaces;
+using TxtDb.Database.Models;
+using TxtDb.Database.Exceptions;
+using TxtDb.Storage.Interfaces.Async;
+using Newtonsoft.Json.Linq;
+using System.Dynamic;
+using System.Collections.Concurrent;
+
+namespace TxtDb.Database.Services;
+
+/// <summary>
+/// Represents a table with primary key management and indexing.
+/// Objects are stored in pages with multiple objects per page.
+/// 
+/// CRITICAL FIX: Implements persistent index storage to fix Epic 004 Story 1 issues.
+/// Indexes are now stored in {database}.{table}._indexes._primary namespace and
+/// loaded fresh on each access to ensure data visibility across processes.
+/// 
+/// THREAD SAFETY: Uses ConcurrentDictionary for thread-safe index operations.
+/// Removed manual locking as ConcurrentDictionary provides atomic operations.
+/// </summary>
+public class Table : ITable
+{
+    private readonly TableMetadata _metadata;
+    private readonly IAsyncStorageSubsystem _storageSubsystem;
+    private readonly ConcurrentDictionary<object, string> _primaryKeyIndex; // Primary key -> Page ID mapping (THREAD-SAFE)
+    private long _lastLoadedIndexVersion = -1; // Track the version of the last loaded index (-1 = never loaded)
+    private DateTime _lastIndexCheckTime = DateTime.MinValue; // Track when we last checked for index updates
+
+    public string Name => _metadata.Name;
+    public string PrimaryKeyField => _metadata.PrimaryKeyField;
+    public DateTime CreatedAt => _metadata.CreatedAt;
+
+    public Table(string name, TableMetadata metadata, IAsyncStorageSubsystem storageSubsystem)
+    {
+        _metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
+        _storageSubsystem = storageSubsystem ?? throw new ArgumentNullException(nameof(storageSubsystem));
+        _primaryKeyIndex = new ConcurrentDictionary<object, string>(); // THREAD-SAFE REPLACEMENT
+        // CRITICAL FIX: Stateless index loading - always check for latest version
+        _lastLoadedIndexVersion = -1;
+        _lastIndexCheckTime = DateTime.MinValue;
+    }
+
+    public async Task<object> InsertAsync(
+        IDatabaseTransaction txn, 
+        dynamic obj,
+        CancellationToken cancellationToken = default)
+    {
+        if (txn == null)
+            throw new ArgumentNullException(nameof(txn));
+        
+        if (obj == null)
+            throw new ArgumentNullException(nameof(obj));
+
+        // Extract primary key
+        var primaryKey = ExtractPrimaryKey(obj);
+        if (primaryKey == null)
+        {
+            System.Diagnostics.Debug.WriteLine($"[INSERT] Failed to extract primary key from field '{_metadata.PrimaryKeyField}'");
+            throw new MissingPrimaryKeyException(_metadata.PrimaryKeyField);
+        }
+        
+        System.Diagnostics.Debug.WriteLine($"[INSERT] Extracted primary key '{primaryKey}' from field '{_metadata.PrimaryKeyField}'");
+
+        // Check for duplicate primary key (THREAD-SAFE)
+        await LoadPrimaryKeyIndexIfNeeded(txn, cancellationToken);
+        
+        if (_primaryKeyIndex.ContainsKey(primaryKey))
+            throw new DuplicatePrimaryKeyException(_metadata.Name, primaryKey);
+
+        // Insert object into storage
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        try
+        {
+            var pageId = await _storageSubsystem.InsertObjectAsync(storageTransactionId, tableNamespace, obj, cancellationToken);
+            
+            // Update primary key index (THREAD-SAFE ATOMIC OPERATION)
+            _primaryKeyIndex[primaryKey] = pageId;
+            
+            System.Diagnostics.Debug.WriteLine($"[INSERT] Added key '{primaryKey}' -> page '{pageId}' to index (instance hash: {this.GetHashCode()}). Index now has {_primaryKeyIndex.Count} entries");
+            
+            // Immediate verification
+            if (_primaryKeyIndex.TryGetValue(primaryKey, out string? verifyPageId))
+            {
+                System.Diagnostics.Debug.WriteLine($"[INSERT] Verified: Key '{primaryKey}' is in index -> page '{verifyPageId}'");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"[INSERT] ERROR: Key '{primaryKey}' NOT FOUND in index immediately after insert!");
+            }
+            
+            // CRITICAL FIX: Persist index with retry logic for concurrency conflicts
+            await PersistPrimaryKeyIndexWithRetryAsync(txn, cancellationToken);
+            
+            return primaryKey;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidObjectException($"Failed to insert object: {ex.Message}", ex);
+        }
+    }
+
+    public async Task UpdateAsync(
+        IDatabaseTransaction txn, 
+        object primaryKey, 
+        dynamic obj,
+        CancellationToken cancellationToken = default)
+    {
+        if (txn == null)
+            throw new ArgumentNullException(nameof(txn));
+        
+        if (primaryKey == null)
+            throw new ArgumentNullException(nameof(primaryKey));
+        
+        if (obj == null)
+            throw new ArgumentNullException(nameof(obj));
+
+        // Verify primary key in new object matches
+        var newPrimaryKey = ExtractPrimaryKey(obj);
+        if (newPrimaryKey == null || !newPrimaryKey.Equals(primaryKey))
+            throw new PrimaryKeyMismatchException(primaryKey, newPrimaryKey);
+
+        // Find page containing the object (THREAD-SAFE)
+        await LoadPrimaryKeyIndexIfNeeded(txn, cancellationToken);
+        
+        if (!_primaryKeyIndex.TryGetValue(primaryKey, out string? pageId))
+            throw new ObjectNotFoundException(_metadata.Name, primaryKey);
+
+        // Read the page
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        var pageObjects = await _storageSubsystem.ReadPageAsync(storageTransactionId, tableNamespace, pageId, cancellationToken);
+        
+        // Find and replace the object in the page
+        bool found = false;
+        for (int i = 0; i < pageObjects.Length; i++)
+        {
+            var existingPrimaryKey = ExtractPrimaryKey(pageObjects[i]);
+            if (existingPrimaryKey != null && existingPrimaryKey.ToString() == primaryKey.ToString())
+            {
+                pageObjects[i] = obj;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+            throw new ObjectNotFoundException(_metadata.Name, primaryKey);
+
+        // Update the entire page
+        await _storageSubsystem.UpdatePageAsync(storageTransactionId, tableNamespace, pageId, pageObjects, cancellationToken);
+        
+        // CRITICAL FIX: Persist index with retry logic for concurrency conflicts
+        await PersistPrimaryKeyIndexWithRetryAsync(txn, cancellationToken);
+    }
+
+    public async Task<dynamic?> GetAsync(
+        IDatabaseTransaction txn, 
+        object primaryKey,
+        CancellationToken cancellationToken = default)
+    {
+        if (txn == null)
+            throw new ArgumentNullException(nameof(txn));
+        
+        if (primaryKey == null)
+            throw new ArgumentNullException(nameof(primaryKey));
+
+        // CRITICAL FIX: Always reload the index to ensure we see the latest committed data
+        // This is necessary because Table instances may be reused, but primary key indexes 
+        // must reflect the current persisted state for multi-process coordination
+        await LoadPrimaryKeyIndexIfNeeded(txn, cancellationToken);
+        
+        System.Diagnostics.Debug.WriteLine($"[GET] Looking for key '{primaryKey}' in index with {_primaryKeyIndex.Count} entries");
+        
+        // Use index lookup only - no table scan fallback in production code
+        if (!_primaryKeyIndex.TryGetValue(primaryKey, out string? pageId))
+        {
+            System.Diagnostics.Debug.WriteLine($"[GET] Key '{primaryKey}' NOT found in index");
+            return null; // Object not found - this is the expected behavior
+        }
+        
+        System.Diagnostics.Debug.WriteLine($"[GET] Key '{primaryKey}' found in index -> page '{pageId}'");
+
+        // Read the page
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        var pageObjects = await _storageSubsystem.ReadPageAsync(storageTransactionId, tableNamespace, pageId, cancellationToken);
+        
+        System.Diagnostics.Debug.WriteLine($"[GET] Read page '{pageId}' returned {pageObjects?.Length ?? 0} objects");
+        
+        // Find the object in the page
+        foreach (var obj in pageObjects)
+        {
+            var existingPrimaryKey = ExtractPrimaryKey(obj);
+            System.Diagnostics.Debug.WriteLine($"[GET] Checking object with key '{existingPrimaryKey}' against '{primaryKey}'");
+            
+            if (existingPrimaryKey != null)
+            {
+                // CRITICAL FIX: Compare string representations to handle JValue vs String type mismatches
+                var matches = existingPrimaryKey.ToString() == primaryKey.ToString();
+                if (matches)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[GET] Found matching object!");
+                    return ConvertToExpando(obj);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public async Task<bool> DeleteAsync(
+        IDatabaseTransaction txn, 
+        object primaryKey,
+        CancellationToken cancellationToken = default)
+    {
+        if (txn == null)
+            throw new ArgumentNullException(nameof(txn));
+        
+        if (primaryKey == null)
+            throw new ArgumentNullException(nameof(primaryKey));
+
+        // Find page containing the object (THREAD-SAFE)
+        await LoadPrimaryKeyIndexIfNeeded(txn, cancellationToken);
+        
+        if (!_primaryKeyIndex.TryGetValue(primaryKey, out string? pageId))
+            return false;
+
+        // Read the page
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        var pageObjects = await _storageSubsystem.ReadPageAsync(storageTransactionId, tableNamespace, pageId, cancellationToken);
+        
+        // Find and remove the object from the page
+        var newPageObjects = new List<object>();
+        bool found = false;
+        
+        foreach (var obj in pageObjects)
+        {
+            var existingPrimaryKey = ExtractPrimaryKey(obj);
+            if (existingPrimaryKey != null && existingPrimaryKey.ToString() == primaryKey.ToString())
+            {
+                found = true;
+                // Skip adding this object to the new page objects
+            }
+            else
+            {
+                newPageObjects.Add(obj);
+            }
+        }
+
+        if (!found)
+            return false;
+
+        // Update the page (or delete if empty)
+        await _storageSubsystem.UpdatePageAsync(storageTransactionId, tableNamespace, pageId, newPageObjects.ToArray(), cancellationToken);
+        
+        // Remove from primary key index (THREAD-SAFE ATOMIC OPERATION)
+        _primaryKeyIndex.TryRemove(primaryKey, out _);
+        
+        // CRITICAL FIX: Persist index with retry logic for concurrency conflicts
+        await PersistPrimaryKeyIndexWithRetryAsync(txn, cancellationToken);
+
+        return true;
+    }
+
+    #region Helper Methods
+
+    private object? ExtractPrimaryKey(dynamic obj)
+    {
+        try
+        {
+            if (obj == null)
+                return null;
+
+            // Handle different object types
+            if (obj is JObject jObj)
+            {
+                var token = jObj.SelectToken(_metadata.PrimaryKeyField);
+                return token?.Value<object>();
+            }
+            
+            if (obj is ExpandoObject expando)
+            {
+                var dict = (IDictionary<string, object>)expando;
+                var fieldName = _metadata.PrimaryKeyField.Substring(2); // Remove "$."
+                return dict.TryGetValue(fieldName, out var expandoValue) ? expandoValue : null;
+            }
+
+            // Use reflection for anonymous objects
+            var type = obj.GetType();
+            var fieldName2 = _metadata.PrimaryKeyField.Substring(2); // Remove "$."
+            var property = type.GetProperty(fieldName2);
+            var value = property?.GetValue(obj);
+            System.Diagnostics.Debug.WriteLine($"[ExtractPrimaryKey] Type: {type.Name}, Field: {fieldName2}, Value: {value}");
+            return value;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static dynamic ConvertToExpando(object obj)
+    {
+        if (obj is JObject jObj)
+        {
+            var expando = new ExpandoObject();
+            var dict = (IDictionary<string, object>)expando;
+            
+            foreach (var property in jObj.Properties())
+            {
+                // Convert JValues to their underlying CLR types
+                if (property.Value is JValue jValue)
+                {
+                    dict[property.Name] = jValue.Value;
+                }
+                else if (property.Value != null)
+                {
+                    dict[property.Name] = property.Value.ToObject<object>();
+                }
+                else
+                {
+                    dict[property.Name] = null;
+                }
+            }
+            
+            return expando;
+        }
+
+        return obj;
+    }
+
+    /// <summary>
+    /// CRITICAL FIX: Stateless primary key index loading from persistent storage.
+    /// Always checks for latest index version to ensure fresh data visibility.
+    /// Implements version-based invalidation for proper multi-process coordination.
+    /// </summary>
+    private async Task LoadPrimaryKeyIndexIfNeeded(IDatabaseTransaction txn, CancellationToken cancellationToken)
+    {
+        // CRITICAL FIX: Always check for latest index to ensure data visibility
+        // Check frequency optimization: Only check every 100ms to reduce I/O
+        var now = DateTime.UtcNow;
+        if (_lastLoadedIndexVersion != -1 && (now - _lastIndexCheckTime).TotalMilliseconds < 100)
+        {
+            // Only skip if we've already loaded an index AND it was checked recently
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Skipping index check for {_metadata.Name} - checked {(now - _lastIndexCheckTime).TotalMilliseconds:F0}ms ago");
+            return;
+        }
+        _lastIndexCheckTime = now;
+        
+        System.Diagnostics.Debug.WriteLine($"[LoadIndex] Checking for index updates for {_metadata.Name} instance (hash: {this.GetHashCode()}). Last loaded version: {_lastLoadedIndexVersion}");
+        
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        // CRITICAL: Load from persistent index first
+        var indexNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}._indexes._primary";
+        try
+        {
+            // Use wildcard search since InsertObjectAsync generates page IDs
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Searching for index in namespace '{indexNamespace}'");
+            var indexObjects = await _storageSubsystem.GetMatchingObjectsAsync(storageTransactionId, indexNamespace, "*", cancellationToken);
+            
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Found {indexObjects.Count} pages in index namespace");
+            
+            // CRITICAL FIX: Find the NEWEST index version across ALL pages
+            SerializedIndexData? newestIndex = null;
+            long newestVersion = _lastLoadedIndexVersion;
+            
+            foreach (var (pageId, objects) in indexObjects)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadIndex] Processing page '{pageId}' with {objects.Length} objects");
+                foreach (var obj in objects)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[LoadIndex] Checking object type: {obj?.GetType().Name ?? "null"}");
+                    
+                    SerializedIndexData? indexData = null;
+                    if (obj is SerializedIndexData sid)
+                    {
+                        indexData = sid;
+                    }
+                    else if (obj is Newtonsoft.Json.Linq.JObject jObj)
+                    {
+                        try
+                        {
+                            indexData = jObj.ToObject<SerializedIndexData>();
+                        }
+                        catch
+                        {
+                            continue; // Skip objects that can't be deserialized
+                        }
+                    }
+                    
+                    if (indexData != null && indexData.Version > newestVersion)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[LoadIndex] Found newer index version {indexData.Version} > {newestVersion}");
+                        newestIndex = indexData;
+                        newestVersion = indexData.Version;
+                    }
+                }
+            }
+            
+            // Load the newest index if found
+            if (newestIndex != null && newestIndex.Version > _lastLoadedIndexVersion)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadIndex] Loading newest index version {newestIndex.Version} with {newestIndex.EntryCount} entries");
+                
+                // CRITICAL: Clear and reload entire index for consistency
+                _primaryKeyIndex.Clear();
+                foreach (var kvp in newestIndex.KeyToPageMappings)
+                {
+                    _primaryKeyIndex.TryAdd(kvp.Key, kvp.Value);
+                }
+                _lastLoadedIndexVersion = newestIndex.Version;
+                
+                System.Diagnostics.Debug.WriteLine($"[LoadIndex] Loaded persistent index for {_metadata.Name}: v{_lastLoadedIndexVersion} with {_primaryKeyIndex.Count} entries");
+            }
+            else if (_lastLoadedIndexVersion != -1)
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadIndex] No newer index found, keeping current version {_lastLoadedIndexVersion}");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Failed to load persistent index for {_metadata.Name}: {ex.Message}");
+            // Fall back to scanning table data
+        }
+        
+        // FALLBACK: Rebuild from table scan if no persistent index found
+        if (_lastLoadedIndexVersion == -1)
+        {
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] No persistent index found for {_metadata.Name}, rebuilding from table scan");
+            await RebuildIndexFromTableScan(txn, cancellationToken);
+        }
+    }
+
+    /// <summary>
+    /// CRITICAL FIX: Separate method for rebuilding index from table scan.
+    /// This ensures consistent behavior between initial load and fallback scenarios.
+    /// </summary>
+    private async Task RebuildIndexFromTableScan(IDatabaseTransaction txn, CancellationToken cancellationToken)
+    {
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        try
+        {
+            var allObjects = await _storageSubsystem.GetMatchingObjectsAsync(storageTransactionId, tableNamespace, "*", cancellationToken);
+            
+            // THREAD-SAFE: Clear and populate index
+            _primaryKeyIndex.Clear();
+            int objectCount = 0;
+            
+            foreach (var (pageId, pageObjects) in allObjects)
+            {
+                // Skip metadata and index pages - only process actual table data
+                if (pageId.Contains("._metadata") || pageId.Contains("._indexes"))
+                {
+                    continue;
+                }
+                
+                foreach (var obj in pageObjects)
+                {
+                    // Skip metadata objects (they don't have the table's primary key structure)
+                    if (obj is TableMetadata || obj is SerializedIndexData)
+                    {
+                        continue;
+                    }
+                    
+                    var primaryKey = ExtractPrimaryKey(obj);
+                    if (primaryKey != null)
+                    {
+                        // THREAD-SAFE: Atomic insertion
+                        _primaryKeyIndex.TryAdd(primaryKey, pageId);
+                        objectCount++;
+                    }
+                }
+            }
+            
+            // Mark as loaded with version 0 (rebuilt index)
+            _lastLoadedIndexVersion = 0; // Version 0 indicates rebuilt from scan
+            
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Rebuilt index for {_metadata.Name} from table data: {_primaryKeyIndex.Count} entries from {objectCount} objects");
+        }
+        catch (Exception ex)
+        {
+            // CRITICAL: Log index loading failures but continue
+            System.Diagnostics.Debug.WriteLine($"[LoadIndex] Primary key index rebuild failed for table {_metadata.Name}: {ex.Message}");
+            // Don't mark as loaded on failure, so it will retry next time
+        }
+    }
+
+    /// <summary>
+    /// CRITICAL FIX: Persists the current primary key index to storage.
+    /// Stores index in {database}.{table}._indexes._primary namespace.
+    /// </summary>
+    /// <summary>
+    /// CRITICAL FIX: Persists index with retry logic to handle concurrency conflicts.
+    /// This is necessary when multiple processes/transactions are updating the same index.
+    /// </summary>
+    private async Task PersistPrimaryKeyIndexWithRetryAsync(IDatabaseTransaction txn, CancellationToken cancellationToken)
+    {
+        const int maxRetries = 3;
+        int retryCount = 0;
+        
+        while (retryCount < maxRetries)
+        {
+            try
+            {
+                await PersistPrimaryKeyIndexAsync(txn, cancellationToken);
+                return; // Success
+            }
+            catch (Exception ex) when (ex.Message.Contains("Optimistic concurrency conflict") && retryCount < maxRetries - 1)
+            {
+                retryCount++;
+                System.Diagnostics.Debug.WriteLine($"[PersistIndex] Concurrency conflict on attempt {retryCount}, reloading index and retrying...");
+                
+                // Reload the latest index before retry
+                _lastIndexCheckTime = DateTime.MinValue; // Force reload
+                await LoadPrimaryKeyIndexIfNeeded(txn, cancellationToken);
+                
+                // Small delay to reduce contention
+                await Task.Delay(10 * retryCount, cancellationToken);
+            }
+        }
+    }
+    
+    private async Task PersistPrimaryKeyIndexAsync(IDatabaseTransaction txn, CancellationToken cancellationToken)
+    {
+        var storageTransactionId = txn.GetStorageTransactionId();
+        
+        try
+        {
+            var indexNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}._indexes._primary";
+            
+            // Create serialized index data
+            var indexData = new SerializedIndexData
+            {
+                IndexType = "PrimaryKey",
+                DatabaseName = _metadata.DatabaseName,
+                TableName = _metadata.Name,
+                PrimaryKeyField = _metadata.PrimaryKeyField,
+                KeyToPageMappings = new Dictionary<object, string>(_primaryKeyIndex),
+                Version = _lastLoadedIndexVersion + 1, // Increment from last loaded version
+                LastModified = DateTime.UtcNow
+            };
+
+            // Ensure namespace exists
+            try
+            {
+                await _storageSubsystem.CreateNamespaceAsync(storageTransactionId, indexNamespace, cancellationToken);
+            }
+            catch
+            {
+                // Namespace might already exist - continue
+            }
+
+            // Store the index data - use wildcard pattern to find it when loading
+            // Since we can't control the page ID with InsertObjectAsync, we'll find it by object type
+            await _storageSubsystem.InsertObjectAsync(storageTransactionId, indexNamespace, indexData, cancellationToken);
+            
+            System.Diagnostics.Debug.WriteLine($"Persisted index for {_metadata.Name}: v{indexData.Version} with {indexData.EntryCount} entries");
+            
+            // Update our loaded version to match what we just persisted
+            _lastLoadedIndexVersion = indexData.Version;
+        }
+        catch (Exception ex)
+        {
+            // Log persistence failure but don't throw - index operations should continue
+            System.Diagnostics.Debug.WriteLine($"[PersistIndex] ERROR: Index persistence failed for {_metadata.Name}: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"[PersistIndex] Exception type: {ex.GetType().FullName}");
+            System.Diagnostics.Debug.WriteLine($"[PersistIndex] Stack trace: {ex.StackTrace}");
+            // Re-throw for debugging
+            throw new InvalidOperationException($"Index persistence failed: {ex.Message}", ex);
+        }
+    }
+
+
+    #endregion
+}

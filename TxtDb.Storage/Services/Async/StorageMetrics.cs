@@ -50,7 +50,11 @@ public class StorageMetrics
 
     // Error categorization
     private readonly ConcurrentDictionary<string, long> _errorsByType = new();
-    private readonly ConcurrentQueue<string> _errorMessages = new();
+    private readonly ConcurrentQueue<(string Type, string Message)> _errorMessages = new();
+    
+    // Namespace existence caching metrics
+    private long _namespaceExistenceCacheHits;
+    private long _namespaceExistenceCacheMisses;
 
     // Public properties for counters
     public long TotalOperations => Interlocked.Read(ref _totalOperations);
@@ -78,6 +82,11 @@ public class StorageMetrics
     // Resource utilization properties
     public int ActiveAsyncOperations => (int)Interlocked.Read(ref _activeAsyncOperations);
     public int MaxConcurrentOperations => (int)Interlocked.Read(ref _maxConcurrentOperations);
+
+    // Cache properties
+    public long ErrorCount => TotalErrors;
+    public long NamespaceCacheHits => Interlocked.Read(ref _namespaceExistenceCacheHits);
+    public long NamespaceCacheMisses => Interlocked.Read(ref _namespaceExistenceCacheMisses);
 
     /// <summary>
     /// Record a read operation with latency and success status
@@ -198,7 +207,7 @@ public class StorageMetrics
     {
         Interlocked.Increment(ref _totalErrors);
         _errorsByType.AddOrUpdate(errorType, 1, (key, count) => count + 1);
-        _errorMessages.Enqueue(errorMessage);
+        _errorMessages.Enqueue((errorType, errorMessage));
         
         // Trim old error messages to prevent memory leaks
         while (_errorMessages.Count > 1000)
@@ -411,6 +420,47 @@ public class StorageMetrics
         };
     }
 
+    /// <summary>
+    /// Get errors by specific type for testing and monitoring purposes
+    /// </summary>
+    public IEnumerable<(string Type, string Message)> GetErrorsByType(string errorType)
+    {
+        return _errorMessages.Where(error => error.Type == errorType);
+    }
+
+    /// <summary>
+    /// Record cache hit for namespace existence checking
+    /// </summary>
+    public void RecordNamespaceCacheHit()
+    {
+        Interlocked.Increment(ref _namespaceExistenceCacheHits);
+    }
+
+    /// <summary>
+    /// Record cache miss for namespace existence checking
+    /// </summary>
+    public void RecordNamespaceCacheMiss()
+    {
+        Interlocked.Increment(ref _namespaceExistenceCacheMisses);
+    }
+
+    /// <summary>
+    /// Get cache metrics for namespace existence caching
+    /// </summary>
+    public CacheMetrics GetCacheMetrics()
+    {
+        var hits = NamespaceCacheHits;
+        var misses = NamespaceCacheMisses;
+        var total = hits + misses;
+        
+        return new CacheMetrics
+        {
+            TotalHits = hits,
+            TotalMisses = misses,
+            HitRatio = total == 0 ? 0.0 : (double)hits / total
+        };
+    }
+
     // Helper methods
     private void TrimLatencyQueue(ConcurrentQueue<double> queue, int maxSize)
     {
@@ -530,4 +580,14 @@ public class PerformanceSnapshot
     public int ActiveAsyncOperations { get; set; }
     public int MaxConcurrentOperations { get; set; }
     public double CurrentThroughput { get; set; }
+}
+
+/// <summary>
+/// Cache metrics data structure for namespace existence caching
+/// </summary>
+public class CacheMetrics
+{
+    public long TotalHits { get; set; }
+    public long TotalMisses { get; set; }
+    public double HitRatio { get; set; }
 }

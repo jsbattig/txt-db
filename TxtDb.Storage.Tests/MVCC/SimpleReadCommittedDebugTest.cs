@@ -75,6 +75,24 @@ namespace TxtDb.Storage.Tests.MVCC
                     {
                         _output.WriteLine($"    JObject properties: {string.Join(", ", jObj.Properties().Select(p => $"{p.Name}={p.Value}"))}");
                         
+                        // Check if this JObject has type information and can be deserialized
+                        if (jObj.Property("$type") != null)
+                        {
+                            _output.WriteLine($"    JObject has type info: {jObj["$type"]}");
+                            try
+                            {
+                                var deserializedObj = jObj.ToObject<TestConcurrentObject>();
+                                if (deserializedObj != null)
+                                {
+                                    _output.WriteLine($"    Successfully deserialized to TestConcurrentObject: Id={deserializedObj.Id}, TaskId={deserializedObj.TaskId}");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _output.WriteLine($"    Failed to deserialize JObject with type info: {ex.Message}");
+                            }
+                        }
+                        
                         // Try to extract TaskId from JObject
                         var taskIdToken = jObj["TaskId"];
                         _output.WriteLine($"    TaskId token: {taskIdToken} (type: {taskIdToken?.Type})");
@@ -117,11 +135,34 @@ namespace TxtDb.Storage.Tests.MVCC
                 {
                     if (obj is JObject jObj)
                     {
+                        // Try to deserialize if it has type information
+                        if (jObj.Property("$type") != null)
+                        {
+                            try
+                            {
+                                var deserializedObj = jObj.ToObject<TestConcurrentObject>();
+                                if (deserializedObj != null)
+                                {
+                                    foundTaskIds.Add(deserializedObj.TaskId);
+                                    continue;
+                                }
+                            }
+                            catch
+                            {
+                                // Fall back to token extraction
+                            }
+                        }
+                        
+                        // Extract from JObject tokens
                         var taskIdToken = jObj["TaskId"];
                         if (taskIdToken?.Type == JTokenType.Integer)
                         {
                             foundTaskIds.Add(taskIdToken.Value<int>());
                         }
+                    }
+                    else if (obj is TestConcurrentObject testObj)
+                    {
+                        foundTaskIds.Add(testObj.TaskId);
                     }
                 }
             }

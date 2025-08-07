@@ -59,19 +59,22 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         lock (_metadataLock)
         {
             var transactionId = _nextTransactionId++;
+            // CRITICAL FIX: Update CurrentTSN first, then use it as snapshot TSN
+            // This allows the transaction to see its own writes (version = transactionId)
+            _metadata.CurrentTSN = Math.Max(_metadata.CurrentTSN, transactionId);
+            
             var transaction = new MVCCTransaction
             {
                 TransactionId = transactionId,
                 // CRITICAL FIX: For proper MVCC, snapshot TSN should be set to the highest
                 // committed transaction at the time this transaction begins
                 // This allows read-committed isolation level
-                SnapshotTSN = _metadata.CurrentTSN,
+                SnapshotTSN = _metadata.CurrentTSN, // Now includes current transaction
                 StartTime = DateTime.UtcNow
             };
 
             _activeTransactions.TryAdd(transactionId, transaction);
-            _metadata.ActiveTransactions.Add(transactionId);
-            _metadata.CurrentTSN = Math.Max(_metadata.CurrentTSN, transactionId);
+            _metadata.AddActiveTransaction(transactionId);
             
             PersistMetadata();
             return transactionId;
@@ -117,7 +120,7 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
 
             // Mark transaction as committed
             transaction.IsCommitted = true;
-            _metadata.ActiveTransactions.Remove(transactionId);
+            _metadata.RemoveActiveTransaction(transactionId);
             _activeTransactions.TryRemove(transactionId, out _);
             
             PersistMetadata();
@@ -150,7 +153,7 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             }
 
             transaction.IsRolledBack = true;
-            _metadata.ActiveTransactions.Remove(transactionId);
+            _metadata.RemoveActiveTransaction(transactionId);
             _activeTransactions.TryRemove(transactionId, out _);
             
             PersistMetadata();
@@ -222,12 +225,23 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         var transaction = _activeTransactions[transactionId];
         var fullPageId = $"{@namespace}:{pageId}";
         
-        // CRITICAL: Enforce read-before-write rule for ACID isolation
+        // CRITICAL MVCC FIX: Enforce read-before-write for ACID isolation compliance
+        // This is a fundamental MVCC requirement to prevent lost updates and ensure proper transaction isolation.
+        // The test MVCCIsolationTests.UpdatePage_WithoutPriorRead_ShouldThrowReadBeforeWriteViolation expects this.
+        // 
+        // However, we need to allow legitimate cases where a page was read in the same transaction.
+        // If the transaction has already recorded reading this page, allow the update.
+        // This supports both:
+        // 1. MVCC isolation requirements (direct UpdatePage calls must have prior reads)  
+        // 2. Table layer operations (which read pages internally before updates)
+        
         if (!transaction.ReadVersions.ContainsKey(fullPageId))
         {
             throw new InvalidOperationException(
-                $"Cannot update page '{pageId}' in namespace '{@namespace}' without reading it first " +
-                $"in transaction {transactionId}. ACID isolation requires read-before-write for updates.");
+                $"MVCC ACID isolation violation: Cannot update page '{pageId}' in namespace '{@namespace}' " +
+                $"without a prior read-before-write in the same transaction. " +
+                $"This violates ACID isolation guarantees and could lead to lost updates. " +
+                $"Read the page first using ReadPage() or GetMatchingObjects() before updating.");
         }
         
         IncrementNamespaceOperations(@namespace);
@@ -403,10 +417,10 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
                 
             foreach (var key in keysToRemove)
             {
-                _metadata.PageVersions.Remove(key);
+                _metadata.PageVersions.TryRemove(key, out _);
             }
             
-            _metadata.NamespaceOperations.Remove(@namespace);
+            _metadata.NamespaceOperations.TryRemove(@namespace, out _);
             PersistMetadata();
         }
     }
@@ -443,13 +457,13 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             {
                 var newKey = oldKey.Replace($"{oldName}:", $"{newName}:");
                 _metadata.PageVersions[newKey] = _metadata.PageVersions[oldKey];
-                _metadata.PageVersions.Remove(oldKey);
+                _metadata.PageVersions.TryRemove(oldKey, out _);
             }
             
             if (_metadata.NamespaceOperations.TryGetValue(oldName, out var operations))
             {
                 _metadata.NamespaceOperations[newName] = operations;
-                _metadata.NamespaceOperations.Remove(oldName);
+                _metadata.NamespaceOperations.TryRemove(oldName, out _);
             }
             
             PersistMetadata();
@@ -535,11 +549,23 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         if (File.Exists(metadataFile))
         {
             var content = File.ReadAllText(metadataFile);
-            _metadata = _formatAdapter.Deserialize<VersionMetadata>(content);
+            
+            // Try to load as snapshot first (new format), fallback to direct metadata (old format)
+            try
+            {
+                var snapshot = _formatAdapter.Deserialize<VersionMetadataSnapshot>(content);
+                _metadata = VersionMetadata.FromSnapshot(snapshot);
+            }
+            catch
+            {
+                // Fallback to old format for backward compatibility
+                _metadata = _formatAdapter.Deserialize<VersionMetadata>(content);
+            }
+            
             _nextTransactionId = Math.Max(_nextTransactionId, _metadata.CurrentTSN + 1);
             
             // Clean up stale active transactions (crash recovery)
-            _metadata.ActiveTransactions.Clear();
+            _metadata.ClearActiveTransactions();
         }
         else
         {
@@ -550,9 +576,13 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
 
     protected void PersistMetadata()
     {
+        // CRITICAL FIX: Create a snapshot to prevent concurrent modification exceptions during serialization
+        // This prevents "Collection was modified; enumeration operation may not execute" errors
         _metadata.LastUpdated = DateTime.UtcNow;
+        var snapshot = _metadata.CreateSnapshot();
+        
         var metadataFile = Path.Combine(_rootPath, $".versions{_formatAdapter.FileExtension}");
-        var content = _formatAdapter.Serialize(_metadata);
+        var content = _formatAdapter.Serialize(snapshot);
         File.WriteAllText(metadataFile, content);
         FlushToDisk(metadataFile);
     }
@@ -574,8 +604,9 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             
             foreach (var version in allVersions)
             {
-                // Skip versions from transactions that are still active (uncommitted)
-                if (_metadata.ActiveTransactions.Contains(version))
+                // CRITICAL FIX: Allow current transaction to see its own writes
+                // Skip versions from OTHER active transactions, but allow current transaction's writes
+                if (_metadata.ContainsActiveTransaction(version) && version != transactionId)
                     continue;
                     
                 // Skip rolled back versions
@@ -661,10 +692,22 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
                 _nextPageNumbers[@namespace] = highestPageNumber + 1;
             }
             
-            // Try to find a page with space (only if not forcing one object per page)
-            if (!_config.ForceOneObjectPerPage)
+            // CRITICAL ATOMIC CONCURRENCY FIX: Ensure transaction count check and page allocation
+            // are performed atomically within the same metadata lock scope.
+            //
+            // This eliminates the TOCTOU (Time-of-Check-Time-of-Use) race condition where:
+            // 1. Multiple threads check ActiveTransactions.Count <= 1 simultaneously
+            // 2. All threads pass the check and proceed to page space checking
+            // 3. Multiple threads select the same page, causing MVCC conflicts
+            //
+            // ATOMIC SOLUTION: Perform both the decision and page selection within the same lock,
+            // making the entire operation atomic and preventing race condition windows.
+            
+            bool shouldReusePages = !_config.ForceOneObjectPerPage && _metadata.ActiveTransactions.Count <= 1;
+            
+            if (shouldReusePages)
             {
-                // Check existing pages for available space
+                // ATOMIC: Page space checking is now within the same lock as the transaction count check
                 var existingPages = Directory.GetFiles(namespacePath, $"page*{_formatAdapter.FileExtension}.v*")
                     .Select(f => Path.GetFileName(f))
                     .Where(f => f.StartsWith("page") && f.Contains(".v"))
@@ -677,21 +720,25 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
                     .OrderBy(p => p)
                     .ToList();
                 
+                // ATOMIC: Page size checking and selection within the same critical section
                 foreach (var pageId in existingPages)
                 {
                     var currentSize = GetCurrentPageSize(@namespace, pageId);
                     if (currentSize + serializedSize <= maxSizeBytes)
                     {
+                        // ATOMIC: Page selection decision made within lock scope
                         return pageId;
                     }
                 }
             }
             
-            // CRITICAL FIX: Create new page with atomic page number allocation
-            // This ensures each concurrent transaction gets a unique page number
+            // CRITICAL ATOMIC FIX: Create new page with atomic page number allocation
+            // This ensures each concurrent transaction gets a unique page number within the metadata lock.
+            // The increment operation is atomic because it's protected by the same metadata lock.
             var nextPageNumber = _nextPageNumbers[@namespace];
             _nextPageNumbers[@namespace] = nextPageNumber + 1;
             
+            // ATOMIC: Page number allocation completed atomically within metadata lock scope
             return $"page{nextPageNumber:D3}";
         }
     }
@@ -730,7 +777,7 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             }
             else
             {
-                _metadata.NamespaceOperations.Remove(@namespace);
+                _metadata.NamespaceOperations.TryRemove(@namespace, out _);
             }
             MarkMetadataDirty();
         }
@@ -817,7 +864,7 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             // Get snapshot of current state
             lock (_metadataLock)
             {
-                activeTransactionIds = new HashSet<long>(_metadata.ActiveTransactions);
+                activeTransactionIds = new HashSet<long>(_metadata.ActiveTransactions.Keys);
                 pageVersions = new Dictionary<string, PageVersionInfo>(_metadata.PageVersions);
             }
             
