@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>11.0</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SqlParserCS" Version="0.6.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../TxtDb.Database/TxtDb.Database.csproj" />
+  </ItemGroup>
+
+</Project>
