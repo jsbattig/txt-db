@@ -1,0 +1,1375 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  TxtDb.Storage -> /home/jsbattig/Dev/txt-db/TxtDb.Storage/bin/Debug/net8.0/TxtDb.Storage.dll
+  TxtDb.Storage.Tests -> /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/bin/Debug/net8.0/TxtDb.Storage.Tests.dll
+Test run for /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/bin/Debug/net8.0/TxtDb.Storage.Tests.dll (.NETCoreApp,Version=v8.0)
+VSTest version 17.11.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+/home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/bin/Debug/net8.0/TxtDb.Storage.Tests.dll
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.5+1caef2f33e (64-bit .NET 8.0.18)
+[xUnit.net 00:00:00.65]   Discovering: TxtDb.Storage.Tests
+[xUnit.net 00:00:00.75]   Discovered:  TxtDb.Storage.Tests
+[xUnit.net 00:00:00.75]   Starting:    TxtDb.Storage.Tests
+=== FIXED STRESS TEST DEBUG ===
+=== CONCURRENT INSERT DEBUG ===
+=== CORRECTED STRESS TEST - PROPER PAGE UPDATES ===
+Task 0: Starting transaction 2
+Task 1: Starting transaction 3
+Task 2: Starting transaction 4
+Task 0: Created page page001
+Task 1: Created page page003
+Task 2: Created page page002
+Task 0: Transaction 2 committed
+Task 1: Transaction 3 committed
+Task 2: Transaction 4 committed
+Task 4: Starting transaction 5
+Task 3: Starting transaction 6
+Task 3: Created page page005
+Task 3: Transaction 6 committed
+Task 4: Created page page004
+Task 4: Transaction 5 committed
+  Passed TxtDb.Storage.Tests.Async.AsyncFileOperationsTests.WriteTextWithFlushAsync_ValidContent_ShouldWriteAndFlushToDisk [10 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.JsonAdapter_SerializeDeserialize_SimpleObject_ShouldRoundTrip [64 ms]
+Setup: Created 100 objects
+  Passed TxtDb.Storage.Tests.Debug.PerformanceBottleneckProfileTest.ProfileJsonSerializationOverhead_CompareWithoutTypeHandling [106 ms]
+  Standard Output Messages:
+ === JSON SERIALIZATION OVERHEAD PROFILE ===
+ JSON Serialization Performance (100 iterations):
+   Serialize:   17.00ms (0.17ms per op)
+   Deserialize: 31.00ms (0.31ms per op)
+   Total:       48.00ms (0.48ms per round-trip)
+   Serialized Size: 2290 characters
+ 
+
+
+=== CONCURRENT RESULTS ===
+Successful transactions: 5
+Exceptions: 0
+Retrieved objects: 5 in 5 pages
+  Page page002: 1 objects
+DEBUG: Initial setup complete. PageId: page001
+DEBUG: Read current data, length: 1
+DEBUG: Current item: { Id = 1, Value = Original, Version = 1 }
+Initial setup: 20 objects in 20 pages
+  Page page001: 1 objects
+  Page page002: 1 objects
+  Page page003: 1 objects
+  Page page004: 1 objects
+  Page page005: 1 objects
+  Page page006: 1 objects
+  Page page007: 1 objects
+  Page page008: 1 objects
+  Page page009: 1 objects
+  Page page010: 1 objects
+  Page page011: 1 objects
+  Page page012: 1 objects
+  Page page013: 1 objects
+  Page page014: 1 objects
+  Page page015: 1 objects
+  Page page016: 1 objects
+  Page page017: 1 objects
+  Page page018: 1 objects
+  Page page019: 1 objects
+  Page page020: 1 objects
+DEBUG: Update committed
+DEBUG: After update, updatedData.Length: 1
+DEBUG: Updated item: { Id = 2, Value = Updated_2, Version = 2, PreviousData = { Id = 1, Value = Original, Version = 1 } }
+DEBUG: Namespace total objects: 1
+DEBUG: Namespace pages count: 1
+DEBUG: Page page001: 1 objects
+DEBUG:   Object 0: { Id = 2, Value = Updated_2, Version = 2, PreviousData = { Id = 1, Value = Original, Version = 1 } }
+  Passed TxtDb.Storage.Tests.YamlTestQuick.AnonymousType_ShouldThrowException [107 ms]
+DEBUG: The test expects updatedData.Length to be 1, but it's 1
+  Passed TxtDb.Storage.Tests.YamlTestQuick.MalformedYaml_ShouldThrowException [2 ms]
+  Passed TxtDb.Storage.Tests.YamlTestQuick.EmptyString_ShouldThrowArgumentException [3 ms]
+  Passed TxtDb.Storage.Tests.YamlTestQuick.NullString_ShouldThrowArgumentException [2 ms]
+DEBUG: The test expects namespaceCount to be 1, but it's 1
+  Passed TxtDb.Storage.Tests.MVCCIsolationTests.GetMatchingObjects_ShouldApplySnapshotIsolationToAllPages [232 ms]
+  Passed TxtDb.Storage.Tests.Debug.PerformanceBottleneckProfileTest.ProfileSyncStorageOperations_ShouldIdentifyBottlenecks [54 ms]
+  Standard Output Messages:
+ === SYNC STORAGE PERFORMANCE PROFILE ===
+ Operation Breakdown (milliseconds):
+   1. Begin Transaction:     2.00ms
+   2. Create Namespace:      0.00ms
+   3. Insert Object:         6.00ms
+   4. Commit Transaction:    1.00ms
+   5. Begin Read Txn:        1.00ms
+   6. Read Object:           14.00ms
+   7. Commit Read Txn:       1.00ms
+   Total Time:               25.00ms
+ 
+ ⚠️  SLOW OPERATIONS (>10ms):
+     Read Object: 14.00ms
+ 
+
+
+  Passed TxtDb.Storage.Tests.debug.StressTestQuickDiag.Debug_DiagnosticTest_AnalyzeUpdatePageBehavior_Issue [32 ms]
+  Passed TxtDb.Storage.Tests.MVCC.SimpleReadCommittedDebugTest.SimpleReadCommitted_DebugDeserialization [36 ms]
+  Standard Output Messages:
+ Inserted object with TaskId 999 into page page001
+ Found 1 pages with total 1 objects
+ Page page001: 1 objects
+   Object 0: Type = TestConcurrentObject
+     TestConcurrentObject: Id=999, TaskId=999, Value=TestValue_999
+ Final result: Found TaskIds: [999]
+
+
+  Passed TxtDb.Storage.Tests.YamlTestQuick.ValidObject_ShouldSerializeWithPascalCase [111 ms]
+  Passed TxtDb.Storage.Tests.Debug.PerformanceBottleneckProfileTest.ProfileBatchOperations_CompareIndividualVsBatch [99 ms]
+  Standard Output Messages:
+ === BATCH OPERATIONS PERFORMANCE PROFILE ===
+ Batch Performance Comparison:
+   Individual Commits (10 ops): 32.00ms (3.20ms per op)
+   Batch Commit (10 ops):       58.00ms (5.80ms per op)
+   Batch Efficiency:            181.2% of individual time
+ 
+ ⚠️  WARNING: Batch operations are not more efficient than individual operations!
+
+
+    Object Id=2, Value=Concurrent_2, ThreadId=31
+  Page page003: 1 objects
+    Object Id=1, Value=Concurrent_1, ThreadId=13
+  Page page001: 1 objects
+    Object Id=0, Value=Concurrent_0, ThreadId=28
+  Page page004: 1 objects
+    Object Id=4, Value=Concurrent_4, ThreadId=13
+  Page page005: 1 objects
+    Object Id=3, Value=Concurrent_3, ThreadId=30
+Files on disk: 6
+  .namespace.json: 111 bytes - {
+  "Namespace": "concurrent.debug",
+  "Created": ...
+  page001.json.v2: 251 bytes - [
+  {
+    "$type": "<>f__AnonymousType76`3[[System...
+  page002.json.v4: 251 bytes - [
+  {
+    "$type": "<>f__AnonymousType76`3[[System...
+  page003.json.v3: 251 bytes - [
+  {
+    "$type": "<>f__AnonymousType76`3[[System...
+  page004.json.v5: 251 bytes - [
+  {
+    "$type": "<>f__AnonymousType76`3[[System...
+  page005.json.v6: 251 bytes - [
+  {
+    "$type": "<>f__AnonymousType76`3[[System...
+Debug files preserved at: /tmp/txtdb_debug_d10ae0f4229e40e0ab86377974be3b7c
+=== SEQUENTIAL INSERT DEBUG ===
+Inserting object 0 in transaction 2
+  -> Created page: page001
+  -> Transaction 2 committed successfully
+Inserting object 1 in transaction 3
+  -> Created page: page002
+  -> Transaction 3 committed successfully
+Inserting object 2 in transaction 4
+  -> Created page: page003
+  -> Transaction 4 committed successfully
+Inserting object 3 in transaction 5
+  -> Created page: page004
+  -> Transaction 5 committed successfully
+Inserting object 4 in transaction 6
+  -> Created page: page005
+  -> Transaction 6 committed successfully
+Inserting object 5 in transaction 7
+  -> Created page: page006
+  -> Transaction 7 committed successfully
+Inserting object 6 in transaction 8
+  -> Created page: page007
+  -> Transaction 8 committed successfully
+Inserting object 7 in transaction 9
+  -> Created page: page008
+  -> Transaction 9 committed successfully
+Inserting object 8 in transaction 10
+  -> Created page: page009
+  Passed TxtDb.Storage.Tests.DebugDataLossTest.SimpleConcurrentInsert_ShouldPreserveAllData [350 ms]
+  Passed TxtDb.Storage.Tests.MVCC.DataLossRootCauseTest.RootCause_UpdatePageReplacesEntireContent_DataLoss [111 ms]
+  Passed TxtDb.Storage.Tests.JsonDeserializationFixTest.DeserializeArray_WithNestedObjects_ShouldUnwrapRecursively [18 ms]
+  Passed TxtDb.Storage.Tests.JsonDeserializationFixTest.DeserializeArray_WithIntegers_ShouldReturnInt32NotInt64 [8 ms]
+  -> Transaction 10 committed successfully
+Inserting object 9 in transaction 11
+  -> Created page: page010
+  -> Transaction 11 committed successfully
+=== RESULTS ===
+Inserted: 10 objects
+Retrieved: 10 objects in 10 pages
+  Page page001: 1 objects
+STORAGE: [16:34:12.823] T20: LoggingStorageWrapper initialized
+=== CRITICAL DEBUG: CONCURRENT SAME PAGE UPDATES ===
+STORAGE: [16:34:12.829] T20: BeginTransaction called
+STORAGE: [16:34:12.831] T20: BeginTransaction returned: 1
+STORAGE: [16:34:12.832] T20: CreateNamespace(txn: 1, ns: race.test) called
+STORAGE: [16:34:12.832] T20: CreateNamespace(txn: 1, ns: race.test) completed
+    Object Id=0, Value=Object_0
+  Page page002: 1 objects
+    Object Id=1, Value=Object_1
+  Page page003: 1 objects
+    Object Id=2, Value=Object_2
+  Page page004: 1 objects
+    Object Id=3, Value=Object_3
+  Page page005: 1 objects
+    Object Id=4, Value=Object_4
+  Page page006: 1 objects
+    Object Id=5, Value=Object_5
+  Page page007: 1 objects
+    Object Id=6, Value=Object_6
+  Page page008: 1 objects
+    Object Id=7, Value=Object_7
+  Page page009: 1 objects
+    Object Id=8, Value=Object_8
+  Page page010: 1 objects
+    Object Id=9, Value=Object_9
+Files on disk: 11
+  .namespace.json: 105 bytes
+  page001.json.v2: 279 bytes
+  page002.json.v3: 279 bytes
+  page003.json.v4: 279 bytes
+  page004.json.v5: 279 bytes
+  page005.json.v6: 279 bytes
+  page006.json.v7: 279 bytes
+  page007.json.v8: 279 bytes
+  page008.json.v9: 279 bytes
+  page009.json.v10: 279 bytes
+  page010.json.v11: 279 bytes
+Debug files preserved at: /tmp/txtdb_debug_5fb0a3e238684a4880cbbf3a07b4da9c
+STORAGE: [16:34:12.841] T20: InsertObject(txn: 1, ns: race.test, data: {"Id":1,"Value":"Original","Counter":0})
+STORAGE: [16:34:12.846] T20: InsertObject(txn: 1) returned pageId: page001
+STORAGE: [16:34:12.847] T20: CommitTransaction(1) called
+STORAGE: [16:34:12.848] T20: CommitTransaction(1) completed successfully
+Setup: Created shared page page001
+  Passed TxtDb.Storage.Tests.JsonDeserializationFixTest.DeserializeArray_WithArrayValues_ShouldUnwrapArrays [24 ms]
+  Passed TxtDb.Storage.Tests.DebugDataLossTest.SimpleSequentialInsert_ShouldPreserveAllData [83 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.YamlAdapter_SerializeDeserialize_WithSpecialCharacters_ShouldRoundTrip [304 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.XmlAdapter_CorruptedData_ShouldThrowMeaningfulException [3 ms]
+  Passed TxtDb.Storage.Tests.JsonDeserializationE2ETest.StorageSubsystem_ComplexNestedObjects_ShouldDeserializeCorrectly [153 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.XmlAdapter_SerializeDeserialize_ComplexObject_ShouldRoundTrip [64 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.YamlAdapter_CorruptedData_ShouldThrowMeaningfulException [2 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.AllAdapters_NullAndEmptyValues_ShouldHandleGracefully [5 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.FileExtensions_ShouldMatchFormat(expectedExtension: ".xml") [< 1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.FileExtensions_ShouldMatchFormat(expectedExtension: ".yaml") [1 ms]
+PageIds: page001, page001, page001
+Found 1 pages
+Total objects: 3
+  Page page001: 3 objects
+After insert 1, pageId: page001
+After insert 1, page has 1 objects
+After insert 2, pageId: page001
+After insert 2, page page001 has 2 objects
+After insert 3, pageId: page001
+After insert 3, page page001 has 3 objects
+Final result: Found 1 pages
+Total objects: 3
+  Page page001: 3 objects
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.FileExtensions_ShouldMatchFormat(expectedExtension: ".json") [< 1 ms]
+  Passed TxtDb.Storage.Tests.JsonDeserializationE2ETest.StorageSubsystem_GetAll_ShouldReturnProperlyDeserializedObjects [33 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.JsonAdapter_CorruptedData_ShouldThrowMeaningfulException [5 ms]
+  Passed TxtDb.Storage.Tests.MVCC.MultiInsertDebugTest.DebugTest_ThreeObjectsSeparateTransactions_ShouldWork [10 ms]
+  Passed TxtDb.Storage.Tests.MVCC.MultiInsertDebugTest.DebugTest_ThreeObjectsSameTransactionStepByStep_ShouldWork [8 ms]
+  Passed TxtDb.Storage.Tests.JsonDeserializationE2ETest.StorageSubsystem_InsertAndGet_ShouldWorkWithProperSerialization [38 ms]
+Namespace path: /tmp/txtdb_debug_0847de09a8c049f481d42f07f7ec496b/debug/examine
+Files in namespace: 2
+  File: .namespace.json
+    Content length: 108
+    Content preview: {
+  "Namespace": "debug.examine",
+  "Created": "2025-08-07T16:34:12.9741867Z",
+  "CreatedByTransacti...
+  File: page001.json.v1
+    Content length: 366
+    Content preview: [
+  {
+    "$type": "<>f__AnonymousType13`2[[System.Int32, System.Private.CoreLib],[System.String, Sy...
+Retrieved 1 pages with 2 total objects
+Inserted into page: page001
+Read page data: 1 objects
+GetMatchingObjects found: 1 pages, 1 objects
+Found 1 pages
+Total objects: 3
+  Page page001: 3 objects
+[16:34:13.064] T18: === DEEP DEBUG SESSION STARTED ===
+[16:34:13.066] T18: === PHASE 1: SETUP ===
+[16:34:13.066] T18: Setup transaction started: 1
+[16:34:13.067] T18: Namespace created: debug.deep.trace
+[16:34:13.071] T18: Inserted object 0 into page page001
+[16:34:13.073] T18: Inserted object 1 into page page001
+[16:34:13.074] T18: Inserted object 2 into page page001
+[16:34:13.075] T18: Inserted object 3 into page page001
+[16:34:13.076] T18: Inserted object 4 into page page001
+[16:34:13.076] T18: Setup transaction committed: 1
+[16:34:13.077] T18: === FILESYSTEM DUMP: AFTER_SETUP ===
+[16:34:13.082] T18: Directory: /tmp/txtdb_debug_73620d35098d4b009b9fb8d189cdd464/debug/deep/trace - 2 files
+[16:34:13.082] T18:   File: .namespace.json (111 bytes) ~1 objects
+[16:34:13.083] T18:     Content preview: {
+  "Namespace": "debug.deep.trace",
+  "Created": "2025-08-07T16:34:13.0672235Z",
+  "CreatedByTransaction": 1
+}...
+[16:34:13.083] T18:   File: page001.json.v1 (1737 bytes) ~3 objects
+[16:34:13.083] T18:     Content preview: [
+  {
+    "$type": "<>f__AnonymousType113`4[[System.Int32, System.Private.CoreLib],[System.String, System.Private.CoreLib],[System.DateTime, System.Private.CoreLib],[System.String, System.Private.Core...
+[16:34:13.083] T18: === DATA INTEGRITY CHECK: AFTER_SETUP ===
+[16:34:13.084] T18: Verification transaction started: 2
+[16:34:13.085] T18: Expected objects: 5
+[16:34:13.085] T18: Actual objects: 5
+[16:34:13.085] T18: Pages found: 1
+[16:34:13.085] T18:   Page page001: 5 objects
+[16:34:13.085] T18: Verification transaction committed: 2
+[16:34:13.086] T18: === PHASE 2: CONCURRENT UPDATES ===
+Initial errors: 0
+Final errors: 1
+Result length: 0
+ErrorsByType count: 1
+  Passed TxtDb.Storage.Tests.MVCC.SimpleDebugTest.DebugTest_ExaminePageStructure_ShouldShowFileSystem [11 ms]
+  Passed TxtDb.Storage.Tests.MVCC.SimpleDebugTest.DebugTest_IndividualPageAccess_ShouldWork [13 ms]
+  Passed TxtDb.Storage.Tests.MVCC.SimpleDebugTest.DebugTest_InsertThreeObjects_ShouldFindThreeObjects [10 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.AllAdapters_LargeObject_ShouldHandlePerformanceTest [130 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapterTests.JsonAdapter_SerializeArray_MultipleObjects_ShouldRoundTrip [1 ms]
+  Passed TxtDb.Storage.Tests.MVCC.SimpleFixedStressTest.SimpleFixed_UpdateWithProperPattern_NoDataLoss [57 ms]
+  Passed TxtDb.Storage.Tests.Debug.SimpleErrorTest.SimpleError_ShouldShowBehavior [33 ms]
+[xUnit.net 00:00:01.75]       Epic 002 read latency target not met. P99: 4.68ms > 4ms target
+[xUnit.net 00:00:01.75]       Expected: True
+[xUnit.net 00:00:01.75]       Actual:   False
+[xUnit.net 00:00:01.75]       Stack Trace:
+[xUnit.net 00:00:01.75]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Performance/Epic002TargetValidationTests.cs(108,0): at TxtDb.Storage.Tests.Performance.Epic002TargetValidationTests.Epic002_ReadLatencyTarget_ShouldAchieveLessThan4msP99Latency()
+[xUnit.net 00:00:01.75]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:01.75]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.75]       Output:
+[xUnit.net 00:00:01.75]         Read Latency Results:
+[xUnit.net 00:00:01.75]           Samples: 200
+[xUnit.net 00:00:01.75]           Average: 0.69ms
+[xUnit.net 00:00:01.75]           P50: 0.52ms
+[xUnit.net 00:00:01.75]           P95: 1.03ms
+[xUnit.net 00:00:01.75]           P99: 4.68ms
+[xUnit.net 00:00:01.75]           Target: <4ms P99
+[xUnit.net 00:00:01.75]           Result: ❌ NOT MET
+Task 1: Found 100 pages
+  Passed TxtDb.Storage.Tests.MVCC.ConcurrentReadCommittedTest.ConcurrentInsert_ReadCommitted_ShouldSeeAllCommittedData [186 ms]
+  Standard Output Messages:
+ [11:34:12.948] Starting concurrent read-committed test with 50 tasks
+ [11:34:12.961] Task 0: Started transaction 1
+ [11:34:12.961] Task 0: Inserted object into page page001
+ [11:34:12.962] Task 0: Committed transaction 1
+ [11:34:12.963] Task 1: Started transaction 2
+ [11:34:12.964] Task 1: Inserted object into page page001
+ [11:34:12.965] Task 1: Committed transaction 2
+ [11:34:12.968] Task 2: Started transaction 3
+ [11:34:12.969] Task 2: Inserted object into page page001
+ [11:34:12.970] Task 2: Committed transaction 3
+ [11:34:12.970] Task 3: Started transaction 4
+ [11:34:12.971] Task 3: Inserted object into page page001
+ [11:34:12.971] Task 3: Committed transaction 4
+ [11:34:12.972] Task 4: Started transaction 5
+ [11:34:12.973] Task 4: Inserted object into page page001
+ [11:34:12.973] Task 4: Committed transaction 5
+ [11:34:12.974] Task 5: Started transaction 6
+ [11:34:12.974] Task 5: Inserted object into page page001
+ [11:34:12.975] Task 5: Committed transaction 6
+ [11:34:12.975] Task 6: Started transaction 7
+ [11:34:12.977] Task 6: Inserted object into page page001
+ [11:34:12.977] Task 6: Committed transaction 7
+ [11:34:12.978] Task 7: Started transaction 8
+ [11:34:12.979] Task 7: Inserted object into page page001
+ [11:34:12.979] Task 7: Committed transaction 8
+ [11:34:12.980] Task 8: Started transaction 9
+ [11:34:12.981] Task 8: Inserted object into page page001
+ [11:34:12.981] Task 8: Committed transaction 9
+ [11:34:12.981] Task 9: Started transaction 10
+ [11:34:12.982] Task 9: Inserted object into page page001
+ [11:34:12.983] Task 9: Committed transaction 10
+ [11:34:12.983] Task 10: Started transaction 11
+ [11:34:12.985] Task 10: Inserted object into page page001
+ [11:34:12.985] Task 10: Committed transaction 11
+ [11:34:12.985] Task 11: Started transaction 12
+ [11:34:12.987] Task 11: Inserted object into page page001
+ [11:34:12.987] Task 11: Committed transaction 12
+ [11:34:12.988] Task 12: Started transaction 13
+ [11:34:12.989] Task 12: Inserted object into page page001
+ [11:34:12.990] Task 12: Committed transaction 13
+ [11:34:12.991] Task 13: Started transaction 14
+ [11:34:12.993] Task 13: Inserted object into page page001
+ [11:34:12.993] Task 13: Committed transaction 14
+ [11:34:12.994] Task 14: Started transaction 15
+ [11:34:12.995] Task 14: Inserted object into page page001
+ [11:34:12.996] Task 14: Committed transaction 15
+ [11:34:12.997] Task 15: Started transaction 16
+ [11:34:12.998] Task 15: Inserted object into page page001
+ [11:34:12.999] Task 15: Committed transaction 16
+ [11:34:13.000] Task 16: Started transaction 17
+ [11:34:13.002] Task 16: Inserted object into page page001
+ [11:34:13.003] Task 16: Committed transaction 17
+ [11:34:13.004] Task 17: Started transaction 18
+ [11:34:13.006] Task 17: Inserted object into page page001
+ [11:34:13.007] Task 17: Committed transaction 18
+ [11:34:13.008] Task 18: Started transaction 19
+ [11:34:13.022] Task 18: Inserted object into page page002
+ [11:34:13.023] Task 18: Committed transaction 19
+ [11:34:13.024] Task 19: Started transaction 20
+ [11:34:13.025] Task 19: Inserted object into page page002
+ [11:34:13.026] Task 19: Committed transaction 20
+ [11:34:13.027] Task 20: Started transaction 21
+ [11:34:13.028] Task 20: Inserted object into page page002
+ [11:34:13.029] Task 20: Committed transaction 21
+ [11:34:13.030] Task 21: Started transaction 22
+ [11:34:13.031] Task 21: Inserted object into page page002
+ [11:34:13.032] Task 21: Committed transaction 22
+ [11:34:13.033] Task 22: Started transaction 23
+ [11:34:13.034] Task 22: Inserted object into page page002
+ [11:34:13.035] Task 22: Committed transaction 23
+ [11:34:13.035] Task 23: Started transaction 24
+ [11:34:13.037] Task 23: Inserted object into page page002
+ [11:34:13.038] Task 23: Committed transaction 24
+ [11:34:13.038] Task 24: Started transaction 25
+ [11:34:13.040] Task 24: Inserted object into page page002
+ [11:34:13.040] Task 24: Committed transaction 25
+ [11:34:13.041] Task 25: Started transaction 26
+ [11:34:13.042] Task 25: Inserted object into page page002
+ [11:34:13.043] Task 25: Committed transaction 26
+ [11:34:13.044] Task 26: Started transaction 27
+ [11:34:13.045] Task 26: Inserted object into page page002
+ [11:34:13.046] Task 26: Committed transaction 27
+ [11:34:13.047] Task 27: Started transaction 28
+ [11:34:13.049] Task 27: Inserted object into page page002
+ [11:34:13.050] Task 27: Committed transaction 28
+ [11:34:13.050] Task 28: Started transaction 29
+ [11:34:13.052] Task 28: Inserted object into page page002
+ [11:34:13.052] Task 28: Committed transaction 29
+ [11:34:13.053] Task 29: Started transaction 30
+ [11:34:13.055] Task 29: Inserted object into page page002
+ [11:34:13.056] Task 29: Committed transaction 30
+ [11:34:13.057] Task 30: Started transaction 31
+ [11:34:13.059] Task 30: Inserted object into page page002
+ [11:34:13.060] Task 30: Committed transaction 31
+ [11:34:13.060] Task 31: Started transaction 32
+ [11:34:13.062] Task 31: Inserted object into page page002
+ [11:34:13.063] Task 31: Committed transaction 32
+ [11:34:13.064] Task 32: Started transaction 33
+ [11:34:13.066] Task 32: Inserted object into page page002
+ [11:34:13.066] Task 32: Committed transaction 33
+ [11:34:13.067] Task 33: Started transaction 34
+ [11:34:13.069] Task 33: Inserted object into page page002
+ [11:34:13.070] Task 33: Committed transaction 34
+ [11:34:13.071] Task 34: Started transaction 35
+ [11:34:13.073] Task 34: Inserted object into page page002
+ [11:34:13.073] Task 34: Committed transaction 35
+ [11:34:13.074] Task 35: Started transaction 36
+ [11:34:13.076] Task 35: Inserted object into page page002
+ [11:34:13.077] Task 35: Committed transaction 36
+ [11:34:13.082] Task 36: Started transaction 37
+ [11:34:13.083] Task 36: Inserted object into page page003
+ [11:34:13.084] Task 36: Committed transaction 37
+ [11:34:13.085] Task 37: Started transaction 38
+ [11:34:13.086] Task 37: Inserted object into page page003
+ [11:34:13.087] Task 37: Committed transaction 38
+ [11:34:13.088] Task 38: Started transaction 39
+ [11:34:13.090] Task 38: Inserted object into page page003
+ [11:34:13.091] Task 38: Committed transaction 39
+ [11:34:13.091] Task 39: Started transaction 40
+ [11:34:13.093] Task 39: Inserted object into page page003
+ [11:34:13.094] Task 39: Committed transaction 40
+ [11:34:13.095] Task 40: Started transaction 41
+ [11:34:13.097] Task 40: Inserted object into page page003
+ [11:34:13.098] Task 40: Committed transaction 41
+ [11:34:13.099] Task 41: Started transaction 42
+ [11:34:13.100] Task 41: Inserted object into page page003
+ [11:34:13.101] Task 41: Committed transaction 42
+ [11:34:13.102] Task 42: Started transaction 43
+ [11:34:13.104] Task 42: Inserted object into page page003
+ [11:34:13.105] Task 42: Committed transaction 43
+ [11:34:13.105] Task 43: Started transaction 44
+ [11:34:13.107] Task 43: Inserted object into page page003
+ [11:34:13.108] Task 43: Committed transaction 44
+ [11:34:13.108] Task 44: Started transaction 45
+ [11:34:13.110] Task 44: Inserted object into page page003
+ [11:34:13.110] Task 44: Committed transaction 45
+ [11:34:13.111] Task 45: Started transaction 46
+ [11:34:13.112] Task 45: Inserted object into page page003
+ [11:34:13.113] Task 45: Committed transaction 46
+ [11:34:13.113] Task 46: Started transaction 47
+ [11:34:13.114] Task 46: Inserted object into page page003
+ [11:34:13.115] Task 46: Committed transaction 47
+ [11:34:13.115] Task 47: Started transaction 48
+ [11:34:13.117] Task 47: Inserted object into page page003
+ [11:34:13.117] Task 47: Committed transaction 48
+ [11:34:13.118] Task 48: Started transaction 49
+ [11:34:13.119] Task 48: Inserted object into page page003
+ [11:34:13.119] Task 48: Committed transaction 49
+ [11:34:13.120] Task 49: Started transaction 50
+ [11:34:13.121] Task 49: Inserted object into page page003
+ [11:34:13.122] Task 49: Committed transaction 50
+ [11:34:13.122] All tasks completed. Analyzing results...
+ Successful tasks: 50/50
+ [11:34:13.126] Reading data with transaction 51
+ [11:34:13.128] Found 50 objects across 3 pages
+   Page page001: 18 objects
+     - Id: 0, Value: ReadCommitted_0, TaskId: 0
+     - Id: 1, Value: ReadCommitted_1, TaskId: 1
+     - Id: 2, Value: ReadCommitted_2, TaskId: 2
+     ... and 15 more objects
+   Page page002: 18 objects
+     - Id: 18, Value: ReadCommitted_18, TaskId: 18
+     - Id: 19, Value: ReadCommitted_19, TaskId: 19
+     - Id: 20, Value: ReadCommitted_20, TaskId: 20
+     ... and 15 more objects
+   Page page003: 14 objects
+     - Id: 36, Value: ReadCommitted_36, TaskId: 36
+     - Id: 37, Value: ReadCommitted_37, TaskId: 37
+     - Id: 38, Value: ReadCommitted_38, TaskId: 38
+     ... and 11 more objects
+ Found objects from 50 different tasks
+ [11:34:13.128] ✅ Read-committed isolation test PASSED!
+
+
+  Failed TxtDb.Storage.Tests.Performance.Epic002TargetValidationTests.Epic002_ReadLatencyTarget_ShouldAchieveLessThan4msP99Latency [919 ms]
+  Error Message:
+   Epic 002 read latency target not met. P99: 4.68ms > 4ms target
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.Performance.Epic002TargetValidationTests.Epic002_ReadLatencyTarget_ShouldAchieveLessThan4msP99Latency() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Performance/Epic002TargetValidationTests.cs:line 108
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Standard Output Messages:
+ Read Latency Results:
+   Samples: 200
+   Average: 0.69ms
+   P50: 0.52ms
+   P95: 1.03ms
+   P99: 4.68ms
+   Target: <4ms P99
+   Result: ❌ NOT MET
+
+
+[xUnit.net 00:00:31.06]       System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'test.bulk_read_tracking:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:00:31.06]       Stack Trace:
+[xUnit.net 00:00:31.06]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:00:31.06]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:00:31.06]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:00:31.06]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCCIsolationTests.cs(247,0): at TxtDb.Storage.Tests.MVCCIsolationTests.GetMatchingObjects_ShouldRecordReadVersionsForConflictDetection()
+[xUnit.net 00:00:31.06]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:31.06]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCCIsolationTests.GetMatchingObjects_ShouldRecordReadVersionsForConflictDetection [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'test.bulk_read_tracking:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.MVCCIsolationTests.GetMatchingObjects_ShouldRecordReadVersionsForConflictDetection() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCCIsolationTests.cs:line 247
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:31.13]       Expected at least 1 successful operation, got 0
+[xUnit.net 00:00:31.13]       Expected: True
+[xUnit.net 00:00:31.13]       Actual:   False
+[xUnit.net 00:00:31.13]       Stack Trace:
+[xUnit.net 00:00:31.13]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs(199,0): at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_ShouldNotAffectNormalOperations()
+[xUnit.net 00:00:31.13]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:31.13]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:31.22]       System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'cascade.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:00:31.22]       Stack Trace:
+[xUnit.net 00:00:31.22]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:00:31.22]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:00:31.22]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:00:31.22]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(99,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.CascadingConflict_MultiplePagesDependencies_ShouldDetectCorrectly()
+[xUnit.net 00:00:31.22]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:31.22]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_ShouldNotAffectNormalOperations [30 s]
+  Error Message:
+   Expected at least 1 successful operation, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_ShouldNotAffectNormalOperations() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs:line 199
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.CascadingConflict_MultiplePagesDependencies_ShouldDetectCorrectly [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'cascade.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.CascadingConflict_MultiplePagesDependencies_ShouldDetectCorrectly() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 99
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:46.14]       Expected at least 1 deadlock timeout, got 0
+[xUnit.net 00:00:46.14]       Expected: True
+[xUnit.net 00:00:46.14]       Actual:   False
+[xUnit.net 00:00:46.14]       Stack Trace:
+[xUnit.net 00:00:46.14]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs(138,0): at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_TwoTransactionsCrossLock_ShouldDetectAndPrevent()
+[xUnit.net 00:00:46.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:46.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_TwoTransactionsCrossLock_ShouldDetectAndPrevent [15 s]
+  Error Message:
+   Expected at least 1 deadlock timeout, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_TwoTransactionsCrossLock_ShouldDetectAndPrevent() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs:line 138
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:51.14]       Custom timeout should have been triggered
+[xUnit.net 00:00:51.14]       Expected: True
+[xUnit.net 00:00:51.14]       Actual:   False
+[xUnit.net 00:00:51.14]       Stack Trace:
+[xUnit.net 00:00:51.14]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs(264,0): at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_CustomTimeout_ShouldRespectConfiguration()
+[xUnit.net 00:00:51.14]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:51.14]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_CustomTimeout_ShouldRespectConfiguration [5 s]
+  Error Message:
+   Custom timeout should have been triggered
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.DeadlockDetectionTests.DeadlockTimeout_CustomTimeout_ShouldRespectConfiguration() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs:line 264
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:01:01.07]       System.TimeoutException : Deadlock detected: Transaction 4 timed out waiting for lock on 'test.version_tracking:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:01:01.07]       Stack Trace:
+[xUnit.net 00:01:01.07]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:01:01.07]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:01.07]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:01.07]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCCIsolationTests.cs(54,0): at TxtDb.Storage.Tests.MVCCIsolationTests.ReadPage_ShouldRecordExactVersionReadForConflictDetection()
+[xUnit.net 00:01:01.07]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:01:01.07]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCCIsolationTests.ReadPage_ShouldRecordExactVersionReadForConflictDetection [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 4 timed out waiting for lock on 'test.version_tracking:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.MVCCIsolationTests.ReadPage_ShouldRecordExactVersionReadForConflictDetection() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCCIsolationTests.cs:line 54
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:01:01.23]       System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'threeway.conflict.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:01:01.23]       Stack Trace:
+[xUnit.net 00:01:01.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:01:01.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:01.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:01.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(49,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ThreeWayConflict_ShouldDetectAllConflicts()
+[xUnit.net 00:01:01.23]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:01:01.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[16:35:13.087] T18: Concurrent phase completed: 0 successful, 0 conflicts, 0 errors
+[16:35:13.087] T18: === FILESYSTEM DUMP: AFTER_CONCURRENT_UPDATES ===
+[16:35:13.087] T18: Directory: /tmp/txtdb_debug_73620d35098d4b009b9fb8d189cdd464/debug/deep/trace - 2 files
+[16:35:13.087] T18:   File: .namespace.json (111 bytes) ~1 objects
+[16:35:13.087] T18:     Content preview: {
+  "Namespace": "debug.deep.trace",
+  "Created": "2025-08-07T16:34:13.0672235Z",
+  "CreatedByTransaction": 1
+}...
+[16:35:13.087] T18:   File: page001.json.v1 (1737 bytes) ~3 objects
+[16:35:13.087] T18:     Content preview: [
+  {
+    "$type": "<>f__AnonymousType113`4[[System.Int32, System.Private.CoreLib],[System.String, System.Private.CoreLib],[System.DateTime, System.Private.CoreLib],[System.String, System.Private.Core...
+[16:35:13.087] T18: === DATA INTEGRITY CHECK: AFTER_CONCURRENT_UPDATES ===
+[16:35:13.088] T18: Verification transaction started: 3
+[16:35:13.088] T18: Expected objects: 5
+[16:35:13.088] T18: Actual objects: 5
+[16:35:13.088] T18: Pages found: 1
+[16:35:13.088] T18:   Page page001: 5 objects
+[16:35:13.089] T18: Verification transaction committed: 3
+[16:35:13.089] T18: === PHASE 3: DETAILED ANALYSIS ===
+[16:35:13.089] T18: Page page001 analysis: 5 objects
+[16:35:13.092] T18:   Object 0: {"Id":0,"InitialValue":"Object_0","CreatedAt":"2025-08-07T16:34:13.0674629Z","Phase":"SETUP"}
+[16:35:13.092] T18:   Object 1: {"Id":1,"InitialValue":"Object_1","CreatedAt":"2025-08-07T16:34:13.0717642Z","Phase":"SETUP"}
+[16:35:13.092] T18:   Object 2: {"Id":2,"InitialValue":"Object_2","CreatedAt":"2025-08-07T16:34:13.0734752Z","Phase":"SETUP"}
+[16:35:13.092] T18:   Object 3: {"Id":3,"InitialValue":"Object_3","CreatedAt":"2025-08-07T16:34:13.0742856Z","Phase":"SETUP"}
+[16:35:13.092] T18:   Object 4: {"Id":4,"InitialValue":"Object_4","CreatedAt":"2025-08-07T16:34:13.0751612Z","Phase":"SETUP"}
+[16:35:13.094] T18: Page page001 analysis: 5 objects
+[16:35:13.094] T18:   Object 0: {"Id":0,"InitialValue":"Object_0","CreatedAt":"2025-08-07T16:34:13.0674629Z","Phase":"SETUP"}
+[16:35:13.094] T18:   Object 1: {"Id":1,"InitialValue":"Object_1","CreatedAt":"2025-08-07T16:34:13.0717642Z","Phase":"SETUP"}
+[16:35:13.094] T18:   Object 2: {"Id":2,"InitialValue":"Object_2","CreatedAt":"2025-08-07T16:34:13.0734752Z","Phase":"SETUP"}
+[16:35:13.094] T18:   Object 3: {"Id":3,"InitialValue":"Object_3","CreatedAt":"2025-08-07T16:34:13.0742856Z","Phase":"SETUP"}
+[16:35:13.094] T18:   Object 4: {"Id":4,"InitialValue":"Object_4","CreatedAt":"2025-08-07T16:34:13.0751612Z","Phase":"SETUP"}
+[16:35:13.095] T18: Page page001 analysis: 5 objects
+[16:35:13.095] T18:   Object 0: {"Id":0,"InitialValue":"Object_0","CreatedAt":"2025-08-07T16:34:13.0674629Z","Phase":"SETUP"}
+[16:35:13.095] T18:   Object 1: {"Id":1,"InitialValue":"Object_1","CreatedAt":"2025-08-07T16:34:13.0717642Z","Phase":"SETUP"}
+[16:35:13.095] T18:   Object 2: {"Id":2,"InitialValue":"Object_2","CreatedAt":"2025-08-07T16:34:13.0734752Z","Phase":"SETUP"}
+[16:35:13.095] T18:   Object 3: {"Id":3,"InitialValue":"Object_3","CreatedAt":"2025-08-07T16:34:13.0742856Z","Phase":"SETUP"}
+[16:35:13.095] T18:   Object 4: {"Id":4,"InitialValue":"Object_4","CreatedAt":"2025-08-07T16:34:13.0751612Z","Phase":"SETUP"}
+[16:35:13.096] T18: Page page001 analysis: 5 objects
+[16:35:13.096] T18:   Object 0: {"Id":0,"InitialValue":"Object_0","CreatedAt":"2025-08-07T16:34:13.0674629Z","Phase":"SETUP"}
+[16:35:13.096] T18:   Object 1: {"Id":1,"InitialValue":"Object_1","CreatedAt":"2025-08-07T16:34:13.0717642Z","Phase":"SETUP"}
+[16:35:13.096] T18:   Object 2: {"Id":2,"InitialValue":"Object_2","CreatedAt":"2025-08-07T16:34:13.0734752Z","Phase":"SETUP"}
+[16:35:13.096] T18:   Object 3: {"Id":3,"InitialValue":"Object_3","CreatedAt":"2025-08-07T16:34:13.0742856Z","Phase":"SETUP"}
+[16:35:13.096] T18:   Object 4: {"Id":4,"InitialValue":"Object_4","CreatedAt":"2025-08-07T16:34:13.0751612Z","Phase":"SETUP"}
+[16:35:13.097] T18: Page page001 analysis: 5 objects
+[16:35:13.097] T18:   Object 0: {"Id":0,"InitialValue":"Object_0","CreatedAt":"2025-08-07T16:34:13.0674629Z","Phase":"SETUP"}
+[16:35:13.097] T18:   Object 1: {"Id":1,"InitialValue":"Object_1","CreatedAt":"2025-08-07T16:34:13.0717642Z","Phase":"SETUP"}
+[16:35:13.097] T18:   Object 2: {"Id":2,"InitialValue":"Object_2","CreatedAt":"2025-08-07T16:34:13.0734752Z","Phase":"SETUP"}
+[16:35:13.097] T18:   Object 3: {"Id":3,"InitialValue":"Object_3","CreatedAt":"2025-08-07T16:34:13.0742856Z","Phase":"SETUP"}
+[16:35:13.097] T18:   Object 4: {"Id":4,"InitialValue":"Object_4","CreatedAt":"2025-08-07T16:34:13.0751612Z","Phase":"SETUP"}
+[16:35:13.099] T18: === FINAL RESULTS ===
+[16:35:13.099] T18: Initial objects: 5
+[16:35:13.099] T18: Successful transactions: 0
+[16:35:13.099] T18: Expected minimum: 5 objects (5 initial + successful adds)
+[16:35:13.099] T18: Actual: 5 objects
+[16:35:13.099] T18: Success rate: 0/0 operations
+[16:35:13.101] T18: Debug log written to: /tmp/txtdb_debug_73620d35098d4b009b9fb8d189cdd464/debug_log.txt
+[16:35:13.102] T18: Debug log written to: /tmp/txtdb_debug_73620d35098d4b009b9fb8d189cdd464/debug_log.txt
+[16:35:13.102] T18: Test files preserved at: /tmp/txtdb_debug_73620d35098d4b009b9fb8d189cdd464
+[16:35:13.103] T18: === DEEP DEBUG SESSION STARTED ===
+[16:35:13.104] T18: === SEQUENTIAL BASELINE TEST ===
+[16:35:13.105] T18: Sequential setup: inserted object 0 into page page001
+[16:35:13.106] T18: Sequential setup: inserted object 1 into page page001
+[16:35:13.106] T18: Sequential setup: inserted object 2 into page page001
+[16:35:13.107] T18: Sequential setup: inserted object 3 into page page001
+[16:35:13.108] T18: Sequential setup: inserted object 4 into page page001
+[16:35:13.108] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_SETUP ===
+[16:35:13.108] T18: Verification transaction started: 2
+[16:35:13.109] T18: Expected objects: 5
+[16:35:13.109] T18: Actual objects: 5
+[16:35:13.109] T18: Pages found: 1
+[16:35:13.109] T18:   Page page001: 5 objects
+[16:35:13.109] T18: Verification transaction committed: 2
+[16:35:13.110] T18: Sequential update 0: read 5 objects from page page001
+[16:35:13.113] T18: Sequential update 0: updated page page001 with 6 total objects
+[16:35:13.113] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_UPDATE_0 ===
+[16:35:13.113] T18: Verification transaction started: 4
+[16:35:13.114] T18: Expected objects: 6
+[16:35:13.115] T18: Actual objects: 6
+[16:35:13.115] T18: Pages found: 1
+[16:35:13.115] T18:   Page page001: 6 objects
+[16:35:13.115] T18: Verification transaction committed: 4
+[16:35:13.116] T18: Sequential update 1: read 6 objects from page page001
+[16:35:13.117] T18: Sequential update 1: updated page page001 with 7 total objects
+[16:35:13.117] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_UPDATE_1 ===
+[16:35:13.118] T18: Verification transaction started: 6
+[16:35:13.119] T18: Expected objects: 7
+[16:35:13.119] T18: Actual objects: 7
+[16:35:13.119] T18: Pages found: 1
+[16:35:13.119] T18:   Page page001: 7 objects
+[16:35:13.119] T18: Verification transaction committed: 6
+[16:35:13.120] T18: Sequential update 2: read 7 objects from page page001
+[16:35:13.120] T18: Sequential update 2: updated page page001 with 8 total objects
+[16:35:13.120] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_UPDATE_2 ===
+[16:35:13.121] T18: Verification transaction started: 8
+[16:35:13.121] T18: Expected objects: 8
+[16:35:13.121] T18: Actual objects: 8
+[16:35:13.121] T18: Pages found: 1
+[16:35:13.121] T18:   Page page001: 8 objects
+[16:35:13.121] T18: Verification transaction committed: 8
+[16:35:13.122] T18: Sequential update 3: read 8 objects from page page001
+[16:35:13.122] T18: Sequential update 3: updated page page001 with 9 total objects
+[16:35:13.123] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_UPDATE_3 ===
+[16:35:13.123] T18: Verification transaction started: 10
+[16:35:13.123] T18: Expected objects: 9
+[16:35:13.123] T18: Actual objects: 9
+[16:35:13.123] T18: Pages found: 1
+[16:35:13.123] T18:   Page page001: 9 objects
+[16:35:13.124] T18: Verification transaction committed: 10
+[16:35:13.124] T18: Sequential update 4: read 9 objects from page page001
+[16:35:13.125] T18: Sequential update 4: updated page page001 with 10 total objects
+[16:35:13.125] T18: === DATA INTEGRITY CHECK: SEQUENTIAL_UPDATE_4 ===
+[16:35:13.125] T18: Verification transaction started: 12
+[16:35:13.126] T18: Expected objects: 10
+[16:35:13.126] T18: Actual objects: 10
+[16:35:13.126] T18: Pages found: 1
+[16:35:13.126] T18:   Page page001: 10 objects
+[16:35:13.126] T18: Verification transaction committed: 12
+[16:35:13.127] T18: Debug log written to: /tmp/txtdb_debug_56af26d2197446b1923f029bf698b5dd/debug_log.txt
+[16:35:13.129] T18: Debug log written to: /tmp/txtdb_debug_56af26d2197446b1923f029bf698b5dd/debug_log.txt
+[16:35:13.129] T18: Test files preserved at: /tmp/txtdb_debug_56af26d2197446b1923f029bf698b5dd
+  Passed TxtDb.Storage.Tests.MVCCIsolationTests.ReadVersionPersistence_ShouldSurvivePowerFailureSimulation [107 ms]
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ThreeWayConflict_ShouldDetectAllConflicts [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'threeway.conflict.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ThreeWayConflict_ShouldDetectAllConflicts() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 49
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed TxtDb.Storage.Tests.MVCC.DeepDebuggingStressTest.DeepDebug_SmallScaleConcurrentUpdates_TraceEverything [1 m]
+  Passed TxtDb.Storage.Tests.MVCC.DeepDebuggingStressTest.DeepDebug_SequentialOperations_BaselineCheck [26 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_TrackMaxConcurrentOperations_ShouldRecordPeakUsage [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_FlushLatencyTracking_ShouldMeasureFlushPerformance [3 ms]
+  Standard Output Messages:
+ Flush latency - Avg: 5.49ms, P50: 5.45ms, P95: 8.40ms
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_BatchFlushOptimization_ShouldTrackDetailedFlushMetrics [2 ms]
+  Standard Output Messages:
+ Flush reduction: 87.11% (Target: >50%)
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_ThreadPoolStatus_ShouldTrackThreadPoolUtilization [1 ms]
+  Standard Output Messages:
+ Worker threads: 32697/32767 (Available: 0.2%)
+ I/O threads: 1000/1000 (Available: 0.0%)
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_ErrorCategorization_ShouldTrackErrorTypesByCategory [4 ms]
+  Standard Output Messages:
+ Error breakdown:
+   IOException: 2 occurrences
+   InvalidOperationException: 1 occurrences
+   TimeoutException: 2 occurrences
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_PerformanceSnapshot_ShouldCaptureCompleteMetricsState [13 ms]
+  Standard Output Messages:
+ Performance snapshot captured at 8/7/2025 4:35:13 PM:
+   Operations: 4 (Success rate: 75.0%)
+   Flush reduction: 84.0%
+   Active operations: 2
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_RollingThroughputWindow_ShouldTrackRecentPerformance [504 ms]
+  Standard Output Messages:
+ Rolling throughput (1s window): 20.00 ops/sec
+ Overall throughput: 37.77 ops/sec
+ Theoretical max (25ms intervals): 40 ops/sec
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_TrackActiveAsyncOperations_ShouldMonitorConcurrentOperations [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsResourceTests.StorageMetrics_MemoryUsageTracking_ShouldMonitorMemoryConsumption [1 ms]
+  Standard Output Messages:
+ Working Set: 216.00 MB
+ Private Memory: 819.00 MB
+ GC Collections - Gen0: 19, Gen1: 6, Gen2: 2
+
+
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_LargeNumberOfVersions_ShouldPerformEfficiently [5 s]
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_NonExistentFiles_ShouldHandleGracefully [1 s]
+[xUnit.net 00:01:31.23]       System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'rollback.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:01:31.23]       Stack Trace:
+[xUnit.net 00:01:31.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:01:31.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:31.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:31.23]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(515,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.TransactionRollback_AfterPartialWork_ShouldNotAffectOtherTransactions()
+[xUnit.net 00:01:31.23]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:01:31.23]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.TransactionRollback_AfterPartialWork_ShouldNotAffectOtherTransactions [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 3 timed out waiting for lock on 'rollback.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.TransactionRollback_AfterPartialWork_ShouldNotAffectOtherTransactions() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 515
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Task 1: Updating page page069 with 1 objects
+  Passed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ConflictDetection_AcrossMultipleNamespaces_ShouldBeIndependent [5 ms]
+[xUnit.net 00:01:38.16]       System.TimeoutException : Deadlock detected: Transaction 4 timed out waiting for lock on 'active.cleanup.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:01:38.16]       Stack Trace:
+[xUnit.net 00:01:38.16]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs(58,0): at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId)
+[xUnit.net 00:01:38.16]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(608,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:38.16]         /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs(285,0): at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId)
+[xUnit.net 00:01:38.16]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs(98,0): at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_WithActiveTransactions_ShouldPreserveNeededVersions()
+[xUnit.net 00:01:38.16]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:01:38.16]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_WithActiveTransactions_ShouldPreserveNeededVersions [30 s]
+  Error Message:
+   System.TimeoutException : Deadlock detected: Transaction 4 timed out waiting for lock on 'active.cleanup.test:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Stack Trace:
+     at TxtDb.Storage.Services.DeadlockAwareLockManager.AcquireLock(Int64 transactionId, String resourceId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/DeadlockAwareLockManager.cs:line 58
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPageInternal(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 608
+   at TxtDb.Storage.Services.StorageSubsystem.ReadPage(Int64 transactionId, String namespace, String pageId) in /home/jsbattig/Dev/txt-db/TxtDb.Storage/Services/StorageSubsystem.cs:line 285
+   at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_WithActiveTransactions_ShouldPreserveNeededVersions() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs:line 98
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+=== RESULTS ===
+Operations: 0 successful, 0 conflicts, 0 errors
+Final data: 20 objects in 20 pages
+  Page page001: 1 objects
+  Page page002: 1 objects
+  Page page003: 1 objects
+  Page page004: 1 objects
+  Page page005: 1 objects
+  Page page006: 1 objects
+  Page page007: 1 objects
+  Page page008: 1 objects
+  Page page009: 1 objects
+  Page page010: 1 objects
+  Page page011: 1 objects
+  Page page012: 1 objects
+  Page page013: 1 objects
+  Page page014: 1 objects
+  Page page015: 1 objects
+  Page page016: 1 objects
+  Page page017: 1 objects
+  Page page018: 1 objects
+  Page page019: 1 objects
+  Page page020: 1 objects
+[xUnit.net 00:02:01.04]       Should have some successful operations, got 0
+[xUnit.net 00:02:01.04]       Expected: True
+[xUnit.net 00:02:01.04]       Actual:   False
+[xUnit.net 00:02:01.04]       Stack Trace:
+[xUnit.net 00:02:01.04]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs(165,0): at TxtDb.Storage.Tests.MVCC.CorrectedStressTest.CorrectedStress_ProperPageUpdates_ShouldPreserveAllData()
+[xUnit.net 00:02:01.04]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:01.04]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.CorrectedStressTest.CorrectedStress_ProperPageUpdates_ShouldPreserveAllData [2 m]
+  Error Message:
+   Should have some successful operations, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.CorrectedStressTest.CorrectedStress_ProperPageUpdates_ShouldPreserveAllData() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs:line 165
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+=== ALTERNATIVE APPROACH: USE INSERT FOR INDIVIDUAL OBJECTS ===
+[xUnit.net 00:02:01.25]       Expected at least 1 successful transaction, got 0
+[xUnit.net 00:02:01.25]       Expected: True
+[xUnit.net 00:02:01.25]       Actual:   False
+[xUnit.net 00:02:01.25]       Stack Trace:
+[xUnit.net 00:02:01.25]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(587,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ConflictResolution_WithBackgroundVersionCleanup_ShouldNotInterfere()
+[xUnit.net 00:02:01.25]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:01.25]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:02:01.53]       Should have successful transactions
+[xUnit.net 00:02:01.53]       Expected: True
+[xUnit.net 00:02:01.53]       Actual:   False
+[xUnit.net 00:02:01.53]       Stack Trace:
+[xUnit.net 00:02:01.53]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs(124,0): at TxtDb.Storage.Tests.MVCC.FixedStressTestDiagnostics.FixedStressTest_ProperReadModifyWrite_PreservesAllData()
+[xUnit.net 00:02:01.53]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:01.53]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ConflictResolution_WithBackgroundVersionCleanup_ShouldNotInterfere [30 s]
+  Error Message:
+   Expected at least 1 successful transaction, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ConflictResolution_WithBackgroundVersionCleanup_ShouldNotInterfere() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 587
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.WriteAfterWrite_SameTransaction_ShouldSucceed [5 ms]
+  Failed TxtDb.Storage.Tests.MVCC.FixedStressTestDiagnostics.FixedStressTest_ProperReadModifyWrite_PreservesAllData [2 m]
+  Error Message:
+   Should have successful transactions
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.FixedStressTestDiagnostics.FixedStressTest_ProperReadModifyWrite_PreservesAllData() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs:line 124
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:02:08.17]       Expected at least 40 updates, completed 0
+[xUnit.net 00:02:08.17]       Expected: True
+[xUnit.net 00:02:08.17]       Actual:   False
+[xUnit.net 00:02:08.17]       Stack Trace:
+[xUnit.net 00:02:08.17]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs(259,0): at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_HighFrequencyUpdates_ShouldKeepupWithCleanup()
+[xUnit.net 00:02:08.17]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:08.17]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_HighFrequencyUpdates_ShouldKeepupWithCleanup [30 s]
+  Error Message:
+   Expected at least 40 updates, completed 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_HighFrequencyUpdates_ShouldKeepupWithCleanup() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs:line 259
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:02:11.26]       Expected at least 1 successful transaction, got 0
+[xUnit.net 00:02:11.26]       Expected: True
+[xUnit.net 00:02:11.26]       Actual:   False
+[xUnit.net 00:02:11.26]       Stack Trace:
+[xUnit.net 00:02:11.26]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(428,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.DeadlockPrevention_TwoTransactionsCrossAccess_ShouldHandleGracefully()
+[xUnit.net 00:02:11.26]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:11.26]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.StartVersionCleanup_MultipleCallsShouldNotCreateMultipleTimers [1 s]
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.DeadlockPrevention_TwoTransactionsCrossAccess_ShouldHandleGracefully [10 s]
+  Error Message:
+   Expected at least 1 successful transaction, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.DeadlockPrevention_TwoTransactionsCrossAccess_ShouldHandleGracefully() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 428
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Task 2: ERROR - Deadlock detected: Transaction 3 timed out waiting for lock on 'debug.fixed.high.concurrency:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_MultipleNamespaces_ShouldCleanupAll [3 s]
+[xUnit.net 00:02:41.27]       Assert.Equal() Failure
+[xUnit.net 00:02:41.27]       Expected: 5
+[xUnit.net 00:02:41.27]       Actual:   0
+[xUnit.net 00:02:41.27]       Stack Trace:
+[xUnit.net 00:02:41.27]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(205,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ReadOnlyTransaction_WithConcurrentWrites_ShouldAlwaysSucceed()
+[xUnit.net 00:02:41.27]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:02:41.27]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ReadOnlyTransaction_WithConcurrentWrites_ShouldAlwaysSucceed [30 s]
+  Error Message:
+   Assert.Equal() Failure
+Expected: 5
+Actual:   0
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.ReadOnlyTransaction_WithConcurrentWrites_ShouldAlwaysSucceed() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 205
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Individual insertions: 0 successful, 0 errors
+Total objects preserved: 0 (expected: 0)
+  Passed TxtDb.Storage.Tests.MVCC.CorrectedStressTest.CorrectedStress_IndividualObjectUpdates_UsingInsertInsteadOfUpdate [1 m]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.YamlComplexIndentation_ShouldHandleCorrectly [3 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.SerializeArray_ArrayWithNonSerializableItems_ShouldThrowException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Serialize_CircularReference_ShouldThrowMeaningfulException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Performance_ErrorHandling_ShouldNotCauseMemoryLeaks [45 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.FileExtension_ShouldReturnYamlExtension [< 1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.YamlWithComments_ShouldIgnoreCommentsCorrectly [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.YamlAnchorReferences_ShouldHandleCorrectly [7 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Serialize_ExtremelyLargeObject_ShouldHandleOrThrow [638 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Serialize_ObjectWithInvalidYamlCharacters_ShouldEscapeCorrectly [9 ms]
+Task 5: ERROR - Deadlock detected: Transaction 4 timed out waiting for lock on 'debug.fixed.high.concurrency:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+Task 4: ERROR - Deadlock detected: Transaction 5 timed out waiting for lock on 'debug.fixed.high.concurrency:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.DeserializeArray_EmptyArrayVariations_ShouldHandleAllFormats [4 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.DeserializeArray_InvalidYamlArray_ShouldThrowException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Deserialize_EmptyOrWhitespaceString_ShouldThrowArgumentException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.DeserializeArray_NonArrayYaml_ShouldThrowException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Deserialize_MalformedYaml_ShouldThrowMeaningfulException [1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.YamlMultilineStrings_ShouldHandleAllVariations [< 1 ms]
+  Passed TxtDb.Storage.Tests.FormatAdapters.YamlAdapterErrorTests.Deserialize_UnsupportedYamlFeatures_ShouldHandleGracefully [7 ms]
+Task 1 starting
+STORAGE: [16:37:21.335] T221: BeginTransaction called
+STORAGE: [16:37:21.335] T221: BeginTransaction returned: 2
+STORAGE: [16:37:21.336] T221: ReadPage(txn: 2, ns: race.test, page: page001) called
+STORAGE: [16:37:21.337] T221: ReadPage(txn: 2, page: page001) returned 1 objects
+Task 1 read 1 objects
+STORAGE: [16:37:21.388] T221: UpdatePage(txn: 2, ns: race.test, page: page001, objects: 1)
+STORAGE: [16:37:21.390] T221: UpdatePage(txn: 2, page: page001) completed successfully
+Task 1 updated page
+STORAGE: [16:37:21.390] T221: CommitTransaction(2) called
+STORAGE: [16:37:21.391] T221: CommitTransaction(2) completed successfully
+Task 1 committed successfully
+Task 2 starting
+STORAGE: [16:37:21.391] T221: BeginTransaction called
+Task 1: SUCCESS
+STORAGE: [16:37:21.391] T221: BeginTransaction returned: 3
+STORAGE: [16:37:21.391] T221: ReadPage(txn: 3, ns: race.test, page: page001) called
+STORAGE: [16:37:21.392] T221: ReadPage(txn: 3, page: page001) returned 1 objects
+Task 2 read 1 objects
+STORAGE: [16:37:21.443] T221: UpdatePage(txn: 3, ns: race.test, page: page001, objects: 1)
+STORAGE: [16:37:21.443] T221: UpdatePage(txn: 3, page: page001) completed successfully
+Task 2 updated page
+STORAGE: [16:37:21.443] T221: CommitTransaction(3) called
+STORAGE: [16:37:21.443] T221: CommitTransaction(3) completed successfully
+Task 2 committed successfully
+Task 2: SUCCESS
+Task 3 starting
+STORAGE: [16:37:21.444] T221: BeginTransaction called
+STORAGE: [16:37:21.444] T221: BeginTransaction returned: 4
+STORAGE: [16:37:21.444] T221: ReadPage(txn: 4, ns: race.test, page: page001) called
+STORAGE: [16:37:21.445] T221: ReadPage(txn: 4, page: page001) returned 1 objects
+Task 3 read 1 objects
+STORAGE: [16:37:21.495] T221: UpdatePage(txn: 4, ns: race.test, page: page001, objects: 1)
+STORAGE: [16:37:21.495] T221: UpdatePage(txn: 4, page: page001) completed successfully
+Task 3 updated page
+STORAGE: [16:37:21.495] T221: CommitTransaction(4) called
+STORAGE: [16:37:21.496] T221: CommitTransaction(4) completed successfully
+Task 3 committed successfully
+Task 3: SUCCESS
+STORAGE: [16:37:21.496] T20: BeginTransaction called
+STORAGE: [16:37:21.497] T20: BeginTransaction returned: 5
+STORAGE: [16:37:21.498] T20: GetMatchingObjects(txn: 5, ns: race.test, pattern: *) called
+STORAGE: [16:37:21.499] T20: GetMatchingObjects(txn: 5) returned 1 pages with 1 total objects
+STORAGE: [16:37:21.499] T20:   Page page001: 1 objects
+STORAGE: [16:37:21.499] T20: CommitTransaction(5) called
+STORAGE: [16:37:21.500] T20: CommitTransaction(5) completed successfully
+Race condition result: 1 objects
+Full operation log written to: /tmp/txtdb_critical_8412a1c9d12b42068c8c6add8cddea0f/full_operation_log.txt
+=== RECENT OPERATION LOG ===
+[16:34:12.823] T20: LoggingStorageWrapper initialized
+[16:34:12.829] T20: BeginTransaction called
+[16:34:12.831] T20: BeginTransaction returned: 1
+[16:34:12.832] T20: CreateNamespace(txn: 1, ns: race.test) called
+[16:34:12.832] T20: CreateNamespace(txn: 1, ns: race.test) completed
+[16:34:12.841] T20: InsertObject(txn: 1, ns: race.test, data: {"Id":1,"Value":"Original","Counter":0})
+[16:34:12.846] T20: InsertObject(txn: 1) returned pageId: page001
+[16:34:12.847] T20: CommitTransaction(1) called
+[16:34:12.848] T20: CommitTransaction(1) completed successfully
+[16:37:21.335] T221: BeginTransaction called
+[16:37:21.335] T221: BeginTransaction returned: 2
+[16:37:21.336] T221: ReadPage(txn: 2, ns: race.test, page: page001) called
+[16:37:21.337] T221: ReadPage(txn: 2, page: page001) returned 1 objects
+[16:37:21.388] T221: UpdatePage(txn: 2, ns: race.test, page: page001, objects: 1)
+[16:37:21.390] T221: CommitTransaction(2) called
+[16:37:21.390] T221: UpdatePage(txn: 2, page: page001) completed successfully
+[16:37:21.391] T221: BeginTransaction called
+[16:37:21.391] T221: BeginTransaction returned: 3
+[16:37:21.391] T221: CommitTransaction(2) completed successfully
+[16:37:21.391] T221: ReadPage(txn: 3, ns: race.test, page: page001) called
+[16:37:21.392] T221: ReadPage(txn: 3, page: page001) returned 1 objects
+[16:37:21.443] T221: CommitTransaction(3) called
+[16:37:21.443] T221: CommitTransaction(3) completed successfully
+[16:37:21.443] T221: UpdatePage(txn: 3, ns: race.test, page: page001, objects: 1)
+[16:37:21.443] T221: UpdatePage(txn: 3, page: page001) completed successfully
+[16:37:21.444] T221: BeginTransaction called
+[16:37:21.444] T221: BeginTransaction returned: 4
+[16:37:21.444] T221: ReadPage(txn: 4, ns: race.test, page: page001) called
+[16:37:21.445] T221: ReadPage(txn: 4, page: page001) returned 1 objects
+[16:37:21.495] T221: CommitTransaction(4) called
+[16:37:21.495] T221: UpdatePage(txn: 4, ns: race.test, page: page001, objects: 1)
+[16:37:21.495] T221: UpdatePage(txn: 4, page: page001) completed successfully
+[16:37:21.496] T20: BeginTransaction called
+[16:37:21.496] T221: CommitTransaction(4) completed successfully
+[16:37:21.497] T20: BeginTransaction returned: 5
+[16:37:21.498] T20: GetMatchingObjects(txn: 5, ns: race.test, pattern: *) called
+[16:37:21.499] T20:   Page page001: 1 objects
+[16:37:21.499] T20: CommitTransaction(5) called
+[16:37:21.499] T20: GetMatchingObjects(txn: 5) returned 1 pages with 1 total objects
+[16:37:21.500] T20: CommitTransaction(5) completed successfully
+Test data preserved at: /tmp/txtdb_critical_8412a1c9d12b42068c8c6add8cddea0f
+STORAGE: [16:37:21.503] T20: LoggingStorageWrapper initialized
+  Passed TxtDb.Storage.Tests.MVCC.CriticalDebuggingTest.CriticalDebug_ConcurrentSamePageUpdates_RaceCondition [3 m 8 s]
+=== CRITICAL DEBUG: TWO SIMPLE UPDATES ===
+STORAGE: [16:37:21.506] T20: BeginTransaction called
+STORAGE: [16:37:21.507] T20: BeginTransaction returned: 1
+STORAGE: [16:37:21.507] T20: CreateNamespace(txn: 1, ns: critical.test) called
+STORAGE: [16:37:21.507] T20: CreateNamespace(txn: 1, ns: critical.test) completed
+STORAGE: [16:37:21.509] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":1,"Value":"Object1"})
+STORAGE: [16:37:21.510] T20: InsertObject(txn: 1) returned pageId: page001
+STORAGE: [16:37:21.510] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":2,"Value":"Object2"})
+STORAGE: [16:37:21.511] T20: InsertObject(txn: 1) returned pageId: page001
+STORAGE: [16:37:21.511] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":3,"Value":"Object3"})
+STORAGE: [16:37:21.511] T20: InsertObject(txn: 1) returned pageId: page001
+STORAGE: [16:37:21.511] T20: CommitTransaction(1) called
+STORAGE: [16:37:21.512] T20: CommitTransaction(1) completed successfully
+Setup complete - Pages: page001, page001, page001
+STORAGE: [16:37:21.512] T20: BeginTransaction called
+STORAGE: [16:37:21.512] T20: BeginTransaction returned: 2
+STORAGE: [16:37:21.512] T20: GetMatchingObjects(txn: 2, ns: critical.test, pattern: *) called
+STORAGE: [16:37:21.513] T20: GetMatchingObjects(txn: 2) returned 1 pages with 3 total objects
+STORAGE: [16:37:21.513] T20:   Page page001: 3 objects
+STORAGE: [16:37:21.513] T20: CommitTransaction(2) called
+STORAGE: [16:37:21.513] T20: CommitTransaction(2) completed successfully
+Initial verification: 3 objects in 1 pages
+=== UPDATE 1: Updating object with Id=1 in page1 ===
+STORAGE: [16:37:21.513] T20: BeginTransaction called
+STORAGE: [16:37:21.514] T20: BeginTransaction returned: 3
+STORAGE: [16:37:21.514] T20: ReadPage(txn: 3, ns: critical.test, page: page001) called
+STORAGE: [16:37:21.514] T20: ReadPage(txn: 3, page: page001) returned 3 objects
+Read page1: 3 objects
+STORAGE: [16:37:21.520] T20: UpdatePage(txn: 3, ns: critical.test, page: page001, objects: 3)
+STORAGE: [16:37:21.520] T20: UpdatePage(txn: 3, page: page001) completed successfully
+Updated object with Id=1 while preserving others
+STORAGE: [16:37:21.520] T20: CommitTransaction(3) called
+STORAGE: [16:37:21.521] T20: CommitTransaction(3) completed successfully
+Update1 transaction committed
+STORAGE: [16:37:21.521] T20: BeginTransaction called
+STORAGE: [16:37:21.521] T20: BeginTransaction returned: 4
+STORAGE: [16:37:21.521] T20: GetMatchingObjects(txn: 4, ns: critical.test, pattern: *) called
+STORAGE: [16:37:21.522] T20: GetMatchingObjects(txn: 4) returned 1 pages with 3 total objects
+STORAGE: [16:37:21.522] T20:   Page page001: 3 objects
+STORAGE: [16:37:21.522] T20: CommitTransaction(4) called
+STORAGE: [16:37:21.522] T20: CommitTransaction(4) completed successfully
+After Update1: 3 objects in 1 pages
+  Page page001: 3 objects
+=== UPDATE 2: Updating object with Id=2 in page2 ===
+STORAGE: [16:37:21.522] T20: BeginTransaction called
+STORAGE: [16:37:21.523] T20: BeginTransaction returned: 5
+STORAGE: [16:37:21.523] T20: ReadPage(txn: 5, ns: critical.test, page: page001) called
+STORAGE: [16:37:21.523] T20: ReadPage(txn: 5, page: page001) returned 3 objects
+Read page2: 3 objects
+STORAGE: [16:37:21.526] T20: UpdatePage(txn: 5, ns: critical.test, page: page001, objects: 3)
+STORAGE: [16:37:21.526] T20: UpdatePage(txn: 5, page: page001) completed successfully
+Updated object with Id=2 while preserving others
+STORAGE: [16:37:21.526] T20: CommitTransaction(5) called
+STORAGE: [16:37:21.527] T20: CommitTransaction(5) completed successfully
+Update2 transaction committed
+STORAGE: [16:37:21.527] T20: BeginTransaction called
+STORAGE: [16:37:21.527] T20: BeginTransaction returned: 6
+STORAGE: [16:37:21.527] T20: GetMatchingObjects(txn: 6, ns: critical.test, pattern: *) called
+STORAGE: [16:37:21.528] T20: GetMatchingObjects(txn: 6) returned 1 pages with 3 total objects
+STORAGE: [16:37:21.528] T20:   Page page001: 3 objects
+STORAGE: [16:37:21.528] T20: CommitTransaction(6) called
+STORAGE: [16:37:21.528] T20: CommitTransaction(6) completed successfully
+Final result: 3 objects in 1 pages
+  Page page001: 3 objects
+Full operation log written to: /tmp/txtdb_critical_b537c3baafe64dbc94ac2e83945e7b3a/full_operation_log.txt
+=== RECENT OPERATION LOG ===
+[16:37:21.503] T20: LoggingStorageWrapper initialized
+[16:37:21.506] T20: BeginTransaction called
+[16:37:21.507] T20: BeginTransaction returned: 1
+[16:37:21.507] T20: CreateNamespace(txn: 1, ns: critical.test) called
+[16:37:21.507] T20: CreateNamespace(txn: 1, ns: critical.test) completed
+[16:37:21.509] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":1,"Value":"Object1"})
+[16:37:21.510] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":2,"Value":"Object2"})
+[16:37:21.510] T20: InsertObject(txn: 1) returned pageId: page001
+[16:37:21.511] T20: CommitTransaction(1) called
+[16:37:21.511] T20: InsertObject(txn: 1, ns: critical.test, data: {"Id":3,"Value":"Object3"})
+[16:37:21.511] T20: InsertObject(txn: 1) returned pageId: page001
+[16:37:21.511] T20: InsertObject(txn: 1) returned pageId: page001
+[16:37:21.512] T20: BeginTransaction called
+[16:37:21.512] T20: BeginTransaction returned: 2
+[16:37:21.512] T20: CommitTransaction(1) completed successfully
+[16:37:21.512] T20: GetMatchingObjects(txn: 2, ns: critical.test, pattern: *) called
+[16:37:21.513] T20:   Page page001: 3 objects
+[16:37:21.513] T20: BeginTransaction called
+[16:37:21.513] T20: CommitTransaction(2) called
+[16:37:21.513] T20: CommitTransaction(2) completed successfully
+[16:37:21.513] T20: GetMatchingObjects(txn: 2) returned 1 pages with 3 total objects
+[16:37:21.514] T20: BeginTransaction returned: 3
+[16:37:21.514] T20: ReadPage(txn: 3, ns: critical.test, page: page001) called
+[16:37:21.514] T20: ReadPage(txn: 3, page: page001) returned 3 objects
+[16:37:21.520] T20: CommitTransaction(3) called
+[16:37:21.520] T20: UpdatePage(txn: 3, ns: critical.test, page: page001, objects: 3)
+[16:37:21.520] T20: UpdatePage(txn: 3, page: page001) completed successfully
+[16:37:21.521] T20: BeginTransaction called
+[16:37:21.521] T20: BeginTransaction returned: 4
+[16:37:21.521] T20: CommitTransaction(3) completed successfully
+[16:37:21.521] T20: GetMatchingObjects(txn: 4, ns: critical.test, pattern: *) called
+[16:37:21.522] T20:   Page page001: 3 objects
+[16:37:21.522] T20: BeginTransaction called
+[16:37:21.522] T20: CommitTransaction(4) called
+[16:37:21.522] T20: CommitTransaction(4) completed successfully
+[16:37:21.522] T20: GetMatchingObjects(txn: 4) returned 1 pages with 3 total objects
+[16:37:21.523] T20: BeginTransaction returned: 5
+[16:37:21.523] T20: ReadPage(txn: 5, ns: critical.test, page: page001) called
+[16:37:21.523] T20: ReadPage(txn: 5, page: page001) returned 3 objects
+[16:37:21.526] T20: CommitTransaction(5) called
+[16:37:21.526] T20: UpdatePage(txn: 5, ns: critical.test, page: page001, objects: 3)
+[16:37:21.526] T20: UpdatePage(txn: 5, page: page001) completed successfully
+[16:37:21.527] T20: BeginTransaction called
+[16:37:21.527] T20: BeginTransaction returned: 6
+[16:37:21.527] T20: CommitTransaction(5) completed successfully
+[16:37:21.527] T20: GetMatchingObjects(txn: 6, ns: critical.test, pattern: *) called
+[16:37:21.528] T20:   Page page001: 3 objects
+[16:37:21.528] T20: CommitTransaction(6) called
+[16:37:21.528] T20: CommitTransaction(6) completed successfully
+[16:37:21.528] T20: GetMatchingObjects(txn: 6) returned 1 pages with 3 total objects
+Test data preserved at: /tmp/txtdb_critical_b537c3baafe64dbc94ac2e83945e7b3a
+  Passed TxtDb.Storage.Tests.MVCC.CriticalDebuggingTest.CriticalDebug_TwoSimpleUpdates_TraceDataLoss [26 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_ThreadSafety_ShouldHandleConcurrentOperations [3 m 8 s]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_RecordTransactionOperation_ShouldIncrementCountersAndRecordLatency [1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_RecordWriteOperation_ShouldIncrementCountersAndRecordLatency [6 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_RecordBatchFlushMetrics_ShouldTrackFlushReduction [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_MultipleOperations_ShouldCalculateCorrectLatencyPercentiles [1 ms]
+=== CONCURRENT SEPARATE TRANSACTIONS ===
+[xUnit.net 00:03:12.19]       Expected at least 40 operations, completed 0
+[xUnit.net 00:03:12.19]       Expected: True
+[xUnit.net 00:03:12.19]       Actual:   False
+[xUnit.net 00:03:12.19]       Stack Trace:
+[xUnit.net 00:03:12.19]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs(452,0): at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_ConcurrentWithTransactions_ShouldNotInterfereWithOperations()
+[xUnit.net 00:03:12.19]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:03:12.19]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_RecordReadOperation_ShouldIncrementCountersAndRecordLatency [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_Constructor_ShouldInitializeWithZeroCounters [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_GetCurrentThroughput_ShouldReturnRecentOperationsPerSecond [502 ms]
+  Standard Output Messages:
+ Measured current throughput: 0.17 ops/sec
+
+
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_GetSuccessRate_ShouldCalculateCorrectPercentage [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_RecordReadOperation_WithError_ShouldIncrementErrorCounters [< 1 ms]
+  Passed TxtDb.Storage.Tests.Performance.StorageMetricsTests.StorageMetrics_CalculateThroughput_ShouldReturnOperationsPerSecond [< 1 ms]
+  Failed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_ConcurrentWithTransactions_ShouldNotInterfereWithOperations [1 m]
+  Error Message:
+   Expected at least 40 operations, completed 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_ConcurrentWithTransactions_ShouldNotInterfereWithOperations() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs:line 452
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_EmptyNamespace_ShouldHandleGracefully [1 s]
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.StartVersionCleanup_ShouldInitializeTimerAndRemoveOldVersions [2 s]
+  Passed TxtDb.Storage.Tests.Core.VersionCleanupTests.VersionCleanup_WithCorruptedVersionFiles_ShouldContinueGracefully [2 s]
+[xUnit.net 00:03:17.22]     TxtDb.Storage.Tests.Async.AsyncFormatAdapterTests.AsyncYamlAdapter_DeserializeAsync_ShouldDeserializeAsynchronously [SKIP]
+[xUnit.net 00:03:17.22]       YAML naming convention mismatch - camelCase vs PascalCase
+[TEST] Instance 1 committed data with TSN: 1
+[TEST] Instance 2 new transaction TSN: 2
+  Passed TxtDb.Storage.Tests.Performance.MonitoredAsyncStorageSubsystemTests.MonitoredAsyncStorageSubsystem_BeginTransactionAsync_ShouldTrackTransactionMetrics [2 ms]
+  Standard Output Messages:
+ Transaction begin latency: 0.03ms
+
+
+  Passed TxtDb.Storage.Tests.Performance.MonitoredAsyncStorageSubsystemTests.MonitoredAsyncStorageSubsystem_Constructor_ShouldInitializeWithMetrics [1 ms]
+  Skipped TxtDb.Storage.Tests.Async.AsyncFormatAdapterTests.AsyncYamlAdapter_DeserializeAsync_ShouldDeserializeAsynchronously [1 ms]
+  Standard Output Messages:
+ YAML naming convention mismatch - camelCase vs PascalCase
+
+  Passed TxtDb.Storage.Tests.MVCCDiagnosticTest.DiagnosticTest_BasicInsertAndRead_ShouldShowWhatHappens [8 ms]
+  Standard Output Messages:
+ Inserted into pages: page001, page002, page003
+ Page page001 has 1 objects
+ Page page002 has 1 objects
+ Page page003 has 1 objects
+ GetMatchingObjects returned 3 pages
+   Page page001 has 1 objects
+   Page page002 has 1 objects
+   Page page003 has 1 objects
+ Total objects found: 3
+
+
+  Passed TxtDb.Storage.Tests.MVCCVersionVisibilityTests.FreshInstance_ShouldSeeCommittedDataFromOtherInstance_WithoutMVCCBypass [27 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_TargetAlreadyExists_ShouldThrowArgumentException [5 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_WithLargeAmountOfData_ShouldCompleteSuccessfully [33 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_WithActivePages_ShouldUpdateAllMetadataReferences [6 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_PreservesNamespaceMarkerFile_WithUpdatedContent [3 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_NonExistentNamespace_ShouldThrowArgumentException [2 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_InvalidCharacters_ShouldThrowArgumentException [8 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_WithMultipleVersions_ShouldPreserveAllVersions [5 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_InvalidTransactionId_ShouldThrowArgumentException [3 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_SameSourceAndTarget_ShouldThrowArgumentException [3 ms]
+  Passed TxtDb.Storage.Tests.Core.RenameNamespaceTests.RenameNamespace_EmptyOrNullNames_ShouldThrowArgumentException [4 ms]
+Task 3: ERROR - Deadlock detected: Transaction 6 timed out waiting for lock on 'debug.fixed.high.concurrency:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+Concurrent separate result: 0 successful, 0 failed
+Final data: 0 objects in 0 pages
+Test files preserved at: /tmp/txtdb_race_9545ddbddfe942a4a9b35e15b90f4ac0
+  Passed TxtDb.Storage.Tests.MVCC.RaceConditionIsolationTest.RaceTest_ConcurrentSeparateTransactions_OneObjectEach [30 s]
+=== CONCURRENT SAME TRANSACTION (INVALID BUT TESTING) ===
+[xUnit.net 00:03:41.27]       Expected at least 1 successful update, got 0
+[xUnit.net 00:03:41.27]       Expected: True
+[xUnit.net 00:03:41.27]       Actual:   False
+[xUnit.net 00:03:41.27]       Stack Trace:
+[xUnit.net 00:03:41.27]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(480,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.OptimisticLocking_HighContentionScenario_ShouldMaintainConsistency()
+[xUnit.net 00:03:41.27]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:03:41.27]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.OptimisticLocking_HighContentionScenario_ShouldMaintainConsistency [1 m]
+  Error Message:
+   Expected at least 1 successful update, got 0
+Expected: True
+Actual:   False
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.OptimisticLocking_HighContentionScenario_ShouldMaintainConsistency() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 480
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+Shared transaction committed successfully
+Shared transaction test: 0 successful, 0 failed
+Test files preserved at: /tmp/txtdb_race_cfe45d1793a24f3487055625c5a112ef
+=== SEQUENTIAL BASELINE ===
+  Passed TxtDb.Storage.Tests.MVCC.RaceConditionIsolationTest.RaceTest_ConcurrentSameTransaction_MultipleInserts [10 s]
+Sequential result: 50/50 objects preserved
+Test files preserved at: /tmp/txtdb_race_e8289847bedd494d8aefef2d1bd0fa60
+=== FILESYSTEM ANALYSIS ===
+Files in namespace: 11
+  .namespace.json: 114 bytes, ~0 arrays
+    *** POTENTIAL CORRUPTION: Invalid JSON array structure ***
+  page001.json.v2: 187 bytes, ~4 arrays
+  page002.json.v3: 187 bytes, ~4 arrays
+  page003.json.v4: 187 bytes, ~4 arrays
+  page004.json.v5: 187 bytes, ~4 arrays
+  page005.json.v6: 187 bytes, ~4 arrays
+  page006.json.v7: 187 bytes, ~4 arrays
+  page007.json.v8: 187 bytes, ~4 arrays
+  page008.json.v9: 187 bytes, ~4 arrays
+  page009.json.v10: 187 bytes, ~4 arrays
+  page010.json.v11: 187 bytes, ~4 arrays
+API reports: 10 objects
+Test files preserved at: /tmp/txtdb_race_9666d73ec80b4f018f3003be1fbaf8b1
+  Passed TxtDb.Storage.Tests.MVCC.RaceConditionIsolationTest.RaceTest_SequentialInserts_ShouldPreserveAll [40 ms]
+  Passed TxtDb.Storage.Tests.MVCC.RaceConditionIsolationTest.RaceTest_FileSystemDirectAnalysis_CheckForCorruption [10 ms]
+  Passed TxtDb.Storage.Tests.Async.AsyncLockManagerTests.AcquireLockAsync_SingleLock_ShouldAcquireAndRelease [4 ms]
+  Passed TxtDb.Storage.Tests.ConcurrencyAndEdgeCaseTests.MassiveNamespaceCreation_ShouldHandleFileSystemLimits [109 ms]
+  Passed TxtDb.Storage.Tests.ConcurrencyAndEdgeCaseTests.SystemResourceExhaustion_TooManyOpenTransactions_ShouldHandleGracefully [40 ms]
+  Passed TxtDb.Storage.Tests.ConcurrencyAndEdgeCaseTests.ConcurrentVersionCleanup_WhileTransactionsActive_ShouldNotDeleteActiveVersions [3 s]
+  Passed TxtDb.Storage.Tests.ConcurrencyAndEdgeCaseTests.InvalidTransactionId_ShouldThrowImmediately [4 ms]
+  Passed TxtDb.Storage.Tests.ConcurrencyAndEdgeCaseTests.DeepNamespaceNesting_ShouldCreateCorrectFolderStructure [8 ms]
+Task 6: ERROR - Deadlock detected: Transaction 7 timed out waiting for lock on 'debug.fixed.high.concurrency:page001' after 30000ms (timeout: 30000ms). This indicates a potential deadlock situation.
+[xUnit.net 00:04:11.28]       Assert.Throws() Failure
+[xUnit.net 00:04:11.28]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:04:11.28]       Actual:   (No exception was thrown)
+[xUnit.net 00:04:11.28]       Stack Trace:
+[xUnit.net 00:04:11.28]         /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs(271,0): at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.LongRunningTransaction_WithManyShortTransactions_ShouldMaintainIsolation()
+[xUnit.net 00:04:11.28]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:04:11.28]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.LongRunningTransaction_WithManyShortTransactions_ShouldMaintainIsolation [30 s]
+  Error Message:
+   Assert.Throws() Failure
+Expected: typeof(System.InvalidOperationException)
+Actual:   (No exception was thrown)
+  Stack Trace:
+     at TxtDb.Storage.Tests.MVCC.AdvancedConflictTests.LongRunningTransaction_WithManyShortTransactions_ShouldMaintainIsolation() in /home/jsbattig/Dev/txt-db/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs:line 271
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)

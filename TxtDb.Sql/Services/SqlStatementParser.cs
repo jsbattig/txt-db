@@ -2,6 +2,7 @@ using SqlParser;
 using SqlParser.Ast;
 using TxtDb.Sql.Models;
 using TxtDb.Sql.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace TxtDb.Sql.Services;
 
@@ -19,6 +20,7 @@ public class SqlStatementParser
     
     /// <summary>
     /// Parses a SQL statement string into a structured SqlStatement object using SqlParserCS.
+    /// Supports USE INDEX hints by pre-processing them before standard SQL parsing.
     /// </summary>
     /// <param name="sql">SQL statement to parse</param>
     /// <returns>Parsed SqlStatement with type, table name, and other extracted information</returns>
@@ -30,7 +32,10 @@ public class SqlStatementParser
             
         try
         {
-            var statements = _parser.Parse(sql);
+            // Pre-process USE INDEX hints before SqlParserCS parsing
+            var (processedSql, useIndexHint) = ExtractUseIndexHint(sql);
+            
+            var statements = _parser.Parse(processedSql);
             
             if (statements.Count == 0)
                 throw new SqlExecutionException("No statements found in SQL", sql);
@@ -39,9 +44,44 @@ public class SqlStatementParser
                 throw new SqlExecutionException("Multiple statements are not supported", sql);
             
             var statement = statements[0];
-            var parsedStatement = new ParsedStatement(statement, sql);
             
-            return ConvertToLegacySqlStatement(parsedStatement);
+            // Keep minimal debug info for CREATE INDEX statements
+            if (sql.TrimStart().StartsWith("CREATE INDEX", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine($"PARSER DEBUG: CREATE INDEX parsed as {statement.GetType().Name}");
+            }
+            
+            // Debug USE INDEX processing
+            if (!string.IsNullOrEmpty(useIndexHint))
+            {
+                Console.WriteLine($"PARSER DEBUG: Extracted USE INDEX hint: '{useIndexHint}' from SQL: '{sql}'");
+                Console.WriteLine($"PARSER DEBUG: Processed SQL for parsing: '{processedSql}'");
+            }
+            
+            var parsedStatement = new ParsedStatement(statement, sql);
+            var sqlStatement = ConvertToLegacySqlStatement(parsedStatement);
+            
+            // Add USE INDEX hint to the result
+            if (!string.IsNullOrEmpty(useIndexHint))
+            {
+                sqlStatement = new SqlStatement
+                {
+                    Type = sqlStatement.Type,
+                    TableName = sqlStatement.TableName,
+                    Columns = sqlStatement.Columns,
+                    Values = sqlStatement.Values,
+                    SelectColumns = sqlStatement.SelectColumns,
+                    SelectAllColumns = sqlStatement.SelectAllColumns,
+                    WhereClause = sqlStatement.WhereClause,
+                    WhereExpression = sqlStatement.WhereExpression,
+                    SetValues = sqlStatement.SetValues,
+                    IndexName = sqlStatement.IndexName,
+                    ColumnName = sqlStatement.ColumnName,
+                    UseIndexHint = useIndexHint
+                };
+            }
+            
+            return sqlStatement;
         }
         catch (ParserException ex)
         {
@@ -77,6 +117,8 @@ public class SqlStatementParser
             SqlStatementType.Delete => ConvertDeleteStatement(parsedStatement),
             SqlStatementType.AlterTable => ConvertAlterTableStatement(parsedStatement),
             SqlStatementType.DropTable => ConvertDropTableStatement(parsedStatement),
+            SqlStatementType.CreateIndex => ConvertCreateIndexStatement(parsedStatement),
+            SqlStatementType.DropIndex => ConvertDropIndexStatement(parsedStatement),
             _ => throw new SqlExecutionException($"Unsupported statement type: {parsedStatement.StatementType}", parsedStatement.OriginalSql)
         };
     }
@@ -189,6 +231,40 @@ public class SqlStatementParser
         {
             Type = SqlStatementType.DropTable,
             TableName = parsedStatement.TableName ?? string.Empty
+        };
+    }
+    
+    private SqlStatement ConvertCreateIndexStatement(ParsedStatement parsedStatement)
+    {
+        if (parsedStatement.AstNode is not Statement.CreateIndex createIndex)
+            throw new SqlExecutionException("Expected CREATE INDEX statement", parsedStatement.OriginalSql);
+        
+        var tableName = parsedStatement.TableName ?? string.Empty;
+        var indexName = ExtractIndexName(createIndex);
+        var columnName = ExtractIndexColumnName(createIndex);
+        
+        return new SqlStatement
+        {
+            Type = SqlStatementType.CreateIndex,
+            TableName = tableName,
+            IndexName = indexName,
+            ColumnName = columnName
+        };
+    }
+    
+    private SqlStatement ConvertDropIndexStatement(ParsedStatement parsedStatement)
+    {
+        if (parsedStatement.AstNode is not Statement.Drop drop)
+            throw new SqlExecutionException("Expected DROP INDEX statement", parsedStatement.OriginalSql);
+        
+        var tableName = parsedStatement.TableName ?? string.Empty;
+        var indexName = ExtractDropIndexName(drop);
+        
+        return new SqlStatement
+        {
+            Type = SqlStatementType.DropIndex,
+            TableName = tableName,
+            IndexName = indexName
         };
     }
     
@@ -379,5 +455,139 @@ public class SqlStatementParser
             AssignmentTarget.ColumnName columnName => columnName.ToString(),
             _ => target.ToString()
         };
+    }
+    
+    /// <summary>
+    /// Extracts index name from CREATE INDEX statement.
+    /// </summary>
+    private string ExtractIndexName(Statement.CreateIndex createIndex)
+    {
+        // Based on debug output, the data is in createIndex.Element.Name
+        try
+        {
+            var element = createIndex.Element;
+            if (element != null)
+            {
+                var nameProperty = element.GetType().GetProperty("Name");
+                if (nameProperty != null)
+                {
+                    var nameValue = nameProperty.GetValue(element);
+                    if (nameValue != null)
+                    {
+                        Console.WriteLine($"CREATE INDEX NAME DEBUG: Found name = {nameValue}");
+                        return nameValue.ToString() ?? string.Empty;
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"CREATE INDEX NAME DEBUG: Error extracting name: {ex.Message}");
+        }
+        
+        return string.Empty;
+    }
+    
+    /// <summary>
+    /// Extracts column name from CREATE INDEX statement.
+    /// </summary>
+    private string ExtractIndexColumnName(Statement.CreateIndex createIndex)
+    {
+        // Based on debug output, the columns are in createIndex.Element.Columns
+        try
+        {
+            var element = createIndex.Element;
+            if (element != null)
+            {
+                var columnsProperty = element.GetType().GetProperty("Columns");
+                if (columnsProperty != null)
+                {
+                    var columnsValue = columnsProperty.GetValue(element);
+                    if (columnsValue is System.Collections.IEnumerable enumerable && !(columnsValue is string))
+                    {
+                        foreach (var item in enumerable)
+                        {
+                            if (item != null)
+                            {
+                                // From debug output: "OrderByExpression { Expression = Identifier { Ident = age }, ...}"
+                                // Need to extract the identifier from the expression
+                                var expressionProperty = item.GetType().GetProperty("Expression");
+                                if (expressionProperty != null)
+                                {
+                                    var expressionValue = expressionProperty.GetValue(item);
+                                    if (expressionValue != null)
+                                    {
+                                        // Get the identifier name
+                                        var identProperty = expressionValue.GetType().GetProperty("Ident");
+                                        if (identProperty != null)
+                                        {
+                                            var identValue = identProperty.GetValue(expressionValue);
+                                            if (identValue != null)
+                                            {
+                                                Console.WriteLine($"CREATE INDEX COLUMN DEBUG: Found column = {identValue}");
+                                                return identValue.ToString() ?? string.Empty;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"CREATE INDEX COLUMN DEBUG: Error extracting column: {ex.Message}");
+        }
+        
+        return string.Empty;
+    }
+    
+    /// <summary>
+    /// Extracts index name from DROP INDEX statement.
+    /// </summary>
+    private string ExtractDropIndexName(Statement.Drop drop)
+    {
+        // The index name is in drop.Names[0]
+        if (drop.Names?.Count > 0)
+        {
+            return drop.Names[0]?.ToString() ?? string.Empty;
+        }
+        return string.Empty;
+    }
+    
+    /// <summary>
+    /// Extracts USE INDEX hints from SQL statements and returns cleaned SQL for parsing.
+    /// Supports syntax: "SELECT * FROM table USE INDEX (index_name) WHERE ..."
+    /// </summary>
+    /// <param name="sql">Original SQL with potential USE INDEX hint</param>
+    /// <returns>Tuple of (cleaned SQL for parsing, extracted index name)</returns>
+    private (string processedSql, string? indexHint) ExtractUseIndexHint(string sql)
+    {
+        if (string.IsNullOrWhiteSpace(sql))
+            return (sql, null);
+        
+        // Use regex to match USE INDEX (index_name) pattern
+        // Pattern matches: USE INDEX (index_name) or USE INDEX(index_name)
+        var useIndexPattern = @"\bUSE\s+INDEX\s*\(\s*([^)]+)\s*\)";
+        var regex = new System.Text.RegularExpressions.Regex(useIndexPattern, 
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        
+        var match = regex.Match(sql);
+        if (match.Success)
+        {
+            var indexName = match.Groups[1].Value.Trim();
+            
+            // Remove the USE INDEX clause from the SQL for standard parsing
+            var processedSql = regex.Replace(sql, "").Trim();
+            
+            // Clean up any extra whitespace that might result from removal
+            processedSql = System.Text.RegularExpressions.Regex.Replace(processedSql, @"\s+", " ");
+            
+            return (processedSql, indexName);
+        }
+        
+        return (sql, null);
     }
 }

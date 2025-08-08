@@ -167,10 +167,13 @@ public class StorageMetricsResourceTests
         
         // Verify percentiles
         var sortedLatencies = flushLatencies.OrderBy(x => x).ToArray();
-        var p50Index = (int)(sortedLatencies.Length * 0.5);
+        // Calculate expected P50 for even-length array: average of two middle elements
+        var expectedP50 = sortedLatencies.Length % 2 == 0 ? 
+            (sortedLatencies[sortedLatencies.Length / 2 - 1] + sortedLatencies[sortedLatencies.Length / 2]) / 2.0 : 
+            sortedLatencies[sortedLatencies.Length / 2];
         var p95Index = (int)(sortedLatencies.Length * 0.95);
         
-        Assert.Equal(sortedLatencies[p50Index], flushStats.P50Ms, 1);
+        Assert.Equal(expectedP50, flushStats.P50Ms, 1);
         Assert.True(flushStats.P95Ms >= sortedLatencies[p95Index]);
         
         _output.WriteLine($"Flush latency - Avg: {flushStats.AverageMs:F2}ms, P50: {flushStats.P50Ms:F2}ms, P95: {flushStats.P95Ms:F2}ms");

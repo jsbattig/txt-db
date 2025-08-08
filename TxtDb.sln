@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Storage", "TxtDb.Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Storage.Tests", "TxtDb.Storage.Tests\TxtDb.Storage.Tests.csproj", "{681937B1-F3BE-4763-AC29-7FEEF117D4B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Sql", "TxtDb.Sql\TxtDb.Sql.csproj", "{12AC9355-395C-45C3-9DCA-CF4A8195E3E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxtDb.Sql.Tests", "TxtDb.Sql.Tests\TxtDb.Sql.Tests.csproj", "{E31CB9AF-257F-45A2-97EC-FABFE807A739}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{681937B1-F3BE-4763-AC29-7FEEF117D4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12AC9355-395C-45C3-9DCA-CF4A8195E3E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12AC9355-395C-45C3-9DCA-CF4A8195E3E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12AC9355-395C-45C3-9DCA-CF4A8195E3E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12AC9355-395C-45C3-9DCA-CF4A8195E3E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31CB9AF-257F-45A2-97EC-FABFE807A739}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31CB9AF-257F-45A2-97EC-FABFE807A739}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31CB9AF-257F-45A2-97EC-FABFE807A739}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31CB9AF-257F-45A2-97EC-FABFE807A739}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

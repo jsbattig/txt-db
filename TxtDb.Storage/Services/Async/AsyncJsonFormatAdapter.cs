@@ -26,16 +26,16 @@ public class AsyncJsonFormatAdapter : IAsyncFormatAdapter
         };
     }
 
-    public async Task<string> SerializeAsync<T>(T obj)
+    public async Task<string> SerializeAsync<T>(T obj, CancellationToken cancellationToken = default)
     {
         if (obj == null)
             throw new ArgumentNullException(nameof(obj));
 
         try
         {
-            // Use Task.Run to make synchronous JSON serialization async-friendly
-            // JSON.NET serialization is CPU-bound, so we offload to thread pool
-            return await Task.Run(() => JsonConvert.SerializeObject(obj, _settings)).ConfigureAwait(false);
+            // CRITICAL FIX: Use Task.Run with cancellation token for proper cancellation support
+            // JSON.NET serialization is CPU-bound, so we offload to thread pool with cancellation
+            return await Task.Run(() => JsonConvert.SerializeObject(obj, _settings), cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException ex)
         {
@@ -43,15 +43,15 @@ public class AsyncJsonFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<T> DeserializeAsync<T>(string content)
+    public async Task<T> DeserializeAsync<T>(string content, CancellationToken cancellationToken = default)
     {
         if (content == null)
             throw new ArgumentNullException(nameof(content));
 
         try
         {
-            // Use Task.Run to make synchronous JSON deserialization async-friendly
-            var result = await Task.Run(() => JsonConvert.DeserializeObject<T>(content, _settings)).ConfigureAwait(false);
+            // CRITICAL FIX: Use Task.Run with cancellation token for proper cancellation support
+            var result = await Task.Run(() => JsonConvert.DeserializeObject<T>(content, _settings), cancellationToken).ConfigureAwait(false);
             return result ?? throw new InvalidOperationException($"Deserialization returned null for type {typeof(T).Name}");
         }
         catch (JsonException ex)
@@ -60,7 +60,7 @@ public class AsyncJsonFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<object[]> DeserializeArrayAsync(string content, Type elementType)
+    public async Task<object[]> DeserializeArrayAsync(string content, Type elementType, CancellationToken cancellationToken = default)
     {
         if (content == null)
             throw new ArgumentNullException(nameof(content));
@@ -68,7 +68,8 @@ public class AsyncJsonFormatAdapter : IAsyncFormatAdapter
         try
         {
             var arrayType = elementType.MakeArrayType();
-            var result = await Task.Run(() => JsonConvert.DeserializeObject(content, arrayType, _settings)).ConfigureAwait(false);
+            // CRITICAL FIX: Use Task.Run with cancellation token for proper cancellation support
+            var result = await Task.Run(() => JsonConvert.DeserializeObject(content, arrayType, _settings), cancellationToken).ConfigureAwait(false);
             
             if (result is object[] array)
                 return array;
@@ -88,14 +89,15 @@ public class AsyncJsonFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<string> SerializeArrayAsync(object[] objects)
+    public async Task<string> SerializeArrayAsync(object[] objects, CancellationToken cancellationToken = default)
     {
         if (objects == null)
             throw new ArgumentNullException(nameof(objects));
 
         try
         {
-            return await Task.Run(() => JsonConvert.SerializeObject(objects, _settings)).ConfigureAwait(false);
+            // CRITICAL FIX: Use Task.Run with cancellation token for proper cancellation support
+            return await Task.Run(() => JsonConvert.SerializeObject(objects, _settings), cancellationToken).ConfigureAwait(false);
         }
         catch (JsonException ex)
         {

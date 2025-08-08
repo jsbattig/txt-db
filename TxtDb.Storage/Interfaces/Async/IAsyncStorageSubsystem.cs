@@ -30,6 +30,7 @@ public interface IAsyncStorageSubsystem
     Task InitializeAsync(string rootPath, Models.StorageConfig? config = null, CancellationToken cancellationToken = default);
     Task StartVersionCleanupAsync(int intervalMinutes = 15, CancellationToken cancellationToken = default);
     
-    // Performance monitoring for batch flushing
+    // Performance monitoring for batch flushing and critical operations
     long FlushOperationCount { get; }
+    long CriticalOperationCount { get; }
 }

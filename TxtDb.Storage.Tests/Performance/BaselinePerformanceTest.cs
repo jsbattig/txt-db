@@ -33,7 +33,13 @@ public class BaselinePerformanceTest : IDisposable
         _storage.Initialize(_testRootPath, new StorageConfig 
         { 
             Format = SerializationFormat.Json,
-            ForceOneObjectPerPage = false  // Allow multiple objects per page for realistic testing
+            ForceOneObjectPerPage = false,  // Allow multiple objects per page for realistic testing
+            // CRITICAL: Disable infrastructure hardening for baseline performance measurement
+            // Pure baseline measurement without infrastructure overhead
+            Infrastructure = new InfrastructureConfig
+            {
+                Enabled = false  // Disable all infrastructure components for baseline testing
+            }
         });
     }
 

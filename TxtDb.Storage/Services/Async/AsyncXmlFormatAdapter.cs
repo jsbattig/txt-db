@@ -13,7 +13,7 @@ public class AsyncXmlFormatAdapter : IAsyncFormatAdapter
 {
     public string FileExtension => ".xml";
 
-    public async Task<string> SerializeAsync<T>(T obj)
+    public async Task<string> SerializeAsync<T>(T obj, CancellationToken cancellationToken = default)
     {
         if (obj == null)
             throw new ArgumentNullException(nameof(obj));
@@ -32,7 +32,7 @@ public class AsyncXmlFormatAdapter : IAsyncFormatAdapter
                 
                 serializer.Serialize(xmlWriter, obj);
                 return stringWriter.ToString();
-            }).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is XmlException || ex is InvalidOperationException)
         {
@@ -40,7 +40,7 @@ public class AsyncXmlFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<T> DeserializeAsync<T>(string content)
+    public async Task<T> DeserializeAsync<T>(string content, CancellationToken cancellationToken = default)
     {
         if (content == null)
             throw new ArgumentNullException(nameof(content));
@@ -62,7 +62,7 @@ public class AsyncXmlFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<object[]> DeserializeArrayAsync(string content, Type elementType)
+    public async Task<object[]> DeserializeArrayAsync(string content, Type elementType, CancellationToken cancellationToken = default)
     {
         if (content == null)
             throw new ArgumentNullException(nameof(content));
@@ -95,7 +95,7 @@ public class AsyncXmlFormatAdapter : IAsyncFormatAdapter
         }
     }
 
-    public async Task<string> SerializeArrayAsync(object[] objects)
+    public async Task<string> SerializeArrayAsync(object[] objects, CancellationToken cancellationToken = default)
     {
         if (objects == null)
             throw new ArgumentNullException(nameof(objects));

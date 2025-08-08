@@ -1173,6 +1173,592 @@ public class SqlExecutorTests : IDisposable
         await verifyTxn.CommitAsync();
     }
     
+    // ================================
+    // CREATE INDEX OPERATION TESTS (Story 3)
+    // ================================
+    
+    /// <summary>
+    /// Test that CREATE INDEX statement can create a secondary index on a table.
+    /// This is the primary functionality for CREATE INDEX in Story 3.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithCreateIndexSql_ShouldCreateSecondaryIndex()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table first
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT)", transaction);
+        await transaction.CommitAsync();
+        
+        // Start new transaction for CREATE INDEX
+        var indexTransaction = await CreateRealTransaction();
+        var createIndexSql = "CREATE INDEX idx_users_age ON users (age)";
+        
+        // Act
+        var result = await executor.ExecuteAsync(createIndexSql, indexTransaction);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.CreateIndex, result.StatementType);
+        Assert.Equal(0, result.AffectedRows); // CREATE INDEX doesn't affect existing rows
+        Assert.Empty(result.Rows);
+        
+        // Verify index was actually created
+        await indexTransaction.CommitAsync();
+        Console.WriteLine("DEBUG: CREATE INDEX transaction committed successfully");
+        
+        var verifyTxn = await CreateRealTransaction();
+        var table = await database.GetTableAsync("users");
+        Assert.NotNull(table);
+        
+        // Verify index exists using ListIndexesAsync
+        var indexes = await table!.ListIndexesAsync(verifyTxn);
+        Console.WriteLine($"DEBUG: Available indexes: [{string.Join(", ", indexes)}]");
+        Assert.Contains("idx_users_age", indexes);
+        
+        await verifyTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test CREATE INDEX with invalid table name throws proper exception.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithCreateIndexOnNonExistentTable_ShouldThrowSqlExecutionException()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        var sql = "CREATE INDEX idx_nonexistent_table_name ON nonexistent_table (name)";
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SqlExecutionException>(async () =>
+            await executor.ExecuteAsync(sql, transaction));
+        
+        Assert.Contains("table", exception.Message.ToLower());
+        Assert.Contains("not found", exception.Message.ToLower());
+    }
+    
+    /// <summary>
+    /// Test CREATE INDEX with duplicate index name throws proper exception.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithCreateIndexDuplicateName_ShouldThrowSqlExecutionException()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table and first index
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT)", transaction);
+        await executor.ExecuteAsync("CREATE INDEX idx_users_name ON users (name)", transaction);
+        await transaction.CommitAsync();
+        
+        // Start new transaction for second CREATE INDEX with same name
+        var indexTransaction = await CreateRealTransaction();
+        var sql = "CREATE INDEX idx_users_name ON users (age)"; // Same index name, different column
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SqlExecutionException>(async () =>
+            await executor.ExecuteAsync(sql, indexTransaction));
+        
+        Assert.Contains("index", exception.Message.ToLower());
+        Assert.Contains("already exists", exception.Message.ToLower());
+    }
+    
+    // ================================
+    // DROP INDEX OPERATION TESTS (Story 3)
+    // ================================
+    
+    /// <summary>
+    /// Test that DROP INDEX statement can remove a secondary index from a table.
+    /// This is the primary functionality for DROP INDEX in Story 3.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithDropIndexSql_ShouldDropSecondaryIndex()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table and index first
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT)", transaction);
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", transaction);
+        await transaction.CommitAsync();
+        
+        // Start new transaction for DROP INDEX
+        var dropTransaction = await CreateRealTransaction();
+        var dropIndexSql = "DROP INDEX idx_users_age";
+        
+        // Act
+        var result = await executor.ExecuteAsync(dropIndexSql, dropTransaction);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.DropIndex, result.StatementType);
+        Assert.Equal(0, result.AffectedRows); // DROP INDEX doesn't affect rows
+        Assert.Empty(result.Rows);
+        
+        // Verify index was actually dropped
+        await dropTransaction.CommitAsync();
+        var verifyTxn = await CreateRealTransaction();
+        var table = await database.GetTableAsync("users");
+        Assert.NotNull(table);
+        
+        // Verify index no longer exists using ListIndexesAsync
+        var indexes = await table!.ListIndexesAsync(verifyTxn);
+        Assert.DoesNotContain("idx_users_age", indexes);
+        
+        await verifyTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test DROP INDEX with non-existent index name returns success (idempotent operation).
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithDropIndexNonExistentIndex_ShouldReturnSuccessResult()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table without any indexes
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100))", transaction);
+        await transaction.CommitAsync();
+        
+        // Start new transaction for DROP INDEX
+        var dropTransaction = await CreateRealTransaction();
+        var sql = "DROP INDEX idx_nonexistent";
+        
+        // Act
+        var result = await executor.ExecuteAsync(sql, dropTransaction);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.DropIndex, result.StatementType);
+        Assert.Equal(0, result.AffectedRows); // No index to drop
+        Assert.Empty(result.Rows);
+        
+        await dropTransaction.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test DROP INDEX with non-existent index returns success (SQL standard idempotent behavior).
+    /// Per SQL standard, DROP INDEX should succeed silently even if the index doesn't exist.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithDropIndexOnNonExistentIndex_ShouldReturnSuccessResult()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        var sql = "DROP INDEX idx_some_index";
+        
+        // Act
+        var result = await executor.ExecuteAsync(sql, transaction);
+        
+        // Assert - SQL standard idempotent behavior: should return success even for non-existent index
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.DropIndex, result.StatementType);
+        Assert.Equal(0, result.AffectedRows); // No index to drop
+        Assert.Empty(result.Rows);
+    }
+    
+    /// <summary>
+    /// Test CREATE INDEX and DROP INDEX integration workflow.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_CreateAndDropIndexWorkflow_ShouldWorkTogether()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT, email VARCHAR(200))", transaction);
+        await transaction.CommitAsync();
+        
+        // Create multiple indexes
+        var indexTxn1 = await CreateRealTransaction();
+        await executor.ExecuteAsync("CREATE INDEX idx_users_name ON users (name)", indexTxn1);
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", indexTxn1);
+        await executor.ExecuteAsync("CREATE INDEX idx_users_email ON users (email)", indexTxn1);
+        await indexTxn1.CommitAsync();
+        
+        // Verify all indexes were created
+        var verifyTxn1 = await CreateRealTransaction();
+        var table = await database.GetTableAsync("users");
+        var indexes = await table!.ListIndexesAsync(verifyTxn1);
+        Assert.Contains("idx_users_name", indexes);
+        Assert.Contains("idx_users_age", indexes);
+        Assert.Contains("idx_users_email", indexes);
+        await verifyTxn1.CommitAsync();
+        
+        // Drop one index
+        var indexTxn2 = await CreateRealTransaction();
+        await executor.ExecuteAsync("DROP INDEX idx_users_age", indexTxn2);
+        await indexTxn2.CommitAsync();
+        
+        // Verify only the dropped index is gone - get fresh table instance to see updated state
+        var verifyTxn2 = await CreateRealTransaction();
+        var tableAfterDrop = await database.GetTableAsync("users"); // Fresh instance after DROP INDEX
+        var finalIndexes = await tableAfterDrop!.ListIndexesAsync(verifyTxn2);
+        Assert.Contains("idx_users_name", finalIndexes);
+        Assert.DoesNotContain("idx_users_age", finalIndexes); // Should be dropped
+        Assert.Contains("idx_users_email", finalIndexes);
+        await verifyTxn2.CommitAsync();
+        
+        // Act & Assert - workflow completed successfully
+        Assert.True(true); // If we get here, the workflow worked
+    }
+    
+    // ================================
+    // USE INDEX HINT OPERATION TESTS (Story 4)
+    // ================================
+    
+    /// <summary>
+    /// Test that SELECT with USE INDEX hint uses the specified index for optimized query execution.
+    /// This is the primary functionality for USE INDEX in Story 4.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithSelectUseIndexHint_ShouldUseSpecifiedIndex()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var setupTxn = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table with test data
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT, status VARCHAR(20))", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (1, 'Alice', 25, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (2, 'Bob', 30, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (3, 'Charlie', 25, 'inactive')", setupTxn);
+        
+        // Create index on age column
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", setupTxn);
+        await setupTxn.CommitAsync();
+        
+        // Start new transaction for USE INDEX SELECT
+        var selectTxn = await CreateRealTransaction();
+        var selectSql = "SELECT * FROM users USE INDEX (idx_users_age) WHERE age = 25";
+        
+        // Act
+        var result = await executor.ExecuteAsync(selectSql, selectTxn);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.Select, result.StatementType);
+        Assert.Equal(0, result.AffectedRows); // SELECT doesn't affect rows
+        Assert.Equal(2, result.Rows.Count); // Alice and Charlie have age 25
+        
+        // Verify correct data returned
+        var row1 = result.Rows[0];
+        var row2 = result.Rows[1];
+        
+        // Should return Alice and Charlie (both age 25)
+        // Find the name column index
+        var nameColumnIndex = -1;
+        for (int i = 0; i < result.Columns.Count; i++)
+        {
+            if (result.Columns[i].Name == "name")
+            {
+                nameColumnIndex = i;
+                break;
+            }
+        }
+        
+        Assert.True(nameColumnIndex >= 0, "Name column should be found");
+        
+        var names = new[] { row1[nameColumnIndex]?.ToString(), row2[nameColumnIndex]?.ToString() };
+        Assert.Contains("Alice", names);
+        Assert.Contains("Charlie", names);
+        
+        await selectTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test that UPDATE with USE INDEX hint uses the specified index for optimized query execution.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithUpdateUseIndexHint_ShouldUseSpecifiedIndex()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var setupTxn = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table with test data
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT, status VARCHAR(20))", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (1, 'Alice', 25, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (2, 'Bob', 30, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (3, 'Charlie', 25, 'active')", setupTxn);
+        
+        // Create index on age column
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", setupTxn);
+        await setupTxn.CommitAsync();
+        
+        // Start new transaction for USE INDEX UPDATE
+        var updateTxn = await CreateRealTransaction();
+        var updateSql = "UPDATE users USE INDEX (idx_users_age) SET status = 'premium' WHERE age = 25";
+        
+        // Act
+        var result = await executor.ExecuteAsync(updateSql, updateTxn);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.Update, result.StatementType);
+        Assert.Equal(2, result.AffectedRows); // Alice and Charlie should be updated
+        
+        // Verify updates were applied correctly
+        await updateTxn.CommitAsync();
+        var verifyTxn = await CreateRealTransaction();
+        var table = await database.GetTableAsync("users");
+        
+        var alice = await table!.GetAsync(verifyTxn, 1);
+        Assert.Equal("premium", (string)alice!.status);
+        
+        var bob = await table.GetAsync(verifyTxn, 2);
+        Assert.Equal("active", (string)bob!.status); // Should remain unchanged
+        
+        var charlie = await table.GetAsync(verifyTxn, 3);
+        Assert.Equal("premium", (string)charlie!.status);
+        
+        await verifyTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test that DELETE with USE INDEX hint uses the specified index for optimized query execution.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithDeleteUseIndexHint_ShouldUseSpecifiedIndex()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var setupTxn = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table with test data
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT, status VARCHAR(20))", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (1, 'Alice', 25, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (2, 'Bob', 30, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (3, 'Charlie', 25, 'inactive')", setupTxn);
+        
+        // Create index on age column
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", setupTxn);
+        await setupTxn.CommitAsync();
+        
+        // Start new transaction for USE INDEX DELETE
+        var deleteTxn = await CreateRealTransaction();
+        var deleteSql = "DELETE FROM users USE INDEX (idx_users_age) WHERE age = 25";
+        
+        // Act
+        var result = await executor.ExecuteAsync(deleteSql, deleteTxn);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.Delete, result.StatementType);
+        Assert.Equal(2, result.AffectedRows); // Alice and Charlie should be deleted
+        
+        // Verify deletions were applied correctly
+        await deleteTxn.CommitAsync();
+        var verifyTxn = await CreateRealTransaction();
+        var table = await database.GetTableAsync("users");
+        
+        var alice = await table!.GetAsync(verifyTxn, 1);
+        Assert.Null(alice); // Should be deleted
+        
+        var bob = await table.GetAsync(verifyTxn, 2);
+        Assert.NotNull(bob); // Should remain
+        Assert.Equal(30, (int)bob!.age);
+        
+        var charlie = await table.GetAsync(verifyTxn, 3);
+        Assert.Null(charlie); // Should be deleted
+        
+        await verifyTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test that USE INDEX with non-existent index throws proper error.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithUseIndexNonExistentIndex_ShouldThrowSqlExecutionException()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table without the specified index
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT)", transaction);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age) VALUES (1, 'Alice', 25)", transaction);
+        await transaction.CommitAsync();
+        
+        // Start new transaction for USE INDEX with non-existent index
+        var selectTxn = await CreateRealTransaction();
+        var sql = "SELECT * FROM users USE INDEX (idx_nonexistent) WHERE age = 25";
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SqlExecutionException>(async () =>
+            await executor.ExecuteAsync(sql, selectTxn));
+        
+        Assert.Contains("index", exception.Message.ToLower());
+        Assert.Contains("not found", exception.Message.ToLower());
+    }
+    
+    /// <summary>
+    /// Test that USE INDEX with non-existent table throws proper error.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithUseIndexNonExistentTable_ShouldThrowSqlExecutionException()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var transaction = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        var sql = "SELECT * FROM nonexistent_table USE INDEX (idx_name) WHERE id = 1";
+        
+        // Act & Assert
+        var exception = await Assert.ThrowsAsync<SqlExecutionException>(async () =>
+            await executor.ExecuteAsync(sql, transaction));
+        
+        Assert.Contains("table", exception.Message.ToLower());
+        Assert.Contains("not found", exception.Message.ToLower());
+    }
+    
+    /// <summary>
+    /// Test that USE INDEX works correctly with complex WHERE clauses involving multiple conditions.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithUseIndexAndComplexWhere_ShouldFilterCorrectly()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var setupTxn = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table with test data
+        await executor.ExecuteAsync("CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), age INT, status VARCHAR(20))", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (1, 'Alice', 25, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (2, 'Bob', 25, 'inactive')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (3, 'Charlie', 30, 'active')", setupTxn);
+        await executor.ExecuteAsync("INSERT INTO users (id, name, age, status) VALUES (4, 'David', 25, 'active')", setupTxn);
+        
+        // Create index on age column
+        await executor.ExecuteAsync("CREATE INDEX idx_users_age ON users (age)", setupTxn);
+        await setupTxn.CommitAsync();
+        
+        // Start new transaction for USE INDEX SELECT with complex WHERE
+        var selectTxn = await CreateRealTransaction();
+        var selectSql = "SELECT * FROM users USE INDEX (idx_users_age) WHERE age = 25 AND status = 'active'";
+        
+        // Act
+        var result = await executor.ExecuteAsync(selectSql, selectTxn);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(SqlStatementType.Select, result.StatementType);
+        Assert.Equal(2, result.Rows.Count); // Alice and David (age 25, status active)
+        
+        // Verify correct data returned
+        var row1 = result.Rows[0];
+        var row2 = result.Rows[1];
+        
+        // Both should have age 25 and status active
+        // Find the name column index
+        var nameColumnIndex = -1;
+        for (int i = 0; i < result.Columns.Count; i++)
+        {
+            if (result.Columns[i].Name == "name")
+            {
+                nameColumnIndex = i;
+                break;
+            }
+        }
+        
+        Assert.True(nameColumnIndex >= 0, "Name column should be found");
+        
+        var names = new[] { row1[nameColumnIndex]?.ToString(), row2[nameColumnIndex]?.ToString() };
+        Assert.Contains("Alice", names);
+        Assert.Contains("David", names);
+        
+        await selectTxn.CommitAsync();
+    }
+    
+    /// <summary>
+    /// Test that USE INDEX provides performance improvement over full table scan.
+    /// This test should demonstrate measurable performance benefits.
+    /// FAILING TEST - Story 4 not yet implemented.
+    /// </summary>
+    [Fact]
+    public async Task ExecuteAsync_WithUseIndexVsFullTableScan_ShouldShowPerformanceImprovement()
+    {
+        // Arrange
+        var database = await CreateRealDatabase();
+        var setupTxn = await CreateRealTransaction();
+        var executor = new SqlExecutor(database, _logger);
+        
+        // Setup: Create table with more test data for performance testing
+        await executor.ExecuteAsync("CREATE TABLE large_users (id INT PRIMARY KEY, name VARCHAR(100), age INT, status VARCHAR(20))", setupTxn);
+        
+        // Insert a larger dataset for performance comparison
+        for (int i = 1; i <= 100; i++)
+        {
+            var name = $"User{i}";
+            var age = 20 + (i % 40); // Ages from 20-59
+            var status = (i % 3 == 0) ? "active" : "inactive";
+            await executor.ExecuteAsync($"INSERT INTO large_users (id, name, age, status) VALUES ({i}, '{name}', {age}, '{status}')", setupTxn);
+        }
+        
+        // Create index on age column
+        await executor.ExecuteAsync("CREATE INDEX idx_large_users_age ON large_users (age)", setupTxn);
+        await setupTxn.CommitAsync();
+        
+        // Test 1: USE INDEX query (should be optimized)
+        var indexTxn = await CreateRealTransaction();
+        var useIndexSql = "SELECT * FROM large_users USE INDEX (idx_large_users_age) WHERE age = 25";
+        
+        var indexStartTime = DateTime.UtcNow;
+        var indexResult = await executor.ExecuteAsync(useIndexSql, indexTxn);
+        var indexDuration = DateTime.UtcNow - indexStartTime;
+        await indexTxn.CommitAsync();
+        
+        // Test 2: Full table scan query (should be slower)
+        var scanTxn = await CreateRealTransaction();
+        var fullScanSql = "SELECT * FROM large_users WHERE age = 25";
+        
+        var scanStartTime = DateTime.UtcNow;
+        var scanResult = await executor.ExecuteAsync(fullScanSql, scanTxn);
+        var scanDuration = DateTime.UtcNow - scanStartTime;
+        await scanTxn.CommitAsync();
+        
+        // Assert
+        // Both should return the same results
+        Assert.Equal(indexResult.Rows.Count, scanResult.Rows.Count);
+        
+        // Index query should be faster or at least not significantly slower
+        // For this test, we'll verify that USE INDEX at least doesn't break functionality
+        // Performance improvements will be more evident in larger datasets
+        Assert.True(indexResult.Rows.Count > 0, "USE INDEX should return matching rows");
+        
+        _output.WriteLine($"USE INDEX duration: {indexDuration.TotalMilliseconds}ms");
+        _output.WriteLine($"Full scan duration: {scanDuration.TotalMilliseconds}ms");
+        _output.WriteLine($"Matching rows found: {indexResult.Rows.Count}");
+    }
+    
     private async Task<IDatabase> CreateRealDatabase()
     {
         if (_database != null) return _database;

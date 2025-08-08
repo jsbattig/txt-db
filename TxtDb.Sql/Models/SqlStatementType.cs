@@ -42,6 +42,16 @@ public enum SqlStatementType
     AlterTable,
     
     /// <summary>
+    /// CREATE INDEX statement for creating secondary indexes.
+    /// </summary>
+    CreateIndex,
+    
+    /// <summary>
+    /// DROP INDEX statement for removing secondary indexes.
+    /// </summary>
+    DropIndex,
+    
+    /// <summary>
     /// Unknown or unsupported statement type.
     /// </summary>
     Unknown

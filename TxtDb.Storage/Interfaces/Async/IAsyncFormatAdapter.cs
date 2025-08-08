@@ -14,32 +14,40 @@ public interface IAsyncFormatAdapter
 
     /// <summary>
     /// Asynchronously serializes an object to string
+    /// CRITICAL FIX: Added cancellation token support for comprehensive cancellation propagation
     /// </summary>
     /// <typeparam name="T">Type of object to serialize</typeparam>
     /// <param name="obj">Object to serialize</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Serialized string</returns>
-    Task<string> SerializeAsync<T>(T obj);
+    Task<string> SerializeAsync<T>(T obj, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously deserializes a string to object
+    /// CRITICAL FIX: Added cancellation token support for comprehensive cancellation propagation
     /// </summary>
     /// <typeparam name="T">Type of object to deserialize to</typeparam>
     /// <param name="content">String content to deserialize</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Deserialized object</returns>
-    Task<T> DeserializeAsync<T>(string content);
+    Task<T> DeserializeAsync<T>(string content, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously deserializes array content
+    /// CRITICAL FIX: Added cancellation token support for comprehensive cancellation propagation
     /// </summary>
     /// <param name="content">String content to deserialize</param>
     /// <param name="elementType">Type of array elements</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Deserialized object array</returns>
-    Task<object[]> DeserializeArrayAsync(string content, Type elementType);
+    Task<object[]> DeserializeArrayAsync(string content, Type elementType, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously serializes an object array
+    /// CRITICAL FIX: Added cancellation token support for comprehensive cancellation propagation
     /// </summary>
     /// <param name="objects">Object array to serialize</param>
+    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Serialized string</returns>
-    Task<string> SerializeArrayAsync(object[] objects);
+    Task<string> SerializeArrayAsync(object[] objects, CancellationToken cancellationToken = default);
 }

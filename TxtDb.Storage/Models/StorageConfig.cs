@@ -24,6 +24,27 @@ public class StorageConfig
     /// Ignored when EnableBatchFlushing is false.
     /// </summary>
     public BatchFlushConfig? BatchFlushConfig { get; set; }
+    
+    /// <summary>
+    /// Deadlock detection timeout in milliseconds. When a transaction waits for a lock
+    /// longer than this timeout, it will be aborted to prevent deadlocks.
+    /// Default is 30 seconds (30000ms). Set to 0 to disable deadlock detection.
+    /// </summary>
+    public int DeadlockTimeoutMs { get; set; } = 30000;
+    
+    /// <summary>
+    /// When true, enables Wait-Die deadlock prevention algorithm for high-contention scenarios.
+    /// When false (default), uses timeout-based locking which is more suitable for version cleanup operations.
+    /// The Wait-Die algorithm immediately aborts younger transactions when they conflict with older ones,
+    /// which can be too aggressive for routine operations like version cleanup.
+    /// </summary>
+    public bool EnableWaitDieDeadlockPrevention { get; set; } = false;
+    
+    /// <summary>
+    /// Configuration for infrastructure hardening components (Phase 4)
+    /// Includes retry policies, circuit breakers, memory pressure detection, and transaction recovery.
+    /// </summary>
+    public InfrastructureConfig Infrastructure { get; set; } = new();
 }
 
 public enum SerializationFormat

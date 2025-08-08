@@ -8,6 +8,16 @@ using System.Dynamic;
 namespace TxtDb.Database.Services;
 
 /// <summary>
+/// Metadata for persisting secondary index information
+/// </summary>
+internal class IndexMetadata
+{
+    public string Name { get; set; } = string.Empty;
+    public string FieldPath { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+
+/// <summary>
 /// SPECIFICATION COMPLIANT: Table implementation that strictly follows Epic 004 specification.
 /// 
 /// KEY COMPLIANCE FEATURES:
@@ -338,6 +348,41 @@ public class Table : ITable
         if (string.IsNullOrEmpty(fieldPath)) throw new ArgumentException("Field path cannot be empty");
 
         var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        
+        // Check for duplicate index name
+        lock (_indexLock)
+        {
+            if (_secondaryIndexes.ContainsKey(indexName))
+            {
+                throw new InvalidOperationException($"Index '{indexName}' already exists");
+            }
+        }
+        
+        // Create and persist index metadata
+        var indexMetadata = new IndexMetadata
+        {
+            Name = indexName,
+            FieldPath = fieldPath,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        // Persist index metadata to storage
+        var indexMetadataNamespace = $"{tableNamespace}._indexes._metadata";
+        
+        // Extract transaction ID from the database transaction (this is a workaround for the interface)
+        var storageTransaction = ((DatabaseTransaction)txn).TransactionId;
+        
+        try
+        {
+            await _storageSubsystem.CreateNamespaceAsync(storageTransaction, indexMetadataNamespace, cancellationToken);
+        }
+        catch
+        {
+            // Namespace might already exist, ignore
+        }
+        
+        await _storageSubsystem.InsertObjectAsync(storageTransaction, indexMetadataNamespace, indexMetadata, cancellationToken);
+        
         var index = new Index(indexName, fieldPath, _storageSubsystem, tableNamespace);
         
         lock (_indexLock)
@@ -353,11 +398,94 @@ public class Table : ITable
 
     public async Task DropIndexAsync(IDatabaseTransaction txn, string indexName, CancellationToken cancellationToken = default)
     {
+        if (txn == null) throw new ArgumentNullException(nameof(txn));
+        if (string.IsNullOrEmpty(indexName)) throw new ArgumentException("Index name cannot be empty");
+        
+        // Check if index exists
+        bool indexExists;
+        lock (_indexLock)
+        {
+            indexExists = _secondaryIndexes.ContainsKey(indexName);
+        }
+        
+        if (!indexExists)
+        {
+            throw new InvalidOperationException($"Index '{indexName}' does not exist");
+        }
+        
+        var tableNamespace = $"{_metadata.DatabaseName}.{_metadata.Name}";
+        var indexMetadataNamespace = $"{tableNamespace}._indexes._metadata";
+        
+        // Extract transaction ID from the database transaction
+        var storageTransaction = ((DatabaseTransaction)txn).TransactionId;
+        
+        try
+        {
+            // Find and remove the index metadata from storage
+            var allIndexMetadata = await _storageSubsystem.GetMatchingObjectsAsync(storageTransaction, indexMetadataNamespace, "*", cancellationToken);
+            
+            Console.WriteLine($"DROP INDEX DEBUG: Found {allIndexMetadata.Count} pages of index metadata");
+            
+            foreach (var (pageId, pageObjects) in allIndexMetadata)
+            {
+                Console.WriteLine($"DROP INDEX DEBUG: Processing page '{pageId}' with {pageObjects.Length} objects");
+                
+                var remainingObjects = new List<object>();
+                bool foundIndexToRemove = false;
+                
+                foreach (var metadataObj in pageObjects)
+                {
+                    string? metadataIndexName = null;
+                    
+                    if (metadataObj is System.Dynamic.ExpandoObject expando)
+                    {
+                        var dict = (IDictionary<string, object?>)expando;
+                        if (dict.TryGetValue("Name", out var nameValue))
+                        {
+                            metadataIndexName = nameValue?.ToString();
+                        }
+                    }
+                    else
+                    {
+                        var nameProperty = metadataObj.GetType().GetProperty("Name");
+                        metadataIndexName = nameProperty?.GetValue(metadataObj)?.ToString();
+                    }
+                    
+                    Console.WriteLine($"DROP INDEX DEBUG: Found index metadata for '{metadataIndexName}'");
+                    
+                    // If this is NOT the index we want to remove, keep it
+                    if (metadataIndexName != indexName)
+                    {
+                        remainingObjects.Add(metadataObj);
+                        Console.WriteLine($"DROP INDEX DEBUG: Keeping index '{metadataIndexName}'");
+                    }
+                    else
+                    {
+                        foundIndexToRemove = true;
+                        Console.WriteLine($"DROP INDEX DEBUG: Removing index '{metadataIndexName}'");
+                    }
+                }
+                
+                if (foundIndexToRemove)
+                {
+                    Console.WriteLine($"DROP INDEX DEBUG: Updating page with {remainingObjects.Count} remaining objects");
+                    // Update the page with remaining objects
+                    await _storageSubsystem.UpdatePageAsync(storageTransaction, indexMetadataNamespace, pageId, remainingObjects.ToArray(), cancellationToken);
+                    Console.WriteLine($"DROP INDEX DEBUG: Successfully updated page '{pageId}'");
+                    break;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"WARNING: Failed to remove index metadata for '{indexName}': {ex.Message}");
+        }
+        
+        // Remove from in-memory index
         lock (_indexLock)
         {
             _secondaryIndexes.Remove(indexName);
         }
-        await Task.CompletedTask;
     }
 
     public async Task<IList<string>> ListIndexesAsync(IDatabaseTransaction txn, CancellationToken cancellationToken = default)
@@ -430,8 +558,16 @@ public class Table : ITable
                 // Clear existing indexes (should be empty anyway for new instances)
                 _primaryKeyIndex.Clear();
                 _pageToKeys.Clear();
+                _secondaryIndexes.Clear();
                 
                 Console.WriteLine($"[PHASE2] Cleared existing indexes");
+            }
+            
+            // Load persisted secondary indexes (outside lock)
+            await LoadSecondaryIndexesFromStorage(txnId, tableNamespace, cancellationToken);
+            
+            lock (_indexLock)
+            {
                 
                 // Rebuild primary key index from all stored data
                 int totalObjects = 0;
@@ -525,6 +661,86 @@ public class Table : ITable
             Console.WriteLine($"[PHASE3] ERROR during index initialization: {ex.Message}");
             Console.WriteLine($"[PHASE3] Stack trace: {ex.StackTrace}");
             throw;
+        }
+    }
+    
+    /// <summary>
+    /// Load persisted secondary index metadata from storage and recreate indexes
+    /// </summary>
+    private async Task LoadSecondaryIndexesFromStorage(long txnId, string tableNamespace, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Get all index metadata from the indexes metadata namespace
+            var indexesMetadataNamespace = $"{tableNamespace}._indexes._metadata";
+            
+            try
+            {
+                var indexMetadataObjects = await _storageSubsystem.GetMatchingObjectsAsync(txnId, indexesMetadataNamespace, "*", cancellationToken);
+                
+                foreach (var (pageId, pageObjects) in indexMetadataObjects)
+                {
+                    foreach (var metadataObj in pageObjects)
+                    {
+                        try
+                        {
+                            // Extract metadata properties
+                            string? indexName = null;
+                            string? fieldPath = null;
+                            
+                            if (metadataObj is System.Dynamic.ExpandoObject expando)
+                            {
+                                var dict = (IDictionary<string, object?>)expando;
+                                if (dict.TryGetValue("Name", out var nameValue))
+                                {
+                                    indexName = nameValue?.ToString();
+                                }
+                                if (dict.TryGetValue("FieldPath", out var fieldPathValue))
+                                {
+                                    fieldPath = fieldPathValue?.ToString();
+                                }
+                            }
+                            else
+                            {
+                                // Handle strongly typed objects
+                                var nameProperty = metadataObj.GetType().GetProperty("Name");
+                                var fieldPathProperty = metadataObj.GetType().GetProperty("FieldPath");
+                                
+                                indexName = nameProperty?.GetValue(metadataObj)?.ToString();
+                                fieldPath = fieldPathProperty?.GetValue(metadataObj)?.ToString();
+                            }
+                            
+                            if (!string.IsNullOrEmpty(indexName) && !string.IsNullOrEmpty(fieldPath))
+                            {
+                                // Create the index
+                                var index = new Index(indexName, fieldPath, _storageSubsystem, tableNamespace);
+                                
+                                lock (_indexLock)
+                                {
+                                    _secondaryIndexes[indexName] = index;
+                                }
+                                
+                                Console.WriteLine($"[PHASE2] Loaded secondary index: {indexName} -> {fieldPath}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[PHASE2] WARNING: Failed to load index metadata object: {ex.Message}");
+                        }
+                    }
+                }
+                
+                Console.WriteLine($"[PHASE2] Loaded {_secondaryIndexes.Count} secondary indexes");
+            }
+            catch
+            {
+                // Namespace might not exist if no indexes have been created
+                Console.WriteLine($"[PHASE2] No secondary indexes found - metadata namespace does not exist");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[PHASE2] WARNING: Failed to load secondary indexes: {ex.Message}");
         }
     }
 

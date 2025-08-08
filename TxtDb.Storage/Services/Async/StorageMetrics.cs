@@ -461,6 +461,56 @@ public class StorageMetrics
         };
     }
 
+    /// <summary>
+    /// Reset all metrics to initial state - useful for test isolation and performance measurement periods
+    /// </summary>
+    public void Reset()
+    {
+        // Reset operation counters
+        Interlocked.Exchange(ref _totalOperations, 0);
+        Interlocked.Exchange(ref _totalReadOperations, 0);
+        Interlocked.Exchange(ref _totalWriteOperations, 0);
+        Interlocked.Exchange(ref _totalTransactionOperations, 0);
+        Interlocked.Exchange(ref _totalErrors, 0);
+        Interlocked.Exchange(ref _readErrors, 0);
+        Interlocked.Exchange(ref _writeErrors, 0);
+        Interlocked.Exchange(ref _transactionErrors, 0);
+        
+        // Clear latency queues
+        while (_readLatencies.TryDequeue(out _)) { }
+        while (_writeLatencies.TryDequeue(out _)) { }
+        while (_transactionLatencies.TryDequeue(out _)) { }
+        while (_flushLatencies.TryDequeue(out _)) { }
+        
+        // Clear operation timestamps
+        while (_operationTimestamps.TryDequeue(out _)) { }
+        
+        // Reset batch flush metrics
+        Interlocked.Exchange(ref _flushCallsBeforeBatching, 0);
+        Interlocked.Exchange(ref _flushCallsAfterBatching, 0);
+        
+        // Reset resource utilization tracking (keep max for comparison)
+        lock (_activeOperationsLock)
+        {
+            Interlocked.Exchange(ref _activeAsyncOperations, 0);
+            // Note: Keep _maxConcurrentOperations for historical reference
+        }
+        
+        // Clear error tracking
+        _errorsByType.Clear();
+        while (_errorMessages.TryDequeue(out _)) { }
+        
+        // Reset cache metrics
+        Interlocked.Exchange(ref _namespaceExistenceCacheHits, 0);
+        Interlocked.Exchange(ref _namespaceExistenceCacheMisses, 0);
+        
+        // Clear cached status data
+        _lastThreadPoolStatus = null;
+        _lastMemoryUsage = null;
+        _lastThreadPoolStatusUpdate = DateTime.MinValue;
+        _lastMemoryUsageUpdate = DateTime.MinValue;
+    }
+
     // Helper methods
     private void TrimLatencyQueue(ConcurrentQueue<double> queue, int maxSize)
     {

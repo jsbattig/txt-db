@@ -165,6 +165,24 @@ public class MVCCTransaction
     /// </summary>
     public HashSet<string> WrittenFilePaths { get; set; } = new();
     
+    /// <summary>
+    /// Tracks all resource IDs that this transaction intends to access
+    /// Used for deadlock prevention by pre-acquiring locks in deterministic order
+    /// </summary>
+    public HashSet<string> RequiredResources { get; set; } = new();
+    
+    /// <summary>
+    /// Indicates if this transaction has already acquired its full resource set
+    /// </summary>
+    public bool ResourcesAcquired { get; set; } = false;
+    
+    /// <summary>
+    /// PERFORMANCE OPTIMIZATION: Track if this transaction requires critical priority operations.
+    /// When true, operations should use synchronous path to achieve <10ms performance targets.
+    /// Set when CommitTransactionAsync is called with FlushPriority.Critical.
+    /// </summary>
+    public bool IsCriticalPriority { get; set; } = false;
+    
     public bool IsCommitted { get; set; }
     public bool IsRolledBack { get; set; }
 }

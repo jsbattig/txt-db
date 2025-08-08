@@ -75,6 +75,8 @@ public class SqlExecutor : ISqlExecutor
                 SqlStatementType.Insert => await ExecuteInsertAsync(statement, transaction, cancellationToken),
                 SqlStatementType.Select => await ExecuteSelectAsync(statement, transaction, cancellationToken),
                 SqlStatementType.Delete => await ExecuteDeleteAsync(statement, transaction, cancellationToken),
+                SqlStatementType.CreateIndex => await ExecuteCreateIndexAsync(statement, transaction, cancellationToken),
+                SqlStatementType.DropIndex => await ExecuteDropIndexAsync(statement, transaction, cancellationToken),
                 SqlStatementType.AlterTable => throw new SqlExecutionException("ALTER TABLE statements are unsupported", sql, statement.Type.ToString()),
                 SqlStatementType.DropTable => throw new SqlExecutionException("DROP TABLE statements are not yet supported", sql, statement.Type.ToString()),
                 _ => throw new SqlExecutionException($"Unsupported SQL statement type: {statement.Type}", sql, statement.Type.ToString())
@@ -192,6 +194,7 @@ public class SqlExecutor : ISqlExecutor
     /// <summary>
     /// Executes SELECT statement.
     /// CRITICAL: TxtDb stores structureless objects, so SELECT can access any JSON fields.
+    /// Supports USE INDEX hints for optimized query execution.
     /// </summary>
     private async Task<ISqlResult> ExecuteSelectAsync(
         SqlStatement statement, 
@@ -209,20 +212,48 @@ public class SqlExecutor : ISqlExecutor
                     $"SELECT FROM {statement.TableName}");
             }
             
-            // For now, implement simple full table scan
-            // TODO: Add WHERE clause support and index usage
-            var allObjects = await GetAllObjectsFromTable(table, transaction, cancellationToken);
+            // Determine which objects to process based on USE INDEX hint
+            IList<dynamic> objectsToProcess;
             
-            _logger.LogDebug("SELECT: Found {ObjectCount} objects from table '{TableName}'", allObjects.Count, statement.TableName);
+            if (!string.IsNullOrEmpty(statement.UseIndexHint))
+            {
+                // Use index-hinted filtering for optimized query execution
+                Console.WriteLine($"SELECT DEBUG: Using index hint '{statement.UseIndexHint}' for optimization");
+                var indexFilter = new IndexHintedFilter(table, statement.UseIndexHint, statement.WhereExpression, $"SELECT FROM {statement.TableName}", transaction);
+                objectsToProcess = await table.QueryAsync(transaction, indexFilter, cancellationToken);
+                
+                _logger.LogDebug("SELECT: Index-hinted query found {ObjectCount} objects from table '{TableName}' using index '{IndexName}'", 
+                    objectsToProcess.Count, statement.TableName, statement.UseIndexHint);
+            }
+            else
+            {
+                // Use standard WHERE clause filtering or full table scan
+                if (statement.WhereExpression != null)
+                {
+                    var whereFilter = new WhereClauseFilter(statement.WhereExpression, $"SELECT FROM {statement.TableName}");
+                    objectsToProcess = await table.QueryAsync(transaction, whereFilter, cancellationToken);
+                    
+                    _logger.LogDebug("SELECT: WHERE clause query found {ObjectCount} objects from table '{TableName}'", 
+                        objectsToProcess.Count, statement.TableName);
+                }
+                else
+                {
+                    // Full table scan
+                    objectsToProcess = await GetAllObjectsFromTable(table, transaction, cancellationToken);
+                    
+                    _logger.LogDebug("SELECT: Full table scan found {ObjectCount} objects from table '{TableName}'", 
+                        objectsToProcess.Count, statement.TableName);
+                }
+            }
             
             // Build column info and rows
             var columns = new List<SqlColumnInfo>();
             var rows = new List<object[]>();
             
-            if (allObjects.Count > 0)
+            if (objectsToProcess.Count > 0)
             {
                 // Determine columns based on SELECT statement and actual data
-                var columnNames = DetermineColumnNames(statement, allObjects);
+                var columnNames = DetermineColumnNames(statement, objectsToProcess.ToList());
                 
                 _logger.LogDebug("SELECT: Column names: [{ColumnNames}]", string.Join(", ", columnNames));
                 
@@ -239,7 +270,7 @@ public class SqlExecutor : ISqlExecutor
                 }
                 
                 // Build rows
-                foreach (var obj in allObjects)
+                foreach (var obj in objectsToProcess)
                 {
                     var row = new object[columnNames.Count];
                     var objDict = obj as IDictionary<string, object>;
@@ -348,14 +379,30 @@ public class SqlExecutor : ISqlExecutor
                     $"UPDATE {statement.TableName}");
             }
             
-            // Create WHERE clause filter
-            var whereFilter = new WhereClauseFilter(statement.WhereExpression, $"UPDATE {statement.TableName}");
+            // Determine which objects to process based on USE INDEX hint
+            IList<dynamic> matchingObjects;
             
-            // Query for objects that match the WHERE clause
-            var matchingObjects = await table.QueryAsync(transaction, whereFilter, cancellationToken);
-            
-            _logger.LogDebug("UPDATE: Found {ObjectCount} objects matching WHERE clause from table '{TableName}'", 
-                matchingObjects.Count, statement.TableName);
+            if (!string.IsNullOrEmpty(statement.UseIndexHint))
+            {
+                // Use index-hinted filtering for optimized query execution
+                Console.WriteLine($"UPDATE DEBUG: Using index hint '{statement.UseIndexHint}' for optimization");
+                var indexFilter = new IndexHintedFilter(table, statement.UseIndexHint, statement.WhereExpression, $"UPDATE {statement.TableName}", transaction);
+                matchingObjects = await table.QueryAsync(transaction, indexFilter, cancellationToken);
+                
+                _logger.LogDebug("UPDATE: Index-hinted query found {ObjectCount} objects from table '{TableName}' using index '{IndexName}'", 
+                    matchingObjects.Count, statement.TableName, statement.UseIndexHint);
+            }
+            else
+            {
+                // Create WHERE clause filter
+                var whereFilter = new WhereClauseFilter(statement.WhereExpression, $"UPDATE {statement.TableName}");
+                
+                // Query for objects that match the WHERE clause
+                matchingObjects = await table.QueryAsync(transaction, whereFilter, cancellationToken);
+                
+                _logger.LogDebug("UPDATE: Found {ObjectCount} objects matching WHERE clause from table '{TableName}'", 
+                    matchingObjects.Count, statement.TableName);
+            }
             
             int affectedRows = 0;
             
@@ -489,15 +536,32 @@ public class SqlExecutor : ISqlExecutor
                     $"DELETE FROM {statement.TableName}");
             }
             
-            // Create WHERE clause filter
-            var whereFilter = new WhereClauseFilter(statement.WhereExpression, $"DELETE FROM {statement.TableName}");
+            // Determine which objects to process based on USE INDEX hint
+            IList<dynamic> matchingObjects;
             
-            // Query for objects that match the WHERE clause
-            var matchingObjects = await table.QueryAsync(transaction, whereFilter, cancellationToken);
-            
-            Console.WriteLine($"DELETE DEBUG: Found {matchingObjects.Count} objects matching WHERE clause from table '{statement.TableName}'");
-            _logger.LogDebug("DELETE: Found {ObjectCount} objects matching WHERE clause from table '{TableName}'", 
-                matchingObjects.Count, statement.TableName);
+            if (!string.IsNullOrEmpty(statement.UseIndexHint))
+            {
+                // Use index-hinted filtering for optimized query execution
+                Console.WriteLine($"DELETE DEBUG: Using index hint '{statement.UseIndexHint}' for optimization");
+                var indexFilter = new IndexHintedFilter(table, statement.UseIndexHint, statement.WhereExpression, $"DELETE FROM {statement.TableName}", transaction);
+                matchingObjects = await table.QueryAsync(transaction, indexFilter, cancellationToken);
+                
+                Console.WriteLine($"DELETE DEBUG: Index-hinted query found {matchingObjects.Count} objects from table '{statement.TableName}' using index '{statement.UseIndexHint}'");
+                _logger.LogDebug("DELETE: Index-hinted query found {ObjectCount} objects from table '{TableName}' using index '{IndexName}'", 
+                    matchingObjects.Count, statement.TableName, statement.UseIndexHint);
+            }
+            else
+            {
+                // Create WHERE clause filter
+                var whereFilter = new WhereClauseFilter(statement.WhereExpression, $"DELETE FROM {statement.TableName}");
+                
+                // Query for objects that match the WHERE clause
+                matchingObjects = await table.QueryAsync(transaction, whereFilter, cancellationToken);
+                
+                Console.WriteLine($"DELETE DEBUG: Found {matchingObjects.Count} objects matching WHERE clause from table '{statement.TableName}'");
+                _logger.LogDebug("DELETE: Found {ObjectCount} objects matching WHERE clause from table '{TableName}'", 
+                    matchingObjects.Count, statement.TableName);
+            }
             
             int affectedRows = 0;
             
@@ -590,6 +654,181 @@ public class SqlExecutor : ISqlExecutor
         
         // Fallback: return the string representation
         return keyString;
+    }
+    
+    /// <summary>
+    /// Executes CREATE INDEX statement to create a secondary index on a table column.
+    /// Translation: CREATE INDEX -> table.CreateIndexAsync(txn, "index_name", "$.column_name")
+    /// </summary>
+    private async Task<ISqlResult> ExecuteCreateIndexAsync(
+        SqlStatement statement, 
+        IDatabaseTransaction transaction, 
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            // DEBUG: Log the parsed statement details
+            _logger.LogDebug("CREATE INDEX: TableName='{TableName}', IndexName='{IndexName}', ColumnName='{ColumnName}'", 
+                statement.TableName, statement.IndexName, statement.ColumnName);
+            Console.WriteLine($"CREATE INDEX EXECUTION DEBUG: TableName='{statement.TableName}', IndexName='{statement.IndexName}', ColumnName='{statement.ColumnName}'");
+            
+            // Get table
+            var table = await _database.GetTableAsync(statement.TableName, cancellationToken);
+            if (table == null)
+            {
+                throw new SqlExecutionException(
+                    $"Table '{statement.TableName}' not found", 
+                    $"CREATE INDEX {statement.IndexName} ON {statement.TableName}");
+            }
+            
+            // Validate index name and column name
+            if (string.IsNullOrEmpty(statement.IndexName))
+            {
+                throw new SqlExecutionException(
+                    "CREATE INDEX requires an index name", 
+                    $"CREATE INDEX ON {statement.TableName}");
+            }
+            
+            if (string.IsNullOrEmpty(statement.ColumnName))
+            {
+                throw new SqlExecutionException(
+                    "CREATE INDEX requires a column name", 
+                    $"CREATE INDEX {statement.IndexName} ON {statement.TableName}");
+            }
+            
+            // Convert column name to JSON path (TxtDb format)
+            var fieldPath = $"$.{statement.ColumnName}";
+            
+            Console.WriteLine($"CREATE INDEX DEBUG: About to call CreateIndexAsync with indexName='{statement.IndexName}', fieldPath='{fieldPath}'");
+            
+            // Create index using TxtDb ITable.CreateIndexAsync
+            var index = await table.CreateIndexAsync(transaction, statement.IndexName, fieldPath, cancellationToken);
+            
+            Console.WriteLine($"CREATE INDEX DEBUG: CreateIndexAsync returned successfully");
+            
+            _logger.LogDebug("CREATE INDEX: Created index '{IndexName}' on table '{TableName}' for field '{FieldPath}'", 
+                statement.IndexName, statement.TableName, fieldPath);
+            
+            return new SqlResult
+            {
+                StatementType = SqlStatementType.CreateIndex,
+                AffectedRows = 0, // CREATE INDEX doesn't affect existing rows
+                Columns = Array.Empty<SqlColumnInfo>(),
+                Rows = Array.Empty<object[]>()
+            };
+        }
+        catch (Exception ex) when (!(ex is SqlExecutionException))
+        {
+            Console.WriteLine($"CREATE INDEX ERROR DEBUG: Exception caught: {ex.GetType().Name} - {ex.Message}");
+            Console.WriteLine($"CREATE INDEX ERROR DEBUG: Stack trace: {ex.StackTrace}");
+            
+            // Handle known TxtDb exceptions and convert to SqlExecutionException
+            if (ex.Message.Contains("already exists") || ex.Message.Contains("duplicate", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new SqlExecutionException(
+                    $"Index '{statement.IndexName}' already exists on table '{statement.TableName}'", 
+                    $"CREATE INDEX {statement.IndexName} ON {statement.TableName}");
+            }
+            
+            throw new SqlExecutionException(
+                $"Failed to create index '{statement.IndexName}' on table '{statement.TableName}': {ex.Message}", 
+                $"CREATE INDEX {statement.IndexName} ON {statement.TableName}");
+        }
+    }
+    
+    /// <summary>
+    /// Executes DROP INDEX statement to remove a secondary index from a table.
+    /// Translation: DROP INDEX -> table.DropIndexAsync(txn, "index_name")
+    /// 
+    /// Since DROP INDEX doesn't specify the table name in standard SQL, 
+    /// we need to search through all tables to find which one has the index.
+    /// </summary>
+    private async Task<ISqlResult> ExecuteDropIndexAsync(
+        SqlStatement statement, 
+        IDatabaseTransaction transaction, 
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Validate index name
+            if (string.IsNullOrEmpty(statement.IndexName))
+            {
+                throw new SqlExecutionException(
+                    "DROP INDEX requires an index name", 
+                    "DROP INDEX");
+            }
+            
+            // Since DROP INDEX doesn't specify table name, we need to find it
+            // This is a limitation of the SQL standard - different databases handle this differently
+            // For now, we'll require that the CREATE INDEX workflow stores table association
+            // or we scan all tables (expensive but correct)
+            
+            // TODO: For production, implement index metadata storage to avoid table scanning
+            // For now, attempt to find the index by scanning tables
+            var tables = await GetAllTablesInDatabase(transaction, cancellationToken);
+            ITable? targetTable = null;
+            
+            foreach (var table in tables)
+            {
+                var indexes = await table.ListIndexesAsync(transaction, cancellationToken);
+                if (indexes.Contains(statement.IndexName))
+                {
+                    targetTable = table;
+                    break;
+                }
+            }
+            
+            if (targetTable == null)
+            {
+                // SQL standard behavior: DROP INDEX should be idempotent
+                // If the index doesn't exist, return success without error
+                _logger.LogDebug("DROP INDEX: Index '{IndexName}' does not exist, returning success (idempotent behavior)", 
+                    statement.IndexName);
+            }
+            else
+            {
+                // Drop the index using TxtDb ITable.DropIndexAsync
+                await targetTable.DropIndexAsync(transaction, statement.IndexName, cancellationToken);
+                
+                _logger.LogDebug("DROP INDEX: Dropped index '{IndexName}' from table '{TableName}'", 
+                    statement.IndexName, targetTable.Name);
+            }
+            
+            return new SqlResult
+            {
+                StatementType = SqlStatementType.DropIndex,
+                AffectedRows = 0, // DROP INDEX doesn't affect rows
+                Columns = Array.Empty<SqlColumnInfo>(),
+                Rows = Array.Empty<object[]>()
+            };
+        }
+        catch (Exception ex) when (!(ex is SqlExecutionException))
+        {
+            throw new SqlExecutionException(
+                $"Failed to drop index '{statement.IndexName}': {ex.Message}", 
+                $"DROP INDEX {statement.IndexName}");
+        }
+    }
+    
+    /// <summary>
+    /// Gets all tables in the database for DROP INDEX operations.
+    /// This is a helper method to find which table contains a specific index.
+    /// </summary>
+    private async Task<IList<ITable>> GetAllTablesInDatabase(IDatabaseTransaction transaction, CancellationToken cancellationToken)
+    {
+        var tables = new List<ITable>();
+        var tableNames = await _database.ListTablesAsync(cancellationToken);
+        
+        foreach (var tableName in tableNames)
+        {
+            var table = await _database.GetTableAsync(tableName, cancellationToken);
+            if (table != null)
+            {
+                tables.Add(table);
+            }
+        }
+        
+        return tables;
     }
     
     /// <summary>

@@ -60,7 +60,9 @@ public class ParsedStatement
             Statement.Delete => SqlStatementType.Delete,
             Statement.Select => SqlStatementType.Select,
             Statement.AlterTable => SqlStatementType.AlterTable,
-            Statement.Drop => SqlStatementType.DropTable,
+            Statement.Drop drop when IsDropTable(drop) => SqlStatementType.DropTable,
+            Statement.Drop drop when IsDropIndex(drop) => SqlStatementType.DropIndex,
+            Statement.CreateIndex => SqlStatementType.CreateIndex,
             _ => throw new SqlExecutionException($"Unsupported statement type: {astNode.GetType().Name}", string.Empty)
         };
     }
@@ -79,6 +81,7 @@ public class ParsedStatement
             Statement.Select select => ExtractTableNameFromSelect(select),
             Statement.AlterTable alterTable => ExtractTableNameFromAlterTable(alterTable),
             Statement.Drop drop => ExtractTableNameFromDrop(drop),
+            Statement.CreateIndex createIndex => ExtractTableNameFromCreateIndex(createIndex),
             _ => null
         };
     }
@@ -168,10 +171,67 @@ public class ParsedStatement
     /// </summary>
     private static string? ExtractTableNameFromDrop(Statement.Drop drop)
     {
+        if (IsDropIndex(drop))
+        {
+            // For DROP INDEX, we may need to extract table name differently
+            // Some SQL dialects don't include table name in DROP INDEX
+            // We'll need to handle this at execution time by looking up the index
+            return null;
+        }
+        
+        // For DROP TABLE
         if (drop.Names?.Count > 0)
         {
             return drop.Names[0]?.ToString();
         }
         return null;
+    }
+    
+    /// <summary>
+    /// Extracts table name from CREATE INDEX statement.
+    /// </summary>
+    private static string? ExtractTableNameFromCreateIndex(Statement.CreateIndex createIndex)
+    {
+        // Based on debug output, the table name is in createIndex.Element.TableName
+        try
+        {
+            var element = createIndex.Element;
+            if (element != null)
+            {
+                var tableNameProperty = element.GetType().GetProperty("TableName");
+                if (tableNameProperty != null)
+                {
+                    var tableNameValue = tableNameProperty.GetValue(element);
+                    if (tableNameValue != null)
+                    {
+                        return tableNameValue.ToString();
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Fallback to null
+        }
+        
+        return null;
+    }
+    
+    /// <summary>
+    /// Determines if a DROP statement is dropping a table.
+    /// </summary>
+    private static bool IsDropTable(Statement.Drop drop)
+    {
+        // Check if the object type being dropped is a table
+        return drop.ObjectType == ObjectType.Table;
+    }
+    
+    /// <summary>
+    /// Determines if a DROP statement is dropping an index.
+    /// </summary>
+    private static bool IsDropIndex(Statement.Drop drop)
+    {
+        // Check if the object type being dropped is an index
+        return drop.ObjectType == ObjectType.Index;
     }
 }

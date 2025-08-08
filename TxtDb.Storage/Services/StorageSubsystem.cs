@@ -14,6 +14,7 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
     protected Timer? _metadataPersistTimer;
     protected volatile bool _metadataDirty = false;
     protected readonly object _dirtyFlagLock = new object();
+    protected EnhancedDeadlockAwareLockManager? _lockManager;
     
     protected string _rootPath = string.Empty;
     protected StorageConfig _config = new();
@@ -52,31 +53,43 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         // Initialize metadata persistence timer (every 5 seconds)
         _metadataPersistTimer = new Timer(PersistMetadataIfDirty, null,
             TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
+            
+        // Initialize enhanced deadlock-aware lock manager
+        _lockManager = new EnhancedDeadlockAwareLockManager(_config.DeadlockTimeoutMs, _config.EnableWaitDieDeadlockPrevention);
     }
 
     public long BeginTransaction()
     {
         lock (_metadataLock)
         {
+            // CRITICAL MVCC FIX: Prevent TSN assignment race conditions
+            // The TSN assignment must be atomic to prevent concurrent transactions
+            // from having inconsistent snapshot views
             var transactionId = _nextTransactionId++;
-            // CRITICAL FIX: Update CurrentTSN first, then use it as snapshot TSN
+            
+            // CRITICAL FIX: Snapshot TSN should be set to the current committed TSN
+            // at the time this transaction begins (BEFORE updating CurrentTSN)
+            // This ensures proper read-committed isolation level
+            var snapshotTSN = _metadata.CurrentTSN;
+            
+            // Update CurrentTSN to include this transaction for future transactions
             // This allows the transaction to see its own writes (version = transactionId)
             _metadata.CurrentTSN = Math.Max(_metadata.CurrentTSN, transactionId);
             
             var transaction = new MVCCTransaction
             {
                 TransactionId = transactionId,
-                // CRITICAL FIX: For proper MVCC, snapshot TSN should be set to the highest
-                // committed transaction at the time this transaction begins
-                // This allows read-committed isolation level
-                SnapshotTSN = _metadata.CurrentTSN, // Now includes current transaction
+                // CRITICAL MVCC FIX: Use snapshot TSN captured BEFORE CurrentTSN update
+                // This ensures this transaction sees a consistent snapshot of committed data
+                // but does not see uncommitted changes from other concurrent transactions
+                SnapshotTSN = snapshotTSN,
                 StartTime = DateTime.UtcNow
             };
 
             _activeTransactions.TryAdd(transactionId, transaction);
             _metadata.AddActiveTransaction(transactionId);
             
-            PersistMetadata();
+            MarkMetadataDirty(); // Use dirty flag optimization instead of immediate persist
             return transactionId;
         }
     }
@@ -125,6 +138,9 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             
             PersistMetadata();
         }
+        
+        // CRITICAL: Release all locks held by this transaction to prevent deadlocks
+        _lockManager?.ReleaseLocks(transactionId);
     }
 
     public void RollbackTransaction(long transactionId)
@@ -158,6 +174,9 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             
             PersistMetadata();
         }
+        
+        // CRITICAL: Release all locks held by this transaction to prevent deadlocks
+        _lockManager?.ReleaseLocks(transactionId);
     }
 
     public string InsertObject(long transactionId, string @namespace, object data)
@@ -333,7 +352,16 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
                     return extensionIndex > 0 ? nameWithoutVersion.Substring(0, extensionIndex) : nameWithoutVersion;
                 })
                 .Distinct()
-                .Where(pageId => regex.IsMatch(pageId));
+                .Where(pageId => regex.IsMatch(pageId))
+                .ToList();
+            
+            // CRITICAL DEADLOCK FIX: Acquire locks on all matching pages using resource ordering
+            // This prevents deadlocks when multiple transactions query overlapping page sets
+            var fullPageIds = pageGroups.Select(pageId => $"{@namespace}:{pageId}").ToList();
+            if (fullPageIds.Count > 0)
+            {
+                _lockManager?.AcquireMultipleLocks(transactionId, fullPageIds);
+            }
             
             // CRITICAL: Apply snapshot isolation and record read versions for ALL pages
             lock (_metadataLock)
@@ -357,8 +385,9 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
                         transaction.ReadVersions[fullPageId] = 0;
                     }
                     
-                    // Now read the data using proper snapshot isolation
-                    var pageContent = ReadPageInternal(transactionId, @namespace, pageId);
+                    // Now read the data using proper snapshot isolation (already locked above)
+                    // Skip the locking since we already have the lock from AcquireMultipleLocks
+                    var pageContent = ReadPageInternalWithoutLock(transactionId, @namespace, pageId);
                     if (pageContent.Length > 0)
                     {
                         result[pageId] = pageContent;
@@ -593,36 +622,106 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         var fullPageId = $"{@namespace}:{pageId}";
         var namespacePath = GetNamespacePath(@namespace);
         
-        // CRITICAL FIX: Implement proper SNAPSHOT isolation to prevent phantom reads
-        // Only read versions that were committed at or before this transaction's snapshot TSN
-        if (_metadata.PageVersions.TryGetValue(fullPageId, out var pageInfo))
+        // CRITICAL DEADLOCK FIX: Use Two-Phase Locking with deterministic resource ordering
+        // Track this resource and ensure we acquire locks in alphabetical order to prevent deadlocks
+        if (!transaction.RequiredResources.Contains(fullPageId))
         {
-            var allVersions = pageInfo.GetVersionsCopy()
-                .Where(v => v <= transaction.SnapshotTSN) // CRITICAL: Only see data from snapshot time or before
-                .OrderByDescending(v => v)
-                .ToList();
+            transaction.RequiredResources.Add(fullPageId);
             
-            foreach (var version in allVersions)
-            {
-                // CRITICAL FIX: Allow current transaction to see its own writes
-                // Skip versions from OTHER active transactions, but allow current transaction's writes
-                if (_metadata.ContainsActiveTransaction(version) && version != transactionId)
-                    continue;
-                    
-                // Skip rolled back versions
-                if (IsVersionRolledBack(version))
-                    continue;
-                    
-                var versionFile = Path.Combine(namespacePath, $"{pageId}{_formatAdapter.FileExtension}.v{version}");
-                if (File.Exists(versionFile))
-                {
-                    var content = File.ReadAllText(versionFile);
-                    return _formatAdapter.DeserializeArray(content, typeof(object));
-                }
-            }
+            // CRITICAL: When acquiring a new resource, we must acquire ALL current and new resources
+            // in deterministic order to prevent deadlock. This implements true Two-Phase Locking.
+            var allRequiredResources = transaction.RequiredResources.ToList();
+            _lockManager?.AcquireMultipleLocks(transactionId, allRequiredResources);
         }
         
-        return Array.Empty<object>();
+        try
+        {
+            // CRITICAL FIX: Implement proper SNAPSHOT isolation to prevent phantom reads
+            // Only read versions that were committed at or before this transaction's snapshot TSN
+            if (_metadata.PageVersions.TryGetValue(fullPageId, out var pageInfo))
+            {
+                var allVersions = pageInfo.GetVersionsCopy()
+                    .Where(v => v <= transaction.SnapshotTSN) // CRITICAL: Only see data from snapshot time or before
+                    .OrderByDescending(v => v)
+                    .ToList();
+                
+                foreach (var version in allVersions)
+                {
+                    // CRITICAL FIX: Allow current transaction to see its own writes
+                    // Skip versions from OTHER active transactions, but allow current transaction's writes
+                    if (_metadata.ContainsActiveTransaction(version) && version != transactionId)
+                        continue;
+                        
+                    // Skip rolled back versions
+                    if (IsVersionRolledBack(version))
+                        continue;
+                        
+                    var versionFile = Path.Combine(namespacePath, $"{pageId}{_formatAdapter.FileExtension}.v{version}");
+                    if (File.Exists(versionFile))
+                    {
+                        var content = File.ReadAllText(versionFile);
+                        return _formatAdapter.DeserializeArray(content, typeof(object));
+                    }
+                }
+            }
+            
+            return Array.Empty<object>();
+        }
+        catch (TimeoutException)
+        {
+            // Re-throw deadlock timeout as-is for proper error handling
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Internal page reading method without lock acquisition - used when locks are already held
+    /// This method is used by GetMatchingObjects after it has already acquired all necessary locks
+    /// </summary>
+    protected object[] ReadPageInternalWithoutLock(long transactionId, string @namespace, string pageId)
+    {
+        var transaction = _activeTransactions[transactionId];
+        var fullPageId = $"{@namespace}:{pageId}";
+        var namespacePath = GetNamespacePath(@namespace);
+        
+        try
+        {
+            // CRITICAL FIX: Implement proper SNAPSHOT isolation to prevent phantom reads
+            // Only read versions that were committed at or before this transaction's snapshot TSN
+            if (_metadata.PageVersions.TryGetValue(fullPageId, out var pageInfo))
+            {
+                var allVersions = pageInfo.GetVersionsCopy()
+                    .Where(v => v <= transaction.SnapshotTSN) // CRITICAL: Only see data from snapshot time or before
+                    .OrderByDescending(v => v)
+                    .ToList();
+                
+                foreach (var version in allVersions)
+                {
+                    // CRITICAL FIX: Allow current transaction to see its own writes
+                    // Skip versions from OTHER active transactions, but allow current transaction's writes
+                    if (_metadata.ContainsActiveTransaction(version) && version != transactionId)
+                        continue;
+                        
+                    // Skip rolled back versions
+                    if (IsVersionRolledBack(version))
+                        continue;
+                        
+                    var versionFile = Path.Combine(namespacePath, $"{pageId}{_formatAdapter.FileExtension}.v{version}");
+                    if (File.Exists(versionFile))
+                    {
+                        var content = File.ReadAllText(versionFile);
+                        return _formatAdapter.DeserializeArray(content, typeof(object));
+                    }
+                }
+            }
+            
+            return Array.Empty<object>();
+        }
+        catch (TimeoutException)
+        {
+            // Re-throw deadlock timeout as-is for proper error handling
+            throw;
+        }
     }
 
     protected void WritePageVersion(long transactionId, string @namespace, string pageId, object[] content)
@@ -707,23 +806,38 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
             
             if (shouldReusePages)
             {
-                // ATOMIC: Page space checking is now within the same lock as the transaction count check
-                var existingPages = Directory.GetFiles(namespacePath, $"page*{_formatAdapter.FileExtension}.v*")
-                    .Select(f => Path.GetFileName(f))
-                    .Where(f => f.StartsWith("page") && f.Contains(".v"))
-                    .Select(f => {
-                        var nameWithoutVersion = f.Substring(0, f.LastIndexOf(".v"));
-                        var extensionIndex = nameWithoutVersion.LastIndexOf(_formatAdapter.FileExtension);
-                        return extensionIndex > 0 ? nameWithoutVersion.Substring(0, extensionIndex) : nameWithoutVersion;
-                    })
-                    .Distinct()
-                    .OrderBy(p => p)
-                    .ToList();
+                // CRITICAL PERFORMANCE FIX: Single directory scan with cached file information
+                // This eliminates multiple Directory.GetFiles() calls per insertion (was causing 200ms+ delays)
+                var allVersionFiles = Directory.GetFiles(namespacePath, $"*{_formatAdapter.FileExtension}.v*");
                 
-                // ATOMIC: Page size checking and selection within the same critical section
-                foreach (var pageId in existingPages)
+                // Pre-compute page sizes from the single directory scan
+                var pageSizes = new Dictionary<string, long>();
+                var existingPages = new HashSet<string>();
+                
+                foreach (var filePath in allVersionFiles)
                 {
-                    var currentSize = GetCurrentPageSize(@namespace, pageId);
+                    var fileName = Path.GetFileName(filePath);
+                    if (fileName.StartsWith("page") && fileName.Contains(".v"))
+                    {
+                        var nameWithoutVersion = fileName.Substring(0, fileName.LastIndexOf(".v"));
+                        var extensionIndex = nameWithoutVersion.LastIndexOf(_formatAdapter.FileExtension);
+                        var pageId = extensionIndex > 0 ? nameWithoutVersion.Substring(0, extensionIndex) : nameWithoutVersion;
+                        
+                        existingPages.Add(pageId);
+                        
+                        // Track the largest file size for this page (latest version)
+                        var fileSize = new FileInfo(filePath).Length;
+                        if (!pageSizes.ContainsKey(pageId) || pageSizes[pageId] < fileSize)
+                        {
+                            pageSizes[pageId] = fileSize;
+                        }
+                    }
+                }
+                
+                // OPTIMIZED: Page size checking without additional directory scans
+                foreach (var pageId in existingPages.OrderBy(p => p))
+                {
+                    var currentSize = pageSizes.GetValueOrDefault(pageId, 0);
                     if (currentSize + serializedSize <= maxSizeBytes)
                     {
                         // ATOMIC: Page selection decision made within lock scope
@@ -976,6 +1090,12 @@ public class StorageSubsystem : IStorageSubsystem, IDisposable
         // Dispose timers
         _cleanupTimer?.Dispose();
         _metadataPersistTimer?.Dispose();
+        
+        // Release all locks for remaining active transactions
+        foreach (var transactionId in _activeTransactions.Keys)
+        {
+            _lockManager?.ReleaseLocks(transactionId);
+        }
         
         // Persist any pending metadata changes before disposing
         PersistMetadataIfDirty(null);

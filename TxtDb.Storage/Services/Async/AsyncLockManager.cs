@@ -26,6 +26,7 @@ public class AsyncLockManager : IDisposable
     private readonly ConcurrentDictionary<string, SemaphoreSlim> _locks = new();
     private readonly ConcurrentDictionary<string, LockReferenceInfo> _lockReferenceCounts = new();
     private readonly object _lockCreationLock = new object();
+    private readonly object _referenceCountLock = new object();
     private readonly ConcurrentBag<AsyncLockHandle> _activeLockHandles = new();
     private readonly TaskCompletionSource<bool> _disposalCompletionSource = new();
     private volatile bool _disposed = false;
@@ -33,6 +34,7 @@ public class AsyncLockManager : IDisposable
 
     /// <summary>
     /// Acquires an async lock for the specified key
+    /// CRITICAL FIX: Enhanced timeout and cancellation support with proper race condition handling
     /// </summary>
     /// <param name="lockKey">Unique identifier for the lock</param>
     /// <param name="timeout">Maximum time to wait for lock acquisition</param>
@@ -45,21 +47,28 @@ public class AsyncLockManager : IDisposable
         if (_disposed || _disposing)
             throw new ObjectDisposedException(nameof(AsyncLockManager));
 
-        var actualTimeout = timeout ?? Timeout.InfiniteTimeSpan;
         var semaphore = GetOrCreateSemaphore(lockKey);
 
         bool acquired = false;
         try
         {
-            // CRITICAL FIX: Wrap semaphore operations in try-catch to handle disposal race conditions
-            if (actualTimeout == Timeout.InfiniteTimeSpan)
+            // CRITICAL FIX: Implement proper timeout with linked cancellation token
+            if (timeout.HasValue)
             {
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                cts.CancelAfter(timeout.Value);
+                
                 try
                 {
-                    await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    await semaphore.WaitAsync(cts.Token).ConfigureAwait(false);
                     acquired = true;
                 }
-                catch (ObjectDisposedException) when (_disposed)
+                catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+                {
+                    // Timeout occurred (cts was cancelled but original token wasn't)
+                    throw new TimeoutException($"Failed to acquire lock '{lockKey}' within {timeout.Value.TotalMilliseconds}ms");
+                }
+                catch (ObjectDisposedException) when (_disposed || _disposing)
                 {
                     // Lock manager was disposed while waiting - this is expected during shutdown
                     throw new ObjectDisposedException(nameof(AsyncLockManager));
@@ -69,13 +78,10 @@ public class AsyncLockManager : IDisposable
             {
                 try
                 {
-                    acquired = await semaphore.WaitAsync(actualTimeout, cancellationToken).ConfigureAwait(false);
-                    if (!acquired)
-                    {
-                        throw new TimeoutException($"Failed to acquire lock '{lockKey}' within {actualTimeout.TotalMilliseconds}ms");
-                    }
+                    await semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    acquired = true;
                 }
-                catch (ObjectDisposedException) when (_disposed)
+                catch (ObjectDisposedException) when (_disposed || _disposing)
                 {
                     // Lock manager was disposed while waiting - this is expected during shutdown
                     throw new ObjectDisposedException(nameof(AsyncLockManager));
@@ -107,22 +113,12 @@ public class AsyncLockManager : IDisposable
 
     /// <summary>
     /// Gets or creates a semaphore for the specified lock key
+    /// CRITICAL FIX: Fixed race condition where semaphores were being disposed while being retrieved
     /// </summary>
     private SemaphoreSlim GetOrCreateSemaphore(string lockKey)
     {
         if (_disposed || _disposing)
             throw new ObjectDisposedException(nameof(AsyncLockManager));
-
-        // Double-checked locking pattern for thread-safe semaphore creation
-        if (_locks.TryGetValue(lockKey, out var existingSemaphore))
-        {
-            // CRITICAL FIX: Check if the semaphore was disposed during concurrent disposal
-            if (_disposed || _disposing)
-                throw new ObjectDisposedException(nameof(AsyncLockManager));
-                
-            IncrementLockReference(lockKey);
-            return existingSemaphore;
-        }
 
         lock (_lockCreationLock)
         {
@@ -130,10 +126,22 @@ public class AsyncLockManager : IDisposable
             if (_disposed || _disposing)
                 throw new ObjectDisposedException(nameof(AsyncLockManager));
                 
-            if (_locks.TryGetValue(lockKey, out existingSemaphore))
+            if (_locks.TryGetValue(lockKey, out var existingSemaphore))
             {
-                IncrementLockReference(lockKey);
-                return existingSemaphore;
+                // CRITICAL FIX: Validate semaphore is not disposed before incrementing reference
+                try
+                {
+                    // Test if semaphore is still valid by checking CurrentCount without waiting
+                    _ = existingSemaphore.CurrentCount;
+                    IncrementLockReference(lockKey);
+                    return existingSemaphore;
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Semaphore was disposed, remove it and create a new one
+                    _locks.TryRemove(lockKey, out _);
+                    _lockReferenceCounts.TryRemove(lockKey, out _);
+                }
             }
 
             var newSemaphore = new SemaphoreSlim(1, 1); // Binary semaphore (mutex)
@@ -161,28 +169,31 @@ public class AsyncLockManager : IDisposable
 
     /// <summary>
     /// Decrements the reference count for a lock and removes it if no longer referenced
-    /// Uses atomic operations to prevent race conditions
+    /// CRITICAL FIX: Uses separate lock to prevent race conditions during reference counting and disposal
     /// </summary>
     private void DecrementLockReference(string lockKey)
     {
-        if (_lockReferenceCounts.TryGetValue(lockKey, out var info))
+        lock (_referenceCountLock)
         {
-            var newCount = Interlocked.Decrement(ref info.Count);
-            
-            if (newCount <= 0)
+            if (_lockReferenceCounts.TryGetValue(lockKey, out var info))
             {
-                // Only one thread will successfully remove the lock
-                if (_lockReferenceCounts.TryRemove(lockKey, out _) && 
-                    _locks.TryRemove(lockKey, out var semaphore))
+                var newCount = Interlocked.Decrement(ref info.Count);
+                
+                if (newCount <= 0)
                 {
-                    // CRITICAL FIX: Dispose semaphore safely, handling concurrent access
-                    try
+                    // Only one thread will successfully remove the lock
+                    if (_lockReferenceCounts.TryRemove(lockKey, out _) && 
+                        _locks.TryRemove(lockKey, out var semaphore))
                     {
-                        semaphore.Dispose();
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        // Expected during shutdown - semaphore already disposed
+                        // CRITICAL FIX: Dispose semaphore safely, handling concurrent access
+                        try
+                        {
+                            semaphore.Dispose();
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // Expected during shutdown - semaphore already disposed
+                        }
                     }
                 }
             }
@@ -212,7 +223,7 @@ public class AsyncLockManager : IDisposable
 
     /// <summary>
     /// Disposes the lock manager and releases all locks with proper synchronization
-    /// CRITICAL FIX: Uses proper disposal coordination to prevent race conditions
+    /// CRITICAL FIX: Enhanced disposal process that properly signals all waiting threads
     /// </summary>
     public void Dispose()
     {
@@ -223,7 +234,6 @@ public class AsyncLockManager : IDisposable
             {
                 if (_disposed) return;
                 _disposing = true;
-                _disposed = true;
             }
             
             // Mark all active lock handles as disposed (snapshot to avoid collection modification)
@@ -247,7 +257,7 @@ public class AsyncLockManager : IDisposable
                 // Ignore enumeration errors during disposal
             }
 
-            // Dispose all semaphores (snapshot to avoid collection modification)
+            // CRITICAL FIX: Release all semaphores before disposing to wake up waiting threads
             try
             {
                 var lockArray = _locks.ToArray();
@@ -255,7 +265,27 @@ public class AsyncLockManager : IDisposable
                 {
                     try
                     {
-                        kvp.Value.Dispose();
+                        // Release all waiting threads by releasing the semaphore multiple times
+                        // This ensures any waiting threads get an ObjectDisposedException instead of hanging
+                        var semaphore = kvp.Value;
+                        for (int i = 0; i < 100; i++) // Release up to 100 waiting threads
+                        {
+                            try
+                            {
+                                semaphore.Release();
+                            }
+                            catch (SemaphoreFullException)
+                            {
+                                // Expected when semaphore is at max capacity
+                                break;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // Already disposed
+                                break;
+                            }
+                        }
+                        semaphore.Dispose();
                     }
                     catch
                     {
@@ -266,6 +296,12 @@ public class AsyncLockManager : IDisposable
             catch
             {
                 // Ignore enumeration errors during disposal
+            }
+
+            // Set final disposal flag
+            lock (_lockCreationLock)
+            {
+                _disposed = true;
             }
 
             // Clear collections

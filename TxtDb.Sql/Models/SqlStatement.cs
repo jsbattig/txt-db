@@ -52,4 +52,20 @@ public class SqlStatement
     /// Maps column names to their new values.
     /// </summary>
     public IDictionary<string, object> SetValues { get; init; } = new Dictionary<string, object>();
+    
+    /// <summary>
+    /// Index name for CREATE INDEX and DROP INDEX statements.
+    /// </summary>
+    public string? IndexName { get; init; }
+    
+    /// <summary>
+    /// Column name for CREATE INDEX statements.
+    /// </summary>
+    public string? ColumnName { get; init; }
+    
+    /// <summary>
+    /// USE INDEX hint for SELECT, UPDATE, and DELETE statements.
+    /// Specifies which index should be used for query optimization.
+    /// </summary>
+    public string? UseIndexHint { get; init; }
 }

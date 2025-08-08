@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Threading.Channels;
+using System.Linq;
 using TxtDb.Storage.Models;
 
 namespace TxtDb.Storage.Services.Async;
@@ -32,15 +33,34 @@ public class BatchFlushCoordinator : IDisposable
     private long _actualFlushCount;
     private readonly object _statsLock = new object();
     
-    // Circuit breaker for continuous failures
+    // Enhanced Circuit Breaker Implementation for Phase 4 Infrastructure Hardening
+    private CircuitBreakerState _circuitBreakerState;
     private int _consecutiveFailures;
     private DateTime _lastFailureTime;
-    private bool _circuitBreakerOpen;
+    private DateTime _circuitBreakerOpenTime;
+    private int _halfOpenAttempts;
     private readonly object _circuitBreakerLock = new object();
     
-    // Circuit breaker configuration
-    private const int MaxConsecutiveFailures = 5;
-    private static readonly TimeSpan CircuitBreakerTimeout = TimeSpan.FromSeconds(30);
+    // Circuit breaker metrics tracking
+    private long _totalOperations;
+    private long _successfulOperations;
+    private long _failedOperations;
+    private readonly Queue<OperationResult> _recentOperations = new Queue<OperationResult>();
+    
+    /// <summary>
+    /// Represents an operation result with timestamp for failure rate calculations
+    /// </summary>
+    private readonly struct OperationResult
+    {
+        public DateTime Timestamp { get; init; }
+        public bool IsSuccess { get; init; }
+        
+        public OperationResult(bool isSuccess)
+        {
+            Timestamp = DateTime.UtcNow;
+            IsSuccess = isSuccess;
+        }
+    }
 
     /// <summary>
     /// Maximum number of requests to batch together
@@ -72,6 +92,76 @@ public class BatchFlushCoordinator : IDisposable
     /// </summary>
     public long ActualFlushCount => Interlocked.Read(ref _actualFlushCount);
 
+    // Enhanced Circuit Breaker Properties for Phase 4
+    
+    /// <summary>
+    /// Current state of the circuit breaker
+    /// </summary>
+    public CircuitBreakerState CircuitBreakerState
+    {
+        get
+        {
+            lock (_circuitBreakerLock)
+            {
+                return _circuitBreakerState;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Whether the circuit breaker is currently open (blocking operations)
+    /// </summary>
+    public bool IsCircuitBreakerOpen => CircuitBreakerState != CircuitBreakerState.Closed;
+    
+    /// <summary>
+    /// Number of consecutive failures recorded
+    /// </summary>
+    public int ConsecutiveFailures
+    {
+        get
+        {
+            lock (_circuitBreakerLock)
+            {
+                return _consecutiveFailures;
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Total number of operations attempted
+    /// </summary>
+    public long TotalOperations => Interlocked.Read(ref _totalOperations);
+    
+    /// <summary>
+    /// Number of successful operations
+    /// </summary>
+    public long SuccessfulOperations => Interlocked.Read(ref _successfulOperations);
+    
+    /// <summary>
+    /// Number of failed operations
+    /// </summary>
+    public long FailedOperations => Interlocked.Read(ref _failedOperations);
+    
+    /// <summary>
+    /// Current failure rate within the configured time window
+    /// </summary>
+    public double FailureRate
+    {
+        get
+        {
+            lock (_circuitBreakerLock)
+            {
+                CleanupOldOperations();
+                
+                if (_recentOperations.Count == 0)
+                    return 0.0;
+                    
+                var failures = _recentOperations.Count(op => !op.IsSuccess);
+                return (double)failures / _recentOperations.Count;
+            }
+        }
+    }
+
     /// <summary>
     /// Creates a new BatchFlushCoordinator with default configuration
     /// </summary>
@@ -101,6 +191,11 @@ public class BatchFlushCoordinator : IDisposable
         
         _flushSemaphore = new SemaphoreSlim(_config.MaxConcurrentFlushes, _config.MaxConcurrentFlushes);
         _cancellationTokenSource = new CancellationTokenSource();
+        
+        // Initialize circuit breaker in closed state
+        _circuitBreakerState = CircuitBreakerState.Closed;
+        _consecutiveFailures = 0;
+        _halfOpenAttempts = 0;
     }
 
     /// <summary>
@@ -269,11 +364,13 @@ public class BatchFlushCoordinator : IDisposable
 
     /// <summary>
     /// Queues a file for batch flushing
+    /// CRITICAL FIX: Added cancellation token support for comprehensive cancellation propagation
     /// </summary>
     /// <param name="filePath">Path to file to be flushed</param>
     /// <param name="priority">Priority level for this flush</param>
+    /// <param name="cancellationToken">Cancellation token to cancel the operation</param>
     /// <returns>Task that completes when the file has been flushed</returns>
-    public async Task QueueFlushAsync(string filePath, FlushPriority priority = FlushPriority.Normal)
+    public async Task QueueFlushAsync(string filePath, FlushPriority priority = FlushPriority.Normal, CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
         
@@ -282,13 +379,26 @@ public class BatchFlushCoordinator : IDisposable
 
         var request = new FlushRequest(filePath, priority);
         
-        if (!await _writer.WaitToWriteAsync(_cancellationTokenSource.Token).ConfigureAwait(false))
+        // CRITICAL FIX: Use linked cancellation token that combines external and internal cancellation
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, _cancellationTokenSource.Token);
+        
+        if (!await _writer.WaitToWriteAsync(linkedCts.Token).ConfigureAwait(false))
             throw new InvalidOperationException("Request queue is closed");
 
-        await _writer.WriteAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
+        await _writer.WriteAsync(request, linkedCts.Token).ConfigureAwait(false);
         
-        // Wait for the flush to complete
-        await request.CompletionSource.Task.ConfigureAwait(false);
+        // Wait for the flush to complete with cancellation support
+        using var flushCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        try
+        {
+            await request.CompletionSource.Task.WaitAsync(flushCts.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // External cancellation requested - mark request as cancelled
+            request.SetCancelled();
+            throw;
+        }
     }
 
     /// <summary>
@@ -327,15 +437,32 @@ public class BatchFlushCoordinator : IDisposable
                     }
                     else
                     {
-                        // No more requests available, wait a bit for more
+                        // CRITICAL FIX: No more requests available immediately
                         if (pendingRequests.Count == 0)
+                        {
+                            // If no pending requests, exit loop to wait for next available item
                             break;
-                            
+                        }
+                        
+                        // BOUNDED ITERATION FIX: If we have pending requests but no new ones,
+                        // don't spin indefinitely waiting. Exit after a reasonable attempt
+                        // to allow processing of what we have.
+                        
                         // Add cancellation check to prevent infinite waiting
                         if (cancellationToken.IsCancellationRequested)
                             break;
+                        
+                        // CRITICAL FIX: Avoid busy waiting by checking if more requests are likely available
+                        // If we've been waiting for more requests for a significant portion of max delay,
+                        // process what we have rather than continuing to wait
+                        var elapsedMs = (DateTime.UtcNow - batchStartTime).TotalMilliseconds;
+                        if (elapsedMs > _config.MaxDelayMs * 0.8) // 80% of max delay reached
+                        {
+                            break; // Process pending requests instead of waiting longer
+                        }
                             
-                        await Task.Delay(5, cancellationToken).ConfigureAwait(false);
+                        // Short delay to avoid busy waiting, but don't wait too long
+                        await Task.Delay(Math.Min(5, (int)(_config.MaxDelayMs - elapsedMs)), cancellationToken).ConfigureAwait(false);
                     }
                 }
 
@@ -448,28 +575,58 @@ public class BatchFlushCoordinator : IDisposable
     /// <summary>
     /// Performs the actual flush operation for a group of files
     /// This is where the real I/O optimization happens
-    /// Includes circuit breaker pattern for continuous failure handling
+    /// Includes enhanced circuit breaker pattern for continuous failure handling
     /// </summary>
     private async Task PerformFlushOperationAsync(List<FlushRequest> requests, CancellationToken cancellationToken)
     {
-        // CRITICAL FIX: Check circuit breaker before attempting flush operations
-        if (ShouldBypassCircuitBreaker())
+        // ENHANCED CIRCUIT BREAKER: Check state and handle transitions
+        if (!CanExecuteOperation())
         {
-            throw new InvalidOperationException($"Circuit breaker is open due to {_consecutiveFailures} consecutive failures. " +
-                $"Operations are temporarily disabled until {_lastFailureTime.Add(CircuitBreakerTimeout)}");
+            var state = CircuitBreakerState;
+            throw new InvalidOperationException(
+                $"Circuit breaker is {state} due to {_consecutiveFailures} consecutive failures. " +
+                $"Operations are temporarily disabled until recovery.");
         }
 
-        foreach (var request in requests)
+        // Track operation start - count each request individually
+        Interlocked.Add(ref _totalOperations, requests.Count);
+        
+        var operationSuccess = true;
+        Exception? operationException = null;
+        
+        try
         {
-            // Verify file exists before attempting flush
-            if (!File.Exists(request.FilePath))
+            foreach (var request in requests)
             {
-                RecordFlushFailure();
-                throw new FileNotFoundException($"File not found: {request.FilePath}");
-            }
+                // Verify file exists before attempting flush
+                if (!File.Exists(request.FilePath))
+                {
+                    operationSuccess = false;
+                    operationException = new FileNotFoundException($"File not found: {request.FilePath}");
+                    break;
+                }
 
-            // CRITICAL FIX: Add timeout and retry logic for flush operations
-            await PerformFlushWithTimeoutAndRetryAsync(request, cancellationToken).ConfigureAwait(false);
+                // ENHANCED: Add timeout and retry logic for flush operations
+                await PerformFlushWithTimeoutAndRetryAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+        }
+        catch (Exception ex)
+        {
+            operationSuccess = false;
+            operationException = ex;
+        }
+        finally
+        {
+            // Record operation result for circuit breaker - record each request individually
+            for (int i = 0; i < requests.Count; i++)
+            {
+                RecordOperationResult(operationSuccess);
+            }
+        }
+        
+        if (!operationSuccess && operationException != null)
+        {
+            throw operationException;
         }
     }
 
@@ -521,14 +678,13 @@ public class BatchFlushCoordinator : IDisposable
                 // Both flushes succeeded - force OS buffer flush for guaranteed durability
                 fileStream.Flush(flushToDisk: true);
                 
-                // Success! Record for circuit breaker and return
-                RecordFlushSuccess();
+                // Success recorded in calling method via RecordOperationResult
                 return;
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {
                 // Main cancellation token was cancelled - don't retry
-                RecordFlushFailure();
+                // Failure will be recorded in calling method
                 throw;
             }
             catch (OperationCanceledException ex)
@@ -563,55 +719,158 @@ public class BatchFlushCoordinator : IDisposable
             }
         }
 
-        // All attempts failed
-        RecordFlushFailure();
+        // All attempts failed - exception will be recorded in calling method
         throw lastException ?? new IOException($"Failed to flush {request.FilePath} after {attempts} attempts");
     }
 
     /// <summary>
-    /// Circuit breaker implementation for handling continuous failures
-    /// Prevents resource exhaustion and provides fail-fast behavior
+    /// Enhanced circuit breaker implementation for handling continuous failures
+    /// Supports closed, open, and half-open states with sophisticated recovery logic
     /// </summary>
-    private bool ShouldBypassCircuitBreaker()
+    private bool CanExecuteOperation()
     {
         lock (_circuitBreakerLock)
         {
-            if (!_circuitBreakerOpen)
-                return false;
-                
-            // Check if circuit breaker timeout has elapsed
-            if (DateTime.UtcNow - _lastFailureTime > CircuitBreakerTimeout)
+            switch (_circuitBreakerState)
             {
-                // Reset circuit breaker to half-open state
-                _circuitBreakerOpen = false;
-                _consecutiveFailures = 0;
-                return false;
+                case CircuitBreakerState.Closed:
+                    // Normal operation, check failure rate
+                    CleanupOldOperations();
+                    var currentFailureRate = GetCurrentFailureRate();
+                    
+                    if (currentFailureRate >= _config.CircuitBreakerFailureRateThreshold && 
+                        _recentOperations.Count >= 10) // Minimum sample size
+                    {
+                        TransitionToOpen();
+                        return false;
+                    }
+                    return true;
+                    
+                case CircuitBreakerState.Open:
+                    // Check if timeout has elapsed to transition to half-open
+                    if (DateTime.UtcNow - _circuitBreakerOpenTime > TimeSpan.FromMilliseconds(_config.CircuitBreakerTimeoutMs))
+                    {
+                        TransitionToHalfOpen();
+                        return true;
+                    }
+                    return false;
+                    
+                case CircuitBreakerState.HalfOpen:
+                    // Allow limited test operations
+                    if (_halfOpenAttempts < _config.CircuitBreakerHalfOpenMaxAttempts)
+                    {
+                        _halfOpenAttempts++;
+                        return true;
+                    }
+                    return false;
+                    
+                default:
+                    return false;
             }
-            
-            return true; // Circuit breaker is open, bypass operation
         }
     }
     
-    private void RecordFlushSuccess()
+    /// <summary>
+    /// Records the result of an operation for circuit breaker decision making
+    /// </summary>
+    private void RecordOperationResult(bool isSuccess)
     {
         lock (_circuitBreakerLock)
         {
-            _consecutiveFailures = 0;
-            _circuitBreakerOpen = false;
+            // Add to metrics
+            if (isSuccess)
+            {
+                Interlocked.Increment(ref _successfulOperations);
+                _consecutiveFailures = 0; // Reset consecutive failures on success
+            }
+            else
+            {
+                Interlocked.Increment(ref _failedOperations);
+                _consecutiveFailures++;
+                _lastFailureTime = DateTime.UtcNow;
+            }
+            
+            // Add to recent operations window
+            _recentOperations.Enqueue(new OperationResult(isSuccess));
+            
+            // Handle state transitions based on results
+            switch (_circuitBreakerState)
+            {
+                case CircuitBreakerState.Closed:
+                    // Check if we should open due to consecutive failures
+                    if (_consecutiveFailures >= _config.CircuitBreakerFailureThreshold)
+                    {
+                        TransitionToOpen();
+                    }
+                    break;
+                    
+                case CircuitBreakerState.HalfOpen:
+                    if (isSuccess)
+                    {
+                        // Success in half-open state transitions back to closed
+                        TransitionToClosed();
+                    }
+                    else
+                    {
+                        // Failure in half-open state transitions back to open
+                        TransitionToOpen();
+                    }
+                    break;
+            }
         }
     }
     
-    private void RecordFlushFailure()
+    /// <summary>
+    /// Transitions circuit breaker to closed state
+    /// </summary>
+    private void TransitionToClosed()
     {
-        lock (_circuitBreakerLock)
-        {
-            _consecutiveFailures++;
-            _lastFailureTime = DateTime.UtcNow;
+        _circuitBreakerState = CircuitBreakerState.Closed;
+        _consecutiveFailures = 0;
+        _halfOpenAttempts = 0;
+    }
+    
+    /// <summary>
+    /// Transitions circuit breaker to open state
+    /// </summary>
+    private void TransitionToOpen()
+    {
+        _circuitBreakerState = CircuitBreakerState.Open;
+        _circuitBreakerOpenTime = DateTime.UtcNow;
+        _halfOpenAttempts = 0;
+    }
+    
+    /// <summary>
+    /// Transitions circuit breaker to half-open state
+    /// </summary>
+    private void TransitionToHalfOpen()
+    {
+        _circuitBreakerState = CircuitBreakerState.HalfOpen;
+        _halfOpenAttempts = 0;
+    }
+    
+    /// <summary>
+    /// Gets the current failure rate within the configured time window
+    /// </summary>
+    private double GetCurrentFailureRate()
+    {
+        if (_recentOperations.Count == 0)
+            return 0.0;
             
-            if (_consecutiveFailures >= MaxConsecutiveFailures)
-            {
-                _circuitBreakerOpen = true;
-            }
+        var failures = _recentOperations.Count(op => !op.IsSuccess);
+        return (double)failures / _recentOperations.Count;
+    }
+    
+    /// <summary>
+    /// Removes operations outside the configured time window
+    /// </summary>
+    private void CleanupOldOperations()
+    {
+        var cutoffTime = DateTime.UtcNow.AddMilliseconds(-_config.CircuitBreakerFailureRateWindowMs);
+        
+        while (_recentOperations.Count > 0 && _recentOperations.Peek().Timestamp < cutoffTime)
+        {
+            _recentOperations.Dequeue();
         }
     }
     

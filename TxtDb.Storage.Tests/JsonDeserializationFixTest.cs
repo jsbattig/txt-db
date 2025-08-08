@@ -30,36 +30,46 @@ public class JsonDeserializationFixTest
         Assert.NotNull(deserializedArray);
         Assert.Equal(2, deserializedArray.Length);
         
-        // Check first object
+        // Check first object - expect anonymous type, not ExpandoObject
         var first = deserializedArray[0];
-        Assert.IsType<ExpandoObject>(first);
+        Assert.True(first.GetType().Name.StartsWith("<>f__AnonymousType"), 
+            $"Expected anonymous type, got {first.GetType().Name}");
         
-        var firstDict = (IDictionary<string, object?>)first;
-        Assert.True(firstDict.ContainsKey("Id"));
-        Assert.True(firstDict.ContainsKey("Name"));
+        // Use reflection to access properties of anonymous type
+        var firstType = first.GetType();
+        var idProperty = firstType.GetProperty("Id")!;
+        var nameProperty = firstType.GetProperty("Name")!;
+        // Verify properties exist and have correct values
+        Assert.NotNull(idProperty);
+        Assert.NotNull(nameProperty);
         
         // Critical test: Id should be Int32 (or Int64), not JValue
-        var idValue = firstDict["Id"];
+        var idValue = idProperty.GetValue(first);
         Assert.True(idValue is int || idValue is long, 
             $"Expected int or long, got {idValue?.GetType().Name}. Value: {idValue}");
         Assert.NotEqual("Newtonsoft.Json.Linq.JValue", idValue?.GetType().FullName);
         
         // Name should be string, not JValue
-        var nameValue = firstDict["Name"];
+        var nameValue = nameProperty.GetValue(first);
         Assert.IsType<string>(nameValue);
         Assert.Equal("Test", nameValue);
         
-        // Check second object 
+        // Check second object - expect anonymous type, not ExpandoObject
         var second = deserializedArray[1];
-        Assert.IsType<ExpandoObject>(second);
+        Assert.True(second.GetType().Name.StartsWith("<>f__AnonymousType"), 
+            $"Expected anonymous type, got {second.GetType().Name}");
         
-        var secondDict = (IDictionary<string, object?>)second;
-        var secondIdValue = secondDict["Id"];
+        // Use reflection to access properties of anonymous type
+        var secondType = second.GetType();
+        var secondIdProperty = secondType.GetProperty("Id")!;
+        var secondNameProperty = secondType.GetProperty("Name")!;
+        
+        var secondIdValue = secondIdProperty.GetValue(second);
         Assert.True(secondIdValue is int || secondIdValue is long,
             $"Expected int or long, got {secondIdValue?.GetType().Name}. Value: {secondIdValue}");
         Assert.NotEqual("Newtonsoft.Json.Linq.JValue", secondIdValue?.GetType().FullName);
         
-        var secondNameValue = secondDict["Name"];
+        var secondNameValue = secondNameProperty.GetValue(second);
         Assert.IsType<string>(secondNameValue);
         Assert.Equal("Another", secondNameValue);
     }
@@ -89,29 +99,37 @@ public class JsonDeserializationFixTest
         Assert.Single(deserializedArray);
         
         var obj = deserializedArray[0];
-        Assert.IsType<ExpandoObject>(obj);
+        Assert.True(obj.GetType().Name.StartsWith("<>f__AnonymousType"), 
+            $"Expected anonymous type, got {obj.GetType().Name}");
         
-        var dict = (IDictionary<string, object?>)obj;
+        // Use reflection to access properties of anonymous type
+        var objType = obj.GetType();
+        var idProperty = objType.GetProperty("Id")!;
+        var metadataProperty = objType.GetProperty("Metadata")!;
         
         // Check Id
-        var idValue = dict["Id"];
+        var idValue = idProperty.GetValue(obj);
         Assert.True(idValue is int || idValue is long);
         
-        // Check nested Metadata object
-        var metadataValue = dict["Metadata"];
-        Assert.IsType<ExpandoObject>(metadataValue);
+        // Check nested Metadata object - should also be anonymous type
+        var metadataValue = metadataProperty.GetValue(obj);
+        Assert.True(metadataValue?.GetType().Name.StartsWith("<>f__AnonymousType"), 
+            $"Expected anonymous type for nested object, got {metadataValue?.GetType().Name}");
         
-        var metadataDict = (IDictionary<string, object?>)metadataValue;
+        // Use reflection to access nested object properties
+        var metadataType = metadataValue!.GetType();
+        var versionProperty = metadataType.GetProperty("Version")!;
+        var isActiveProperty = metadataType.GetProperty("IsActive")!;
         
         // Check Version inside nested object
-        var versionValue = metadataDict["Version"];
+        var versionValue = versionProperty.GetValue(metadataValue);
         Assert.True(versionValue is int || versionValue is long);
         Assert.NotEqual("Newtonsoft.Json.Linq.JValue", versionValue?.GetType().FullName);
         
         // Check boolean value
-        var isActiveValue = metadataDict["IsActive"];
+        var isActiveValue = isActiveProperty.GetValue(metadataValue);
         Assert.IsType<bool>(isActiveValue);
-        Assert.True((bool)isActiveValue);
+        Assert.True((bool)isActiveValue!);
     }
     
     [Fact]
@@ -136,24 +154,28 @@ public class JsonDeserializationFixTest
         Assert.Single(deserializedArray);
         
         var obj = deserializedArray[0];
-        Assert.IsType<ExpandoObject>(obj);
+        Assert.True(obj.GetType().Name.StartsWith("<>f__AnonymousType"), 
+            $"Expected anonymous type, got {obj.GetType().Name}");
         
-        var dict = (IDictionary<string, object?>)obj;
+        // Use reflection to access properties of anonymous type
+        var objType = obj.GetType();
+        var tagsProperty = objType.GetProperty("Tags")!;
+        var numbersProperty = objType.GetProperty("Numbers")!;
         
         // Check Tags array
-        var tagsValue = dict["Tags"];
-        Assert.IsType<object[]>(tagsValue);
-        var tagsArray = (object[])tagsValue;
+        var tagsValue = tagsProperty.GetValue(obj);
+        Assert.IsType<string[]>(tagsValue);
+        var tagsArray = (string[])tagsValue!;
         Assert.Equal(2, tagsArray.Length);
         Assert.IsType<string>(tagsArray[0]);
         Assert.Equal("tag1", tagsArray[0]);
         
         // Check Numbers array  
-        var numbersValue = dict["Numbers"];
-        Assert.IsType<object[]>(numbersValue);
-        var numbersArray = (object[])numbersValue;
+        var numbersValue = numbersProperty.GetValue(obj);
+        Assert.IsType<int[]>(numbersValue);
+        var numbersArray = (int[])numbersValue!;
         Assert.Equal(3, numbersArray.Length);
         Assert.True(numbersArray[0] is int || numbersArray[0] is long);
-        Assert.NotEqual("Newtonsoft.Json.Linq.JValue", numbersArray[0]?.GetType().FullName);
+        Assert.NotEqual("Newtonsoft.Json.Linq.JValue", numbersArray[0].GetType().FullName);
     }
 }
