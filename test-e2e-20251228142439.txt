@@ -1,5 +1,0 @@
-E2E Test File for Git REST API Testing
-Created: $(date --iso-8601=seconds)
-Purpose: Validate git push/pull operations via REST API
-Repository: txt-db (GitHub)
-Test Type: Real GitHub push/pull (NO MOCKS)
