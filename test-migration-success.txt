@@ -1,0 +1,1 @@
+Test legacy migration SUCCESS
