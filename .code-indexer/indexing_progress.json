@@ -1,0 +1,2490 @@
+{
+  "current_session": {
+    "session_id": "full_1767106892",
+    "operation_type": "full",
+    "started_at": 1767106892.2373824,
+    "embedding_provider": "voyage-ai",
+    "embedding_model": "voyage-code-3",
+    "git_branch": "master",
+    "git_commit": "e9c36534d56ef4bf0c72ef67bba0fc6ada37409e",
+    "completed_at": 1767106928.0603113,
+    "cancelled_at": null,
+    "total_files": 247,
+    "files_completed": 0,
+    "files_failed": 0,
+    "chunks_created": 0
+  },
+  "file_records": {
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/debug_phase2_output.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/debug_phase2_output.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sessionresume.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sessionresume.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/ARCHITECTURAL_FIX_PLAN.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/ARCHITECTURAL_FIX_PLAN.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/FINAL_ROOT_CAUSE_ANALYSIS.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/FINAL_ROOT_CAUSE_ANALYSIS.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/PHASE5_COMPREHENSIVE_VALIDATION_REPORT.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/PHASE5_COMPREHENSIVE_VALIDATION_REPORT.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/README.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/README.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests.MultiProcess.Runner/Program.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests.MultiProcess.Runner/Program.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/CriticalDeadlockAndRaceConditionTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/CriticalDeadlockAndRaceConditionTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/CriticalIssuesFinalTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/CriticalIssuesFinalTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/MVCCDatabaseVisibilityE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/MVCCDatabaseVisibilityE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/POST_ARCHITECTURAL_FIX_TEST_QUALITY_REVIEW.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/POST_ARCHITECTURAL_FIX_TEST_QUALITY_REVIEW.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ROOT_CAUSE_ANALYSIS.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ROOT_CAUSE_ANALYSIS.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/CriticalIssuesExposureTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/CriticalIssuesExposureTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/IndexPersistenceTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/IndexPersistenceTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/MultiProcessFrameworkTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/MultiProcessFrameworkTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/TableCachingIssueExposureTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/ConcurrencyTests/TableCachingIssueExposureTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/ComprehensiveIndexPersistenceE2ETest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/ComprehensiveIndexPersistenceE2ETest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/IndexPersistenceRootCauseTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/IndexPersistenceRootCauseTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/PrimaryKeyTypeHandlingTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/PrimaryKeyTypeHandlingTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TransactionCoordinationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TransactionCoordinationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TypeSafeFixVerificationTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TypeSafeFixVerificationTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TypeSafePrimaryKeyTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Critical/TypeSafePrimaryKeyTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Diagnostics/TransactionIsolationDiagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/Diagnostics/TransactionIsolationDiagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/CoreDatabaseInfrastructureE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/CoreDatabaseInfrastructureE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/PageBasedObjectManagementE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/PageBasedObjectManagementE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/SimpleComplianceTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/SimpleComplianceTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/SpecificationComplianceE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/E2E/SpecificationComplianceE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/MultiProcess/DatabaseMultiProcessE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database.Tests/MultiProcess/DatabaseMultiProcessE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Exceptions/SqlExecutionException.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Exceptions/SqlExecutionException.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Filters/IndexHintedFilter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Filters/IndexHintedFilter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Filters/WhereClauseFilter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Filters/WhereClauseFilter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Interfaces/ISqlExecutor.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Interfaces/ISqlExecutor.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Interfaces/ISqlResult.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Interfaces/ISqlResult.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/ParsedStatement.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/ParsedStatement.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlColumnInfo.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlColumnInfo.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlStatement.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlStatement.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlStatementType.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Models/SqlStatementType.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlExecutor.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlExecutor.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlResult.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlResult.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlStatementParser.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Services/SqlStatementParser.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Visitors/ExecutionContext.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Visitors/ExecutionContext.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Visitors/SqlStatementVisitor.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql/Visitors/SqlStatementVisitor.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/IFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/IFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/IStorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/IStorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/Async/IAsyncFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/Async/IAsyncFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/Async/IAsyncStorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Interfaces/Async/IAsyncStorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/FlushRequest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/FlushRequest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/InfrastructureConfig.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/InfrastructureConfig.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/InfrastructureMetrics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/InfrastructureMetrics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/StorageConfig.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/StorageConfig.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/VersionMetadata.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Models/VersionMetadata.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/DeadlockAwareLockManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/DeadlockAwareLockManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/EnhancedDeadlockAwareLockManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/EnhancedDeadlockAwareLockManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/JsonFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/JsonFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/ResourceOrderingManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/ResourceOrderingManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/StorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/StorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/WaitForGraphDetector.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/WaitForGraphDetector.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/XmlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/XmlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/YamlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/YamlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/performance_patch.sh": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/performance_patch.sh",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncFileOperations.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncFileOperations.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncJsonFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncJsonFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncLockManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncLockManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncStorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncStorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncXmlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncXmlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncYamlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/AsyncYamlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/BatchFlushCoordinator.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/BatchFlushCoordinator.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/Epic002TargetValidator.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/Epic002TargetValidator.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/FileIOCircuitBreaker.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/FileIOCircuitBreaker.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/MemoryPressureDetector.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/MemoryPressureDetector.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/MonitoredAsyncStorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/MonitoredAsyncStorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/RetryPolicyManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/RetryPolicyManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/StorageMetrics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/StorageMetrics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/TransactionRecoveryManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/Async/TransactionRecoveryManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/AtomicFileOperations.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/AtomicFileOperations.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/CrossProcessLock.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/CrossProcessLock.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/DistributedGlobalStateManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/DistributedGlobalStateManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/DistributedTransactionCoordinator.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/DistributedTransactionCoordinator.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/EnhancedTransactionLeaseManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/EnhancedTransactionLeaseManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/GlobalState.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/GlobalState.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/GlobalStateManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/GlobalStateManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/ProcessRecoveryJournal.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/ProcessRecoveryJournal.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TransactionLease.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TransactionLease.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TransactionLeaseManager.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TransactionLeaseManager.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TwoPhaseCommitCoordinator.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage/Services/MVCC/TwoPhaseCommitCoordinator.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/research/SQL_Parser_Research.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/research/SQL_Parser_Research.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sql-exploration/SqlParserExploration.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sql-exploration/SqlParserExploration.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sql-exploration/SqlParserInterface.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/sql-exploration/SqlParserInterface.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Exceptions/DatabaseExceptions.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Exceptions/DatabaseExceptions.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabase.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabase.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabaseLayer.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabaseLayer.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabaseTransaction.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IDatabaseTransaction.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IIndex.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IIndex.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IPageEventSubscriber.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IPageEventSubscriber.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IQueryFilter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/IQueryFilter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/ITable.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Interfaces/ITable.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/DatabaseMetadata.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/DatabaseMetadata.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TableMetadata.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TableMetadata.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TransactionIsolationLevel.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TransactionIsolationLevel.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TransactionState.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TransactionState.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TypedPrimaryKey.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Models/TypedPrimaryKey.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Database.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Database.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/DatabaseLayer.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/DatabaseLayer.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/DatabaseTransaction.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/DatabaseTransaction.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Index.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Index.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Table.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Services/Table.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Specifications/NullSemanticsFramework.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Database/Specifications/NullSemanticsFramework.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ConcurrencyAndEdgeCaseTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ConcurrencyAndEdgeCaseTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ConcurrencyIsolationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ConcurrencyIsolationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/CriticalIssueStorageTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/CriticalIssueStorageTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/CriticalPriorityBypassTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/CriticalPriorityBypassTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapterTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapterTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/INTEGRATION_TEST_REPORT.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/INTEGRATION_TEST_REPORT.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/JsonDeserializationE2ETest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/JsonDeserializationE2ETest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/JsonDeserializationFixTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/JsonDeserializationFixTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCDiagnosticTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCDiagnosticTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCFixVerificationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCFixVerificationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCIsolationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCIsolationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCIsolationViolationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCIsolationViolationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCVersionVisibilityTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCCVersionVisibilityTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Phase4SimpleIntegrationTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Phase4SimpleIntegrationTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Program.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Program.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ResourceManagementTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/ResourceManagementTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/StorageSubsystemTransactionTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/StorageSubsystemTransactionTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/TransactionIsolationSecurityTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/TransactionIsolationSecurityTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/XmlArrayDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/XmlArrayDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/XmlArrayTDDFixTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/XmlArrayTDDFixTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/YamlTestQuick.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/YamlTestQuick.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/debug_data_loss_test.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/debug_data_loss_test.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/debug_fixed_stress_diagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/debug_fixed_stress_diagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Integration/Phase4InfrastructureIntegrationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Integration/Phase4InfrastructureIntegrationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ConcurrentReadCommittedTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ConcurrentReadCommittedTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ConsistencyValidator.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ConsistencyValidator.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CriticalDebuggingTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CriticalDebuggingTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CrossProcessLockTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CrossProcessLockTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CrossProcessTestFramework.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/CrossProcessTestFramework.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DataLossRootCauseTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DataLossRootCauseTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DeadlockDetectionTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DeepDebuggingStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DeepDebuggingStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DistributedCoordinationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/DistributedCoordinationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/FINAL_STRESS_ANALYSIS_SUMMARY.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/FINAL_STRESS_ANALYSIS_SUMMARY.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/GlobalStateManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/GlobalStateManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/LoggingStorageWrapper.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/LoggingStorageWrapper.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/MultiInsertDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/MultiInsertDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/MultiProcessE2ETests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/MultiProcessE2ETests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ProcessTestRunner.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ProcessTestRunner.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/RaceConditionIsolationTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/RaceConditionIsolationTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ResourceOrderingManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/ResourceOrderingManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleFixedStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleFixedStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleReadCommittedDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/SimpleReadCommittedDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestDataLossAnalysis.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestDataLossAnalysis.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestDiagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestDiagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestHelpers.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestHelpers.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestSuite.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/StressTestSuite.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/TestDataModels.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/TestDataModels.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/TransactionLeaseManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/TransactionLeaseManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/WaitForGraphDetectorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/MVCC/WaitForGraphDetectorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/BaselinePerformanceTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/BaselinePerformanceTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/ComprehensiveEpic002PerformanceTestSuite.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/ComprehensiveEpic002PerformanceTestSuite.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Epic002RegressionTestFramework.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Epic002RegressionTestFramework.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Epic002TargetValidationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Epic002TargetValidationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/MonitoredAsyncStorageSubsystemTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/MonitoredAsyncStorageSubsystemTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Phase1PerformanceBaselineTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/Phase1PerformanceBaselineTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/StorageMetricsResourceTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/StorageMetricsResourceTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/StorageMetricsTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Performance/StorageMetricsTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncCancellationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncCancellationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncFileOperationsTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncFileOperationsTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncFormatAdapterTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncFormatAdapterTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncLockManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncLockManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncNamespaceOperationsTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncNamespaceOperationsTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncObjectOperationsTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncObjectOperationsTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncStorageSubsystemTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/AsyncStorageSubsystemTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/BatchFlushCoordinatorBoundedIterationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/BatchFlushCoordinatorBoundedIterationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/BatchFlushCoordinatorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/BatchFlushCoordinatorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/ConfigureAwaitValidationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/ConfigureAwaitValidationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/FileFlushDurabilityTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/FileFlushDurabilityTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/RetryPolicyManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/RetryPolicyManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/TransactionRecoveryManagerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Async/TransactionRecoveryManagerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/DeadlockPreventionConfigTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/DeadlockPreventionConfigTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/RenameNamespaceTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/RenameNamespaceTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/CriticalRenameNamespaceDataPreservationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/CriticalRenameNamespaceDataPreservationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/PerformanceProfileTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/PerformanceProfileTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/StepByStepRenameAnalysisTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Critical/StepByStepRenameAnalysisTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapters/XmlAdapterCompleteTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapters/XmlAdapterCompleteTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapters/YamlAdapterErrorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/FormatAdapters/YamlAdapterErrorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/CircuitBreakerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/CircuitBreakerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/FileIOCircuitBreakerTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/FileIOCircuitBreakerTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/MemoryPressureDetectorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Storage.Tests/Infrastructure/MemoryPressureDetectorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/EPIC003_PHASE1_IMPLEMENTATION_SUMMARY.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/EPIC003_PHASE1_IMPLEMENTATION_SUMMARY.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-001-Storage-Subsystem.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-001-Storage-Subsystem.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-002-Performance-Optimization-And-Future-Enhancements.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-002-Performance-Optimization-And-Future-Enhancements.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-003-Multi-Process-MVCC-Coordination.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-003-Multi-Process-MVCC-Coordination.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-004-Database-Layer-Implementation.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-004-Database-Layer-Implementation.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-005-SQL-Layer-Implementation-Simplified.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/Epic-005-SQL-Layer-Implementation-Simplified.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/SQL-Transaction-Model-Specification.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/backlog/SQL-Transaction-Model-Specification.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Interfaces/IFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Interfaces/IFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Interfaces/IStorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Interfaces/IStorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Models/StorageConfig.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Models/StorageConfig.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Models/VersionMetadata.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Models/VersionMetadata.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/JsonFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/JsonFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/StorageSubsystem.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/StorageSubsystem.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/XmlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/XmlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/YamlFormatAdapter.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/YamlFormatAdapter.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/performance_patch.sh": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage/Services/performance_patch.sh",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/ConcurrencyAndEdgeCaseTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/ConcurrencyAndEdgeCaseTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/ConcurrencyDiagnosticTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/ConcurrencyDiagnosticTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapterTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapterTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/INTEGRATION_TEST_REPORT.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/INTEGRATION_TEST_REPORT.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCCIsolationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCCIsolationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/StorageSubsystemTransactionTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/StorageSubsystemTransactionTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/XmlArrayDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/XmlArrayDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/XmlArrayTDDFixTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/XmlArrayTDDFixTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/YamlTestQuick.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/YamlTestQuick.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/AdvancedConflictTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/ConcurrentReadCommittedTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/ConcurrentReadCommittedTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/CorrectedStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/CriticalDebuggingTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/CriticalDebuggingTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/DataLossRootCauseTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/DataLossRootCauseTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/DeepDebuggingStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/DeepDebuggingStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/FINAL_STRESS_ANALYSIS_SUMMARY.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/FINAL_STRESS_ANALYSIS_SUMMARY.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/FixedStressTestDiagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/LoggingStorageWrapper.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/LoggingStorageWrapper.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/MultiInsertDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/MultiInsertDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/RaceConditionIsolationTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/RaceConditionIsolationTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleFixedStressTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleFixedStressTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleReadCommittedDebugTest.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/SimpleReadCommittedDebugTest.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestDataLossAnalysis.md": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestDataLossAnalysis.md",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestDiagnostics.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestDiagnostics.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestHelpers.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestHelpers.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestSuite.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/MVCC/StressTestSuite.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/Core/RenameNamespaceTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/Core/RenameNamespaceTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/Core/VersionCleanupTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapters/XmlAdapterCompleteTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapters/XmlAdapterCompleteTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapters/YamlAdapterErrorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/concurrency-tests/TxtDb.Storage.Tests/FormatAdapters/YamlAdapterErrorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Exceptions/SqlExecutionExceptionTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Exceptions/SqlExecutionExceptionTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Services/SqlParserIntegrationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Services/SqlParserIntegrationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Services/SqlExecutorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Services/SqlExecutorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/InterfaceComplianceTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/InterfaceComplianceTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/SqlParserCSIntegrationTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/SqlParserCSIntegrationTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/SqlStatementVisitorTests.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/TxtDb.Sql.Tests/Architecture/SqlStatementVisitorTests.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    },
+    "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/SpecComplianceDemo/Program.cs": {
+      "file_path": "/home/jsbattig/.cidx-server/data/golden-repos/.versioned/txt-db/v_1767128490/SpecComplianceDemo/Program.cs",
+      "status": "pending",
+      "chunks_created": 0,
+      "processing_time": 0.0,
+      "error_message": null,
+      "started_at": null,
+      "completed_at": null,
+      "vector_point_ids": []
+    }
+  },
+  "last_updated": 1767106928.0614328
+}

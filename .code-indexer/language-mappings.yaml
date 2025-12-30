@@ -1,0 +1,111 @@
+# Language Mappings Configuration
+# Maps friendly language names to file extensions for CIDX query filtering
+#
+# Format:
+#   language_name: [extension1, extension2, ...]
+#
+# Examples:
+#   python: [py, pyw, pyi]
+#   javascript: [js, jsx]
+#
+# You can add custom languages or modify existing mappings below.
+# Changes take effect on next query execution.
+
+python:
+- py
+- pyw
+- pyi
+javascript:
+- js
+- jsx
+typescript:
+- ts
+- tsx
+java:
+- java
+csharp:
+- cs
+c:
+- c
+- h
+cpp:
+- cpp
+- cc
+- cxx
+- c++
+c++:
+- cpp
+- cc
+- cxx
+- c++
+go:
+- go
+rust:
+- rs
+php:
+- php
+ruby:
+- rb
+swift:
+- swift
+kotlin:
+- kt
+- kts
+scala:
+- scala
+dart:
+- dart
+html:
+- html
+- htm
+css:
+- css
+vue:
+- vue
+markdown:
+- md
+- markdown
+xml:
+- xml
+latex:
+- tex
+- latex
+rst:
+- rst
+json:
+- json
+yaml:
+- yaml
+- yml
+toml:
+- toml
+ini:
+- ini
+sql:
+- sql
+shell:
+- sh
+- bash
+bash:
+- sh
+- bash
+powershell:
+- ps1
+- psm1
+- psd1
+batch:
+- bat
+- cmd
+dockerfile:
+- dockerfile
+makefile:
+- makefile
+- mk
+cmake:
+- cmake
+text:
+- txt
+log:
+- log
+csv:
+- csv

@@ -1,0 +1,143 @@
+{
+  "index_settings": {
+    "docstore_compression": "lz4",
+    "docstore_blocksize": 16384
+  },
+  "segments": [
+    {
+      "segment_id": "b541f9b4-5abb-4832-bf66-09d9119122f4",
+      "max_doc": 258,
+      "deletes": null
+    },
+    {
+      "segment_id": "a5da612b-def4-45e6-b3af-19e955d02a3e",
+      "max_doc": 249,
+      "deletes": null
+    },
+    {
+      "segment_id": "feb88886-6af8-4f14-9478-fe053a73e3be",
+      "max_doc": 249,
+      "deletes": null
+    },
+    {
+      "segment_id": "73eeab13-f3d1-46a8-9479-e389c947d5ef",
+      "max_doc": 249,
+      "deletes": null
+    },
+    {
+      "segment_id": "738a8d52-dcd4-4516-bde0-2535b2a8ae85",
+      "max_doc": 245,
+      "deletes": null
+    },
+    {
+      "segment_id": "a6210c7d-4077-4836-8136-94af4b450de5",
+      "max_doc": 238,
+      "deletes": null
+    },
+    {
+      "segment_id": "34960d02-10c9-4530-bfbf-2bdfe4f42b44",
+      "max_doc": 234,
+      "deletes": null
+    },
+    {
+      "segment_id": "bac6bc01-3913-4f52-af7d-e86a33c491ba",
+      "max_doc": 232,
+      "deletes": null
+    }
+  ],
+  "schema": [
+    {
+      "name": "path",
+      "type": "text",
+      "options": {
+        "indexing": {
+          "record": "position",
+          "fieldnorms": true,
+          "tokenizer": "default"
+        },
+        "stored": true,
+        "fast": false
+      }
+    },
+    {
+      "name": "content",
+      "type": "text",
+      "options": {
+        "indexing": {
+          "record": "position",
+          "fieldnorms": true,
+          "tokenizer": "default"
+        },
+        "stored": false,
+        "fast": false
+      }
+    },
+    {
+      "name": "content_raw",
+      "type": "text",
+      "options": {
+        "indexing": {
+          "record": "position",
+          "fieldnorms": true,
+          "tokenizer": "default"
+        },
+        "stored": true,
+        "fast": false
+      }
+    },
+    {
+      "name": "identifiers",
+      "type": "text",
+      "options": {
+        "indexing": {
+          "record": "position",
+          "fieldnorms": true,
+          "tokenizer": "default"
+        },
+        "stored": true,
+        "fast": false
+      }
+    },
+    {
+      "name": "line_start",
+      "type": "u64",
+      "options": {
+        "indexed": true,
+        "fieldnorms": false,
+        "fast": false,
+        "stored": true
+      }
+    },
+    {
+      "name": "line_end",
+      "type": "u64",
+      "options": {
+        "indexed": true,
+        "fieldnorms": false,
+        "fast": false,
+        "stored": true
+      }
+    },
+    {
+      "name": "language",
+      "type": "text",
+      "options": {
+        "indexing": {
+          "record": "position",
+          "fieldnorms": true,
+          "tokenizer": "default"
+        },
+        "stored": true,
+        "fast": false
+      }
+    },
+    {
+      "name": "language_facet",
+      "type": "facet",
+      "options": {
+        "stored": false
+      }
+    }
+  ],
+  "opstamp": 1962
+}
